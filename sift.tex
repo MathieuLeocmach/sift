@@ -1,5 +1,7 @@
 \input{preamble}
 
+\DeclareMathOperator{\erf}{erf}
+
 \begin{document}
 \title{Quantitative localisation and sizing of polydisperse colloids from confocal microscopy images}
 
@@ -42,7 +44,7 @@ The key notion to detect objects of unknown and possibly diverse sizes in an ima
 
 The \textsc{sift} is often used to match between different images from complex objects consisting of many rigidly linked blobs and further characterised by local histograms~\citep{Lowe2004}. To our knowledge, this method was never used for the quantitative localisation and sizing of independent single-blob objects like spherical colloids. The object-by-object optimal scale determination allows us to perform the spatial sub-pixel resolution step for each object on an image that is blurred just enough to have neither a flat intensity profile nor a nearby peak overlap. This leads to a spatial resolution below $0.3$~pixels when two $10$-pixels wide particles are at hard-core contact, and less than $0.03$~pixels error ($0.3\%$ of the diameter) when any other particle's surface is further than $1$~pixel from the surface of the particle of interest.
 
-At infinite dilution the scale $\sigma$ is simply proportional to the radius $R$ of the particle. Assuming a binary ball object, one finds
+At infinite dilution the scale $\sigma$ is simply proportional to the radius $R$ of the particle. Assuming a binary ball object (see Appendix~\ref{sec:gaussian_vs_ball}), one finds
 \begin{equation}
 	R = \sigma \sqrt{\frac{3 \log 2}{n(1-2^{-2/n})}}. 
 	\label{eq:scale_dil}
@@ -56,6 +58,52 @@ Figure~\ref{fig:sizing}a shows the size distribution of the suspensions investig
 The consistency of our method can be checked by constructing the radial distribution function $g(r)$. In monodisperse hard spheres, the $g(r)$ has a sharp first peak at $r=1\sigma$ corresponding to hard core contact. Polydispersity implies hard core contacts at various $r$ and thus broadens the peak. One can recover a sharp peak by constructing $g(\hat{r})$, with $\hat{r}_{ij} = r_{ij}/(R_i+R_j)$. In Fig.~\ref{fig:sizing}b we successfully used the sizes measured by our method to rectify the first peak.
 
 Recently \citet{Kurita2011,Kurita2011b} have designed a sizing method using particle coordinates from confocal experiments. However their method do not work at the image processing level and relies on coordinates extracted via the \citet{Crocker1996} algorithm which, as described above, is defective when the size distribution is too broad. It may be possible to combine the two methods by feeding our coordinates and size as input to their method. We would expect an increase in sizing precision when the particles are close to contact.
+
+\appendix
+
+\section{Gaussian response of a binary ball}
+\label{sec:gaussian_vs_ball}
+
+A binary ball $\mathcal{B}_R$ of radius $R$ is convolved by a Gaussian kernel of width $\sigma$. The response at a distance $r$ (along z-axis without loss of generality) is
+
+\begin{align}
+G(r,R,\sigma) &= \frac{1}{(2\pi)^{3/2}\sigma^3} \int_{\mathcal{B}_R}{\exp\left( -\frac{(z-r)^2+y^2+x^2}{2\sigma^2}\right)dx dy dz }
+%
+\intertext{or in spherical coordinates $(\rho, \theta, \phi)$ after integration along $\phi$}
+%
+ &= \frac{e^{-\frac{r^2}{2\sigma^2}}}{\sqrt{2\pi}\sigma^3} \int_0^R \rho^2 e^{-\frac{\rho^2}{2\sigma^2}} d\rho \int_0^\pi \sin\theta e^{\frac{\rho r}{\sigma^2}\cos\theta} d\theta \\
+ &= \frac{1}{r\sigma\sqrt{2\pi}}\left[ \int_0^R \rho e^{-\frac{(\rho-r)^2}{2\sigma^2}}d\rho - \int_0^R \rho e^{-\frac{(\rho+r)^2}{2\sigma^2}}d\rho \right] 
+ %
+\intertext{this can be integrated using the error function $\erf$}
+%
+G(r,R,\sigma) &= \frac{1}{2}\left( g(r,R,\sigma) + g(-r,R,\sigma)\right)
+\label{eq:split_G}
+\intertext{with}
+g(r,R,\sigma) &= \erf\left(\frac{R+r}{\sigma\sqrt{2}}\right) + \sqrt{\frac{2}{\pi}}\frac{\sigma}{r}e^{-\frac{(R+r)^2}{2\sigma^2}}
+%
+%
+\intertext{At the center of the ball, Eq.~(\ref{eq:split_G}) reduces to}
+G(r=0,R,\sigma) &= \erf\left(\frac{R}{\sigma\sqrt{2}}\right) - \sqrt{\frac{2}{\pi}}\frac{R}{\sigma}e^{-\frac{R^2}{2\sigma^2}}
+\end{align}
+
+In addition, we compute the following useful partial derivatives
+\begin{align}
+\frac{\partial g}{\partial \sigma}(r,R,\sigma) &= \frac{\left( R^2+r R+\sigma^2\right)}{r\sigma^2\sqrt{2\pi}} e^{-\frac{(R+r)^2}{2\sigma^2}} \\
+\frac{\partial g}{\partial \sigma \partial R}(r,R,\sigma) &= -R \frac{(R+r)^2-\sigma^2}{r\sigma^4\sqrt{2\pi}} e^{-\frac{(R+r)^2}{2\sigma^2}}\\
+\frac{\partial G}{\partial \sigma}(r=0,R,\sigma) &= -\sqrt{\frac{2}{\pi}} \frac{R^3}{\sigma^4} e^{-\frac{R^2}{2\sigma^2}} \label{eq:Gc_ds}\\
+\frac{\partial G}{\partial \sigma \partial R}(r=0,R,\sigma) &= \sqrt{\frac{2}{\pi}} R^2 \frac{R^2-\sigma^2}{\sigma^6} e^{-\frac{R^2}{2\sigma^2}}
+\end{align}
+
+The difference of Gaussians response is 
+\begin{align}
+DoG(r,R,\sigma,\alpha) &= G(r,R,\alpha\sigma)-G(r,R,\sigma)
+\intertext{and has the partial derivative relative to the scale}
+\frac{\partial DoG}{\partial \sigma}(r,R,\sigma,\alpha) &= \alpha \frac{\partial G}{\partial \sigma}(r,R,\alpha\sigma) - \frac{\partial G}{\partial \sigma}(r,R,\sigma) \label{eq:DoG_ds}
+\end{align}
+When the difference of Gaussians is minimum at the center of the ball, we combine Eq.~(\ref{eq:Gc_ds}) and Eq.~(\ref{eq:DoG_ds}) to get
+\begin{equation}
+\frac{R}{\sigma} = \sqrt{\frac{3\ln \alpha}{1-\alpha^{-2}}} \label{eq:R_dilute}
+\end{equation}
 
 %\bibliographystyle{naturemag3}
 \bibliographystyle{apsrev4-1}
