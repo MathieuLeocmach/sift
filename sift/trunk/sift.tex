@@ -51,7 +51,44 @@ At infinite dilution the scale $\sigma$ is simply proportional to the radius $R$
 \end{equation}
 We found that the radius of an isolated pixelated ball can be indeed measured within $0.3\%$ relative error with this method, provided a sub-scale resolution step similar to the spatial sub-pixel resolution step.
 
-In dense suspensions, the neighbouring particles influence the scale dependence of DoG response. This effectively shifts the minima of the DoG towards smaller scales, leading to smaller radii if one uses Eq.~(\ref{eq:scale_dil}) alone. Assuming once again binary ball objects, one can take this coupling into account and construct a $N\times N$ system, with $N$ the number of particles, whose solutions are the radii and whose coefficients depend on the inter-particle distances. This system is actually very sparse (less than two dozen non-zero coefficients per line, even in the dense suspensions studied here) and the results converges in about two iterations. In synthetic images we measured the error in the resulting radii to be around $1\%$. In an experimental image, the particles are not uniformly bright due to synthesis imperfection (quantity of dye fixed by each particle) and photo bleaching. If one does not take into account the relative brightness of the particles the less bright will appear smaller.
+In dense phases, the neighbouring particles influence the scale dependence of DoG response. This effectively shifts the minima of the DoG towards smaller scales, leading to smaller radii if one uses Eq.~(\ref{eq:scale_dil}) alone. Furthermore, the particles in an experimental image are not uniformly bright due to synthesis imperfection (quantity of dye fixed by each particle) and photo bleaching. If one does not take into account the relative brightness of the particles the less bright will appear even smaller. In the following, we detail our method to take into account the influence of neighbouring particles.
+
+Assuming once again binary ball objects of radii $\lbrace R_i\rbrace$, intensities $\lbrace A_i\rbrace$ and separated by distances $\lbrace r_{ij}\rbrace$, one can superpose the responses at each particle center, using the function $DoG(r,R,\sigma)$ derived in Appendix~\ref{sec:gaussian_vs_ball}:
+\begin{equation}
+\forall i,\quad DoG_i(\lbrace A_j\rbrace, \lbrace r_{ij}\rbrace, \lbrace R_j\rbrace, \sigma) = \sum_j A_j DoG(r=r_{ij}, R=R_j, \sigma)
+\label{eq:superpos}
+\end{equation}
+This system is linear in $\lbrace A_i\rbrace$, and thus one can easily obtain $\lbrace A_i\rbrace$ when the $\lbrace R_i\rbrace$ are given ($\lbrace r_{ij}\rbrace$, $\lbrace \sigma_i \rbrace$ and $\lbrace DoG_i(\sigma_i)\rbrace$ are known from the \textsc{sift}).
+
+We also know that for all $i$, $DoG_i$ is minimum with respect to $\sigma$ at $\sigma_i$ by construction, thus 
+\begin{equation}
+\forall i,\quad \frac{\partial DoG_i}{\partial\sigma}(\lbrace A_j\rbrace, \lbrace r_{ij}\rbrace, \lbrace R_j\rbrace, \sigma_i) = 0
+\label{eq:DoG_min}
+\end{equation}
+
+The system defined by Eq.~(\ref{eq:DoG_min}) is non linear but can be solved iteratively by Newton's method:
+\begin{equation}
+\left[ \frac{\partial^2 DoG_i}{\partial R_j\partial\sigma}\right] \times \left( \lbrace R_j\rbrace^{(k+1)} - \lbrace R_j\rbrace^{(k)} \right) = -\frac{\partial DoG_i}{\partial\sigma}
+\label{eq:Newton}
+\end{equation}
+where the matrice and the right hand side are computed for $(\lbrace A_j\rbrace^{(k)}, \lbrace r_{ij}\rbrace, \lbrace R_j\rbrace^{(k)}, \sigma_i)$, with the parenthesised indices indicating the iteration rank.
+
+Given Eq.~(\ref{eq:superpos}), the elements of the matrix simplify to
+\begin{equation}
+\frac{\partial^2 DoG_i}{\partial R_j\partial\sigma} =  A_j^{(k)} \frac{\partial^2 DoG}{\partial R\partial\sigma}(r=r_{ij}, R=R_j^{(k)}, \sigma=\sigma_i)
+\end{equation}
+
+We propose the following algorithm to determine $\lbrace A_i\rbrace$ and $\lbrace R_i\rbrace$:
+\begin{enumerate}
+\item Use Eq.~(\ref{eq:scale_dil}) to get the $\lbrace R_i\rbrace^{(0)}$
+\item Solve the linear system given by Eq.~(\ref{eq:superpos}) to get the $\lbrace A_i\rbrace^{(k)}$ \label{it:A}
+\item Solve the system given by Eq.~(\ref{eq:Newton}) to get the $\lbrace R_i\rbrace^{(k+1)}$ \label{it:R}
+\item Iterate through steps \ref{it:A} and \ref{it:R} until convergence
+\end{enumerate}
+
+In principle both Eq.~(\ref{eq:superpos}) and Eq.~(\ref{eq:Newton}) are very large systems of equations ($N\times N$ system, with $N$ the number of particles). However the DoG functions and its derivatives are rapidly decaying functions, thus the matrices are actually very sparse (about as many non-zero coefficients as particles in the first coordination shell), alleviating dramatically the computational burden when using sparse system solvers. Furthermore, the results converge very quickly (about two iterations in our case).
+
+In synthetic images we measured the error in the resulting radii to be around $1\%$. 
 
 Figure~\ref{fig:sizing}a shows the size distribution of the suspensions investigated in the main text. Once a solvent swelling of $23\%$ in radius is taken into account, our \emph{in situ} measurements compare very well with the size distribution obtained from scanning electron microscopy (\textsc{sem}) of the same `dry' colloids. The polydispersity measured \emph{in situ} is $6.9\%$, where the polydispersity computed from \textsc{sem} is $6.2\%$.
 
@@ -89,9 +126,9 @@ G(r=0,R,\sigma) &= \erf\left(\frac{R}{\sigma\sqrt{2}}\right) - \sqrt{\frac{2}{\p
 In addition, we compute the following useful partial derivatives
 \begin{align}
 \frac{\partial g}{\partial \sigma}(r,R,\sigma) &= \frac{\left( R^2+r R+\sigma^2\right)}{r\sigma^2\sqrt{2\pi}} e^{-\frac{(R+r)^2}{2\sigma^2}} \\
-\frac{\partial g}{\partial \sigma \partial R}(r,R,\sigma) &= -R \frac{(R+r)^2-\sigma^2}{r\sigma^4\sqrt{2\pi}} e^{-\frac{(R+r)^2}{2\sigma^2}}\\
+\frac{\partial^2 g}{\partial \sigma \partial R}(r,R,\sigma) &= -R \frac{(R+r)^2-\sigma^2}{r\sigma^4\sqrt{2\pi}} e^{-\frac{(R+r)^2}{2\sigma^2}}\\
 \frac{\partial G}{\partial \sigma}(r=0,R,\sigma) &= -\sqrt{\frac{2}{\pi}} \frac{R^3}{\sigma^4} e^{-\frac{R^2}{2\sigma^2}} \label{eq:Gc_ds}\\
-\frac{\partial G}{\partial \sigma \partial R}(r=0,R,\sigma) &= \sqrt{\frac{2}{\pi}} R^2 \frac{R^2-\sigma^2}{\sigma^6} e^{-\frac{R^2}{2\sigma^2}}
+\frac{\partial^2 G}{\partial \sigma \partial R}(r=0,R,\sigma) &= \sqrt{\frac{2}{\pi}} R^2 \frac{R^2-\sigma^2}{\sigma^6} e^{-\frac{R^2}{2\sigma^2}}
 \end{align}
 
 The difference of Gaussians response is 
