@@ -19,6 +19,7 @@ We propose a scale-space based method to extract both the individual 3D coordina
 \end{abstract}
 \maketitle
 
+\section*{Introduction}
 Particle-level confocal microscopy experiments usually access the coordinates of the particles via the algorithm proposed by \citet{Crocker1996}. The original noisy image is blurred by convolution with a Gaussian kernel of width $\sigma$ to yield a soft peak per particle. Local intensity maxima within this blurred image give the coordinates of the particles with pixel resolution. Sub-pixel resolution ($0.1\sim0.3$~pixels error) can be achieved by taking the centre of mass of a neighbourhood around the local maxima. The extension of this algorithm in 3D has been done in two ways: either tracking particles in each confocal plane and reconstructing the results (2D-flavour)~\citep{dinsmore2001tdc}, or full image analysis on three dimensional pictures (3D-flavour)~\citep{vanblaaderen1995rss, Lu2007}.
 
 The choice of the width $\sigma$ of the blurring kernel is critical: if it is too small, then the intensity profile is flat near the centre  of a particle, leading to multiple and ill-localized maxima per particle; if it is too large, then the peaks of nearby particles overlap, leading to shifts in the detected positions, or even fusion of the particles (only one particle detected instead of two). If the colloids are fairly monodisperse one can argue (at least in the 3D-flavour) that there exists a range of possible width where the choice of $\sigma$ has almost no effect on the number of particles detected. Choosing $\sigma$ within this range gives confidence in the localisation results.
@@ -38,47 +39,67 @@ The choice of the width $\sigma$ of the blurring kernel is critical: if it is to
 	\label{fig:sizing}
 \end{figure*}
 
-However, we found that no such ``good blur width'' exists in our polydisperse sample (see Fig.~\ref{fig:localise}c-h). The detection of smaller particles with small blurring widths leads to the failure in detecting properly the larger particles. This unacceptable failure of the \citet{Crocker1996} algorithm, as well as the want of the particles' radii data, triggered our design of a novel localisation algorithm that would be robust even for a system of polydispersity, which is unavoidable in real experiments. Here we briefly disclose our method, leaving full details to a future publication.
+However, we found that no such ``good blur width'' exists in our polydisperse sample (see Fig.~\ref{fig:localise}c-h). The detection of smaller particles with small blurring widths leads to the failure in detecting properly the larger particles. This unacceptable failure of the \citet{Crocker1996} algorithm, as well as the want of the particles' radii data, triggered our design of a novel localisation algorithm that would be robust even for a system of polydispersity, which is unavoidable in real experiments.
 
-The key notion to detect objects of unknown and possibly diverse sizes in an image is the \emph{scale space}~\cite{Lindeberg1993}. A popular implementation for isotropic objects (or ``blobs'') is the Scale Invariant Feature Transform (\textsc{sift}) of \citet{Lowe2004}. It consists  in blurring the image by Gaussian kernels of logarithmically increasing widths ($\sigma_{i+1} = 2^{1/n} \sigma_i$, with $n$ a fixed integer, $n=3$ being a good choice) and taking the difference between consecutive blurred images. The difference of Gaussians (DoG) response function defined in this way depends on the position in space and on the scale. Bright objects in the original image are detected as local minima of the DoG in both space and scale, thus localisation and \emph{size} are determined simultaneously, without any assumption on the target size (see Fig.~\ref{fig:localise}a).
+The key notion to detect objects of unknown and possibly diverse sizes in an image is the \emph{scale space}~\cite{Lindeberg1993}. A popular implementation for isotropic objects (or ``blobs'') is the Scale Invariant Feature Transform (\textsc{sift}) of \citet{Lowe2004}. It consists  in blurring the image by Gaussian kernels of logarithmically increasing widths
+\begin{equation}
+\sigma_{i+1} = 2^{1/n} \sigma_i ,
+\label{eq:sigma_i}
+\end{equation}
+with $n$ a fixed integer, $n=3$ being a good choice) and taking the difference between consecutive blurred images. The difference of Gaussians (DoG) response function defined in this way depends on the position in space and on the scale. Bright objects in the original image are detected as local minima of the DoG in both space and scale, thus localisation and \emph{size} are determined simultaneously, without any assumption on the target size (see Fig.~\ref{fig:localise}a).
 
 The \textsc{sift} is often used to match between different images from complex objects consisting of many rigidly linked blobs and further characterised by local histograms~\citep{Lowe2004}. To our knowledge, this method was never used for the quantitative localisation and sizing of independent single-blob objects like spherical colloids. The object-by-object optimal scale determination allows us to perform the spatial sub-pixel resolution step for each object on an image that is blurred just enough to have neither a flat intensity profile nor a nearby peak overlap. This leads to a spatial resolution below $0.3$~pixels when two $10$-pixels wide particles are at hard-core contact, and less than $0.03$~pixels error ($0.3\%$ of the diameter) when any other particle's surface is further than $1$~pixel from the surface of the particle of interest.
 
-At infinite dilution the scale $\sigma$ is simply proportional to the radius $R$ of the particle. Assuming a binary ball object (see Appendix~\ref{sec:gaussian_vs_ball}), one finds
+In the following, we will start by explaining our method in the ideal case of an isolated binary ball and then add successively finite dilution, difference in brightness between the particles and distortion by a point-spread function. Finally, we will present the results of our method from real experimental data.
+
+\section*{Perfect images}
+
+In this section, we assume perfect noiseless, distortion-free, images. The objects to localise are thus (pixellised) balls of uniform intensity. Gaussian and DoG responses to a single binary ball are calculated in Appendix~\ref{sec:gaussian_vs_ball}. 
+
+\subsection*{Infinite dilution}
+Combining our definition of $\sigma$ (Eq.~(\ref{eq:sigma_i})) and Eq.~\ref{eq:R_dilute}, we find that at infinite dilution the scale $\sigma$ is simply proportional to the radius $R$ of the particle, with a proportionality constant that depends only on the sampling rate $n$ of the scale space:
 \begin{equation}
 	R = \sigma \sqrt{\frac{3 \log 2}{n(1-2^{-2/n})}}. 
 	\label{eq:scale_dil}
 \end{equation}
-We found that the radius of an isolated pixelated ball can be indeed measured within $0.3\%$ relative error with this method, provided a sub-scale resolution step similar to the spatial sub-pixel resolution step.
 
-In dense phases, the neighbouring particles influence the scale dependence of DoG response. This effectively shifts the minima of the DoG towards smaller scales, leading to smaller radii if one uses Eq.~(\ref{eq:scale_dil}) alone. Furthermore, the particles in an experimental image are not uniformly bright due to synthesis imperfection (quantity of dye fixed by each particle) and photo bleaching. If one does not take into account the relative brightness of the particles the less bright will appear even smaller. In the following, we detail our method to take into account the influence of neighbouring particles.
+Note that $\sigma$ depends on $n$, however this dependence cancels out within the right-hand-side of Eq.~(\ref{eq:scale_dil}) so that we recover a method-independent radius. Nevertheless, the error on $R$ does depend on $n$. We found that with $n=3$ the radius of an isolated pixelated ball can be indeed measured within $0.3\%$ relative error with this method, provided a sub-scale resolution step similar to the spatial sub-pixel resolution step.
 
-Assuming once again binary ball objects of radii $\lbrace R_i\rbrace$, intensities $\lbrace A_i\rbrace$ and separated by distances $\lbrace r_{ij}\rbrace$, one can superpose the responses at each particle center, using the function $DoG(r,R,\sigma)$ derived in Appendix~\ref{sec:gaussian_vs_ball}:
+\subsection*{Finite dilution}
+The Gaussian (and DoG) response of a particle decays rapidly away from its surface (see Eq.~(\ref{eq:split_G}). However when two particles are closer than a few times the blurring width, their influence on each other cannot be neglected: the minima of the DoG is effectively shifted toward smaller scales, leading to smaller radii if one uses Eq.~(\ref{eq:scale_dil}) out of the dilute context.
+
+The response of $N$ particles of radii $\lbrace R_i\rbrace$ can be superimposed at any scale $\sigma$ and at any point of space, in particular we define $DoG_i$ as the response at the center of particle $i$.
 \begin{equation}
-\forall i,\quad DoG_i(\lbrace A_j\rbrace, \lbrace r_{ij}\rbrace, \lbrace R_j\rbrace, \sigma) = \sum_j A_j DoG(r=r_{ij}, R=R_j, \sigma)
+\forall i,\quad DoG_i(\lbrace A_j\rbrace, \lbrace r_{ij}\rbrace, \lbrace R_j\rbrace, \sigma) = \sum_j A_j DoG(r=r_{ij}, R=R_j, \sigma),
 \label{eq:superpos}
 \end{equation}
-This system is linear in $\lbrace A_i\rbrace$, and thus one can easily obtain $\lbrace A_i\rbrace$ when the $\lbrace R_i\rbrace$ are given ($\lbrace r_{ij}\rbrace$, $\lbrace \sigma_i \rbrace$ and $\lbrace DoG_i(\sigma_i)\rbrace$ are known from the \textsc{sift}).
-
-We also know that for all $i$, $DoG_i$ is minimum with respect to $\sigma$ at $\sigma_i$ by construction, thus 
+where the function $DoG(r,R,\sigma)$ is the response of a particle of radius $R$ at distance $r$ from its center; $r_{ij}$ is the distances between particles $i$ and $j$ and $\lbrace A_i\rbrace$ are the respective brightness of the particles. The \textsc{sift} algorithm yields $\lbrace \sigma_i\rbrace$ so that for all $i$, $DoG_i$ is minimum with respect to $\sigma$ at $\sigma_i$, thus differentiating Eq.~(\ref{eq:superpos}) with respect to $\sigma$:
 \begin{equation}
-\forall i,\quad \frac{\partial DoG_i}{\partial\sigma}(\lbrace A_j\rbrace, \lbrace r_{ij}\rbrace, \lbrace R_j\rbrace, \sigma_i) = 0
+\forall i,\quad \frac{\partial DoG_i}{\partial\sigma}(\lbrace A_j\rbrace, \lbrace r_{ij}\rbrace, \lbrace R_j\rbrace, \sigma_i) = 0.
 \label{eq:DoG_min}
 \end{equation}
 
-The system defined by Eq.~(\ref{eq:DoG_min}) is non linear but can be solved iteratively by Newton's method:
+The system defined by Eq.~(\ref{eq:DoG_min}) is non linear with respect to $\lbrace R_j\rbrace$ but can be solved iteratively by Newton's method:
 \begin{equation}
 \left[ \frac{\partial^2 DoG_i}{\partial R_j\partial\sigma}\right] \times \left( \lbrace R_j\rbrace^{(k+1)} - \lbrace R_j\rbrace^{(k)} \right) = -\frac{\partial DoG_i}{\partial\sigma}
 \label{eq:Newton}
 \end{equation}
-where the matrice and the right hand side are computed for $(\lbrace A_j\rbrace^{(k)}, \lbrace r_{ij}\rbrace, \lbrace R_j\rbrace^{(k)}, \sigma_i)$, with the parenthesised indices indicating the iteration rank.
+where the matrix and the right hand side are computed given $(\lbrace A_j\rbrace, \lbrace r_{ij}\rbrace, \sigma_i)$ and iteratively $\lbrace R_j\rbrace^{(k)}$, with the upper parenthesised index indicating the iteration rank. The results of Eq.~(\ref{eq:scale_dil}) are good starting values for the radii.
 
-Given Eq.~(\ref{eq:superpos}), the elements of the matrix simplify to
+Using Eq.~(\ref{eq:superpos}), the elements of the matrix simplify to
 \begin{equation}
-\frac{\partial^2 DoG_i}{\partial R_j\partial\sigma} =  A_j^{(k)} \frac{\partial^2 DoG}{\partial R\partial\sigma}(r=r_{ij}, R=R_j^{(k)}, \sigma=\sigma_i)
+\frac{\partial^2 DoG_i}{\partial R_j\partial\sigma} =  A_j \frac{\partial^2 DoG}{\partial R\partial\sigma}(r=r_{ij}, R=R_j^{(k)}, \sigma=\sigma_i)
 \end{equation}
 
-We propose the following algorithm to determine $\lbrace A_i\rbrace$ and $\lbrace R_i\rbrace$:
+In principle Eq.~(\ref{eq:Newton}) is a $N\times N$ system of equations. However the DoG functions and its derivatives are rapidly decaying functions, thus the matrices are actually very sparse (about as many non-zero coefficients as particles in the first coordination shell), alleviating dramatically the computational burden when using sparse system solvers.
+
+\subsection*{Brightnesses}
+
+To solve Eq.~(\ref{eq:Newton}), one needs knowledge of the brightnesses $\lbrace A_i\rbrace$. In a first approximation, they can be assumed equal to a constant, which allow to simplify them out. This is often a sensible approximation. Nevertheless, the particles in an experimental image are not uniformly bright due to synthesis imperfection (quantity of dye fixed by each particle) and photo bleaching. If one does not take into account the relative brightness of the particles the less bright will appear smaller.
+
+A better approximation is to measure during the \textsc{sift} process the value of the DoG response at the position and scale of each particle, \emph{i.e.} $DoG_i(\lbrace A_j\rbrace, \lbrace r_{ij}\rbrace, \lbrace R_j\rbrace, \sigma_i)$. Given the (iterative) values of the $\lbrace R_j\rbrace^{(k)}$, one can solve Eq.~(\ref{eq:superpos}) to get an iterative value of $\lbrace A_i\rbrace^{(k)}$. With respect to the brightnesses, Eq.~(\ref{eq:superpos}) is a linear system of $N$ equations with $N$ unknowns, thus directly solvable. It is also as sparse as Eq.~(\ref{eq:Newton}).
+
+To sum up, the coefficients $\lbrace A_i\rbrace$ can be computed along with the radii in a joint iterative process:
 \begin{enumerate}
 \item Use Eq.~(\ref{eq:scale_dil}) to get the $\lbrace R_i\rbrace^{(0)}$
 \item Solve the linear system given by Eq.~(\ref{eq:superpos}) to get the $\lbrace A_i\rbrace^{(k)}$ \label{it:A}
@@ -86,9 +107,12 @@ We propose the following algorithm to determine $\lbrace A_i\rbrace$ and $\lbrac
 \item Iterate through steps \ref{it:A} and \ref{it:R} until convergence
 \end{enumerate}
 
-In principle both Eq.~(\ref{eq:superpos}) and Eq.~(\ref{eq:Newton}) are very large systems of equations ($N\times N$ system, with $N$ the number of particles). However the DoG functions and its derivatives are rapidly decaying functions, thus the matrices are actually very sparse (about as many non-zero coefficients as particles in the first coordination shell), alleviating dramatically the computational burden when using sparse system solvers. Furthermore, the results converge very quickly (about two iterations in our case).
 
-In synthetic images we measured the error in the resulting radii to be around $1\%$. 
+In our tests, we found that this algorithm converges very quickly (one iteration) below $1\%$ of error. In dense systems, further iterations could not recover the $0.3\%$ error of the dilute case.
+
+\section*{Confocal images}
+
+
 
 Figure~\ref{fig:sizing}a shows the size distribution of the suspensions investigated in the main text. Once a solvent swelling of $23\%$ in radius is taken into account, our \emph{in situ} measurements compare very well with the size distribution obtained from scanning electron microscopy (\textsc{sem}) of the same `dry' colloids. The polydispersity measured \emph{in situ} is $6.9\%$, where the polydispersity computed from \textsc{sem} is $6.2\%$.
 
