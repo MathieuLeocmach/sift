@@ -57,7 +57,7 @@ In the following, we will start by explaining our method in the ideal case of an
 In this section, we assume perfect noiseless, distortion-free, images. The objects to localise are thus (pixellised) balls of uniform intensity. Gaussian and DoG responses to a single binary ball are calculated in Appendix~\ref{sec:gaussian_vs_ball}. 
 
 \subsection*{Infinite dilution}
-Combining our definition of $\sigma$ (Eq.~(\ref{eq:sigma_i})) and Eq.~\ref{eq:R_dilute}, we find that at infinite dilution the scale $\sigma$ is simply proportional to the radius $R$ of the particle, with a proportionality constant that depends only on the sampling rate $n$ of the scale space:
+Combining our definition of $\sigma$ (Eq.~(\ref{eq:sigma_i})) and Eq.~\ref{eq:R_dilute}, we find that at infinite dilution the radius $R$ of the particle is simply proportional to the scale $\sigma$ that minimises the DoG response at the center of the particle. The proportionality constant depends only on the sampling rate $n$ of the scale space:
 \begin{equation}
 	R = \sigma \sqrt{\frac{3 \log 2}{n(1-2^{-2/n})}}. 
 	\label{eq:scale_dil}
@@ -164,6 +164,17 @@ DoG(r,R,\sigma,\alpha) &= G(r,R,\alpha\sigma)-G(r,R,\sigma)
 When the difference of Gaussians is minimum at the center of the ball, we combine Eq.~(\ref{eq:Gc_ds}) and Eq.~(\ref{eq:DoG_ds}) to get
 \begin{equation}
 \frac{R}{\sigma} = \sqrt{\frac{3\ln \alpha}{1-\alpha^{-2}}} \label{eq:R_dilute}
+\end{equation}
+
+One can show that the factor $3$ in the radical is the dimensionality of the space, thus Eq.~(\ref{eq:R_dilute}) can be generalised to other dimensions.
+
+We can generalise all the previous equations to the case of anisotropic Gaussian blur by scaling the variables.
+\begin{equation}
+	G(\vec{r}, R, \vec{\sigma}) = G(\frac{r_x}{\sigma_x}+\frac{r_y}{\sigma_y}+\frac{r_z}{\sigma_z}, \frac{R\sqrt{3}}{|\vec{\sigma}|}, 1)
+\end{equation}
+In the case of a preblur of width $\beta$ along $z$, we have $\sigma_z=\beta\sigma_x=\beta\sigma_y$ and the minimization condition becomes
+\begin{equation}
+\frac{R}{\sigma} = \sqrt{\frac{(2+\beta)\ln \alpha}{1-\alpha^{-2}}} \label{eq:R_dilute_aniso}
 \end{equation}
 
 %\bibliographystyle{naturemag3}
