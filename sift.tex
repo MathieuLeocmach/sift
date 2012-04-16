@@ -111,16 +111,15 @@ To sum up, the coefficients $\lbrace A_i\rbrace$ can be computed along with the 
 In our tests, we found that this algorithm converges very quickly (one iteration) below $1\%$ of error. In dense systems, further iterations could not recover the $0.3\%$ error of the dilute case.
 
 \section*{Confocal images}
-\subsection*{Point spread function}
-Real images suffer from optical limitations, \emph{e.g.} the point-spread function of the microscope. In particular, spherical particles observed by confocal microscopy seem elongated along $Z$. Theoretical expressions of point spread functions are rather complicated, but in practice they are often approximated by an anisotropic Gaussian blur~\cite{Zhang2007}. This blur is present in the original image, so that $\sigma_{z,0} = \beta\sigma_{x,0} = \beta\sigma_{y,0}$. Further Gaussian blurring (see Eq.~(\ref{eq:sigma_i})) keeps the ratio $\beta$ constant. We show in Appendix~\ref{sec:gaussian_vs_ball} that the radius of an isolated ball is still proportional to the optimal scale $\sigma$
-\begin{equation}
-	R = \sigma \sqrt{\frac{(2+\beta) \log 2}{n(1-2^{-2/n})}}. 
-	\label{eq:scale_dil_aniso}
-\end{equation}
+\subsection*{Effect fo point spread function}
+Real images suffer from optical limitations, \emph{e.g.} the point-spread function (\textsc{psf}) of the microscope. In particular, spherical particles observed by confocal microscopy seem elongated along $Z$. The influence of such anisotropic distortion on the Gaussian and DoG responses is not trivial and most of the equations given in Appendix~\ref{sec:gaussian_vs_ball} do not have analytical equivalents. In particular, the DoG response is minimal for larger values of $R/\sigma$, thus the naive use of the methods detailed in previous section lead to underestimate particle sizes.
 
-All the equations of the previous section can be adapted according to Eq.~(\ref{eq:aniso}). In particular neighbouring particles are more coupled (effectively closer by a factor $\beta$) if they are aligned along the $Z$ direction.
+In addition, the overlap of neighbouring particle images is no more negligible when the particles are aligned along $Z$. This leads to large imprecision in particle positions, especially in the case of anisotropic environment (\emph{e.g.} isolated pair of particles, interface). Typically particles centres are found closer than $80\%$ of the sum of their hard core radii.
 
-More problematic is the loss of precision in the localisation along $Z$. We found that the distance between two isolated particle in contact along $Z$ is underestimated.
+We found that these issues were better addressed by pre-processing the images (as detailed below) rather than post processing the \textsc{sift} output \emph{via} analytical methods.
+
+
+
 
 \section*{Experimental tests}
 Figure~\ref{fig:sizing}a shows the size distribution of the suspensions investigated in the main text. Once a solvent swelling of $23\%$ in radius is taken into account, our \emph{in situ} measurements compare very well with the size distribution obtained from scanning electron microscopy (\textsc{sem}) of the same `dry' colloids. The polydispersity measured \emph{in situ} is $6.9\%$, where the polydispersity computed from \textsc{sem} is $6.2\%$.
@@ -177,15 +176,6 @@ When the difference of Gaussians is minimum at the center of the ball, we combin
 
 One can show that the factor $3$ in the radical is the dimensionality of the space, thus Eq.~(\ref{eq:R_dilute}) can be generalised to other dimensions.
 
-We can generalise all the previous equations to the case of anisotropic Gaussian blur by scaling the variables.
-\begin{equation}
-	G(\vec{r}, R, \vec{\sigma}) = G(\frac{r_x}{\sigma_x}+\frac{r_y}{\sigma_y}+\frac{r_z}{\sigma_z}, \frac{R\sqrt{3}}{|\vec{\sigma}|}, 1)
-	\label{eq:aniso}
-\end{equation}
-In the case of a preblur of width $\beta$ along $z$, we have $\sigma_z=\beta\sigma_x=\beta\sigma_y$ and the minimization condition becomes
-\begin{equation}
-\frac{R}{\sigma} = \sqrt{\frac{(2+\beta)\ln \alpha}{1-\alpha^{-2}}} \label{eq:R_dilute_aniso}
-\end{equation}
 
 %\bibliographystyle{naturemag3}
 \bibliographystyle{apsrev4-1}
