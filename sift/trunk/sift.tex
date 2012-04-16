@@ -41,16 +41,31 @@ The choice of the width $\sigma$ of the blurring kernel is critical: if it is to
 
 However, we found that no such ``good blur width'' exists in our polydisperse sample (see Fig.~\ref{fig:localise}c-h). The detection of smaller particles with small blurring widths leads to the failure in detecting properly the larger particles. This unacceptable failure of the \citet{Crocker1996} algorithm, as well as the want of the particles' radii data, triggered our design of a novel localisation algorithm that would be robust even for a system of polydispersity, which is unavoidable in real experiments.
 
-The key notion to detect objects of unknown and possibly diverse sizes in an image is the \emph{scale space}~\cite{Lindeberg1993}. A popular implementation for isotropic objects (or ``blobs'') is the Scale Invariant Feature Transform (\textsc{sift}) of \citet{Lowe2004}. It consists  in blurring the image by Gaussian kernels of logarithmically increasing widths
-\begin{equation}
+The key notion to detect objects of unknown and possibly diverse sizes in an image is the \emph{scale space}~\cite{Lindeberg1993}. A popular implementation for isotropic objects (or ``blobs'') is the Scale Invariant Feature Transform (\textsc{sift}) of \citet{Lowe2004}. It is often used to match between different images from complex objects consisting of many rigidly linked blobs and further characterised by local histograms~\citep{Lowe2004}. To our knowledge, this method was never used for the quantitative localisation and sizing of independent single-blob objects like spherical colloids.
+
+In the following, we will start by recalling the principle of \textsc{sift}, then explaining our method in the ideal case of an isolated binary ball and then add successively finite dilution, difference in brightness between the particles and distortion by a point-spread function. Finally, we will present the results of our method from real experimental data.
+
+\section*{Principle}
+
+The \textsc{sift} consists in convolving the original image $I$ by Gaussian kernels $g_{\sigma_i}$ of logarithmically increasing widths $\sigma_i$ to obtain a series of blurred images $G_i$
+\begin{align}
+G_i = I \star g_{\sigma_i}, \label{eq:gaussian_blur}\\
+\intertext{where $\star$ is the convolution operator and}
 \sigma_{i+1} = 2^{1/n} \sigma_i ,
 \label{eq:sigma_i}
+\end{align}
+with $n$ a fixed integer, ($n=3$ being a good choice). Bright objects in the original image appear as bright blobs in the blurred images, and the blobs fuse together as the kernel width increases. This can be seen as a lower and lower-pass filter in the frequency domain. If we take the difference between consecutive blurred images we obtain a comb of band pass filtered versions of $I$: 
+\begin{equation}
+DoG_i = G_{i+1} - G_{i} \label{eq:DoG_i}
 \end{equation}
-with $n$ a fixed integer, $n=3$ being a good choice) and taking the difference between consecutive blurred images. The difference of Gaussians (DoG) response function defined in this way depends on the position in space and on the scale. Bright objects in the original image are detected as local minima of the DoG in both space and scale, thus localisation and \emph{size} are determined simultaneously, without any assumption on the target size (see Fig.~\ref{fig:localise}a).
+The difference of Gaussians (DoG) response function defined in this way depends on the position in space and on the scale. Bright objects in the original image are detected as local minima in $DoG_i$. Furthermore, the intensity of the response is optimal at a $\sigma$ that can be related to the size of the object (see below). Thus a local minima in both space and scale in the response function DoG indicates both localisation and \emph{size} of an object, without any assumption on the target size (see Fig.~\ref{fig:localise}a).
 
-The \textsc{sift} is often used to match between different images from complex objects consisting of many rigidly linked blobs and further characterised by local histograms~\citep{Lowe2004}. To our knowledge, this method was never used for the quantitative localisation and sizing of independent single-blob objects like spherical colloids. The object-by-object optimal scale determination allows us to perform the spatial sub-pixel resolution step for each object on an image that is blurred just enough to have neither a flat intensity profile nor a nearby peak overlap. This leads to a spatial resolution below $0.3$~pixels when two $10$-pixels wide particles are at hard-core contact, and less than $0.03$~pixels error ($0.3\%$ of the diameter) when any other particle's surface is further than $1$~pixel from the surface of the particle of interest.
+\subsection*{Sub-pixel resolution and sub-scale sizing}
+The DoG constructed above is defined on a $d+1$ dimensional grid, with $d$ the spatial dimensionality. One can interpolate it as a continuous function and thus localise the minima with a precision below the grid size, which corresponds to sub-pixel resolution on the position and sub-scale sizing~\citep{Lowe2004}. We found that second order estimate of the spatial derivatives and first order estimates of the scale derivatives gave the best precision.
 
-In the following, we will start by explaining our method in the ideal case of an isolated binary ball and then add successively finite dilution, difference in brightness between the particles and distortion by a point-spread function. Finally, we will present the results of our method from real experimental data.
+The object-by-object optimal scale determination allows us to perform the spatial sub-pixel resolution step for each object on an image that is blurred just enough to have neither a flat intensity profile nor affected by the overlap with a nearby object's blob. This leads to a spatial resolution below $0.3$~pixels when two $10$-pixels wide particles are at hard-core contact, and less than $0.03$~pixels error ($0.3\%$ of the diameter) when any other particle's surface is further than $1$~pixel from the surface of the particle of interest.
+
+
 
 \section*{Perfect images}
 
@@ -63,7 +78,7 @@ Combining our definition of $\sigma$ (Eq.~(\ref{eq:sigma_i})) and Eq.~\ref{eq:R_
 	\label{eq:scale_dil}
 \end{equation}
 
-Note that $\sigma$ depends on $n$, however this dependence cancels out within the right-hand-side of Eq.~(\ref{eq:scale_dil}) so that we recover a method-independent radius. Nevertheless, the error on $R$ does depend on $n$. We found that with $n=3$ the radius of an isolated pixelated ball can be indeed measured within $0.3\%$ relative error with this method, provided a sub-scale resolution step similar to the spatial sub-pixel resolution step.
+Note that $\sigma$ depends on $n$, however this dependence cancels out within the right-hand-side of Eq.~(\ref{eq:scale_dil}) so that we recover a method-independent radius. Nevertheless, the error on $R$ does depend on $n$. We found that with $n=3$ the radius of an isolated pixelated ball can be indeed measured within $0.3\%$ relative error with this method, provided a sub-scale resolution.
 
 \subsection*{Finite dilution}
 The Gaussian (and DoG) response of a particle decays rapidly away from its surface (see Eq.~(\ref{eq:split_G}). However when two particles are closer than a few times the blurring width, their influence on each other cannot be neglected: the minima of the DoG is effectively shifted toward smaller scales, leading to smaller radii if one uses Eq.~(\ref{eq:scale_dil}) out of the dilute context.
@@ -111,12 +126,39 @@ To sum up, the coefficients $\lbrace A_i\rbrace$ can be computed along with the 
 In our tests, we found that this algorithm converges very quickly (one iteration) below $1\%$ of error. In dense systems, further iterations could not recover the $0.3\%$ error of the dilute case.
 
 \section*{Confocal images}
-\subsection*{Effect fo point spread function}
+\subsection*{Effect of a point spread function}
 Real images suffer from optical limitations, \emph{e.g.} the point-spread function (\textsc{psf}) of the microscope. In particular, spherical particles observed by confocal microscopy seem elongated along $Z$. The influence of such anisotropic distortion on the Gaussian and DoG responses is not trivial and most of the equations given in Appendix~\ref{sec:gaussian_vs_ball} do not have analytical equivalents. In particular, the DoG response is minimal for larger values of $R/\sigma$, thus the naive use of the methods detailed in previous section lead to underestimate particle sizes.
 
 In addition, the overlap of neighbouring particle images is no more negligible when the particles are aligned along $Z$. This leads to large imprecision in particle positions, especially in the case of anisotropic environment (\emph{e.g.} isolated pair of particles, interface). Typically particles centres are found closer than $80\%$ of the sum of their hard core radii.
 
 We found that these issues were better addressed by pre-processing the images (as detailed below) rather than post processing the \textsc{sift} output \emph{via} analytical methods.
+
+\subsection*{Deconvolution}
+The image $y$ acquired by a microscope can be expressed as 
+\begin{equation}
+y = x \star h + \epsilon
+\end{equation}
+where $x$ is the perfect image, $h$ is the \textsc{psf} of the microscope and $\epsilon$ is the noise independent of both $x$ and $h$. The process of estimating $x$ from $y$ and some theoretical or measured expression of $h$ is called deconvolution. Deconvolution in presence of noise is a difficult problem. Hopefully here we don't need to reconstruct the original image, but only our first Gaussian blurred version of it, \emph{i.e.} $G_0$. Indeed, after a reasonable amount of blur in three dimensions, the noise can be neglected and we obtain:
+\begin{equation}
+y_0 = (x \star h + \epsilon) \star g_{\sigma_0} \approx G_0 \star (h \star g_{\sigma_0})
+\end{equation}
+or in Fourier space
+\begin{equation}
+\mathcal{F}[y_0] = \mathcal{F}[G_0] \times \mathcal{F}[H]
+\label{eq:Fourier_conv}
+\end{equation}
+
+Once $\mathcal{F}[H]$ is known the deconvolution reduces to a simple division in Fourier space. Let us measure $H$ in an isotropic system where we can write
+\begin{align}
+\left\langle \left|\mathcal{F}_X[G_0]\right|^2 \right\rangle  &= \left\langle \left|\mathcal{F}_Z[G_0]\right|^2 \right\rangle \\
+\text{using Eq.~(\ref{eq:Fourier_conv})}\qquad 
+\frac{\left\langle\left|\mathcal{F}_X[y_0]\right|^2 \right\rangle}{\left|\mathcal{F}_X[H]\right|^2}  &= \frac{\left\langle \left|\mathcal{F}_Z[y_0]\right|^2\right\rangle}{\left|\mathcal{F}_Z[H]\right|^2} \\
+\intertext{In point scanning confocal imaging, the \textsc{psf} has negligible lobes along $X$ and $Y$ ($X$ only for line scanning), thus}
+\left|\mathcal{F}_Z[H]\right|^2 &= \frac{\left\langle \left|\mathcal{F}_Z[y_0]\right|^2\right\rangle}{\left\langle\left|\mathcal{F}_X[y_0]\right|^2 \right\rangle}\\
+\intertext{For example an Hermitian kernel (real valued spectrum)}
+\mathcal{F}_Z[H] &= \sqrt{\frac{\left\langle \left|\mathcal{F}_Z[y_0]\right|^2\right\rangle}{\left\langle\left|\mathcal{F}_X[y_0]\right|^2 \right\rangle}}
+\end{align}
+
 
 
 
