@@ -101,15 +101,15 @@
 		\node[lab] at (original.south west) {a};
 		\node[pic3d, right=of original] (blurred) {\includegraphics[width=0.28\textwidth]{Zelong_blurred}};
 		\draw (blurred.north west) ++(0.0028\textwidth, -0.0028\textwidth)%
-			+(0.12481989\textwidth,  -0.12945125\textwidth) circle[radius=0.02522215\textwidth]
-			+(0.1244735\textwidth,  -0.17347244\textwidth) circle[radius=0.02467765\textwidth]
-			+(0.17678062\textwidth,  -0.20280568\textwidth) circle[radius=0.03087897\textwidth];
+			+(0.12481989\textwidth,  -0.12945125\textwidth) circle[radius=0.02524086\textwidth]
+			+(0.1244735\textwidth,  -0.17347244\textwidth) circle[radius=0.02491653\textwidth]
+			+(0.17678062\textwidth,  -0.20280568\textwidth) circle[radius=0.03129688\textwidth];
 		\node[lab] at (blurred.south west) {b};
 		\node[pic3d, right=of blurred] (deconvolved) {\includegraphics[width=0.28\textwidth]{Zelong_deconvolved}};
 		\draw (deconvolved.north west) ++(0.0028\textwidth, -0.0028\textwidth) %
-			+(0.12353147\textwidth,  -0.12286225\textwidth) circle[radius=0.02408037\textwidth]
-			+(0.12275197\textwidth,  -0.1833389\textwidth) circle[radius=0.02304905\textwidth]
-			+(0.17789003\textwidth,  -0.20213276\textwidth) circle[radius=0.02588051\textwidth];
+			+(0.12353147\textwidth,  -0.12286225\textwidth) circle[radius=0.02143669\textwidth]
+			+(0.12275197\textwidth,  -0.1833389\textwidth) circle[radius=0.02124992\textwidth]
+			+(0.17789003\textwidth,  -0.20213276\textwidth) circle[radius=0.02612742\textwidth];
 		\node[lab] at (deconvolved.south west) {c};
 	\end{tikzpicture}
 	\caption{\textbf{Deconvolution.} Detail of the same $YZ$ slice of \textbf{a} original confocal image ($y$), \textbf{b} previous blurred by $\sigma_0=1.6$ ($y_0$) \textbf{c} previous deconvolved by measured kernel (see text). Circles indicate the tracked particles position and size when using whether \textbf{b} or \textbf{c} as first Gaussian layer $G_0$.}
