@@ -59,7 +59,7 @@ In this section, we assume perfect noiseless, distortion-free, images. The objec
 \subsection*{Infinite dilution}
 Combining our definition of $\sigma$ (Eq.~(\ref{eq:sigma_s})) and Eq.~\ref{eq:R_dilute}, we find that at infinite dilution the radius $R$ of the particle is simply proportional to the scale $\sigma$ that minimises the DoG response at the center of the particle. The proportionality constant depends only on the sampling rate $n$ of the scale space:
 \begin{equation}
-	R = \sigma \sqrt{\frac{3 \log 2}{n(1-2^{-2/n})}}. 
+	R = \sigma \sqrt{\frac{6 \log 2}{n(1-2^{-2/n})}}. 
 	\label{eq:scale_dil}
 \end{equation}
 
@@ -114,7 +114,7 @@ In our tests, we found that this algorithm converges very quickly (one iteration
 \subsection*{Effect of a point spread function}
 Real images suffer from optical limitations, \emph{e.g.} the point-spread function (\textsc{psf}) of the microscope. In particular, spherical particles observed by confocal microscopy seem elongated along $Z$. The influence of such anisotropic distortion on the Gaussian and DoG responses is not trivial and most of the equations given in Appendix~\ref{sec:gaussian_vs_ball} do not have analytical equivalents. In particular, the DoG response is minimal for larger values of $R/\sigma$, thus the naive use of the methods detailed in previous section lead to overestimate particle sizes.
 
-In addition, the overlap of neighbouring particle images is no more negligible when the particles are aligned along $Z$. This leads to large imprecision in particle positions, especially in the case of anisotropic environment (\emph{e.g.} isolated pair of particles, interface). Typically particles centres are often found closer than the sum of their hard core radii.
+In addition, the overlap of neighbouring particle images is no more negligible when the particles are aligned along $Z$. This leads to large imprecision in particle positions, especially in the case of anisotropic environment (\emph{e.g.} isolated pair of particles, interface). Typically particles centres are often found closer than the sum of their hard core radii, as shown in Fig.~\ref{fig:deconv}b.
 
 We found that these issues were better addressed by pre-processing the images (as detailed below) rather than post processing the \textsc{sift} output \emph{via} analytical methods.
 
@@ -144,7 +144,7 @@ Once $\mathcal{F}[H]$ is known the deconvolution reduces to a simple division in
 \mathcal{F}_Z[H] &= \sqrt{\frac{\left\langle \left|\mathcal{F}_Z[y_0]\right|^2\right\rangle}{\left\langle\left|\mathcal{F}_X[y_0]\right|^2 \right\rangle}}
 \end{align}
 
-
+Figure~\ref{fig:deconv} shows the particles localized from the original image and from the deconvolved image. Deconvolution mends both size overestimation and imprecision in $z$ coordinate.
 
 
 
@@ -187,7 +187,7 @@ In addition, we compute the following useful partial derivatives
 \frac{\partial g}{\partial \sigma}(r,R,\sigma) &= \frac{\left( R^2+r R+\sigma^2\right)}{r\sigma^2\sqrt{2\pi}} e^{-\frac{(R+r)^2}{2\sigma^2}} \\
 \frac{\partial^2 g}{\partial \sigma \partial R}(r,R,\sigma) &= -R \frac{(R+r)^2-\sigma^2}{r\sigma^4\sqrt{2\pi}} e^{-\frac{(R+r)^2}{2\sigma^2}}\\
 \frac{\partial G}{\partial \sigma}(r=0,R,\sigma) &= -\sqrt{\frac{2}{\pi}} \frac{R^3}{\sigma^4} e^{-\frac{R^2}{2\sigma^2}} \label{eq:Gc_ds}\\
-\frac{\partial^2 G}{\partial \sigma \partial R}(r=0,R,\sigma) &= \sqrt{\frac{2}{\pi}} R^2 \frac{R^2-\sigma^2}{\sigma^6} e^{-\frac{R^2}{2\sigma^2}}
+\frac{\partial^2 G}{\partial \sigma \partial R}(r=0,R,\sigma) &= \sqrt{\frac{2}{\pi}} R^2 \frac{R^2-3\sigma^2}{\sigma^6} e^{-\frac{R^2}{2\sigma^2}}
 \end{align}
 
 The difference of Gaussians response is 
@@ -198,7 +198,7 @@ DoG(r,R,\sigma,\alpha) &= G(r,R,\alpha\sigma)-G(r,R,\sigma)
 \end{align}
 When the difference of Gaussians is minimum at the center of the ball, we combine Eq.~(\ref{eq:Gc_ds}) and Eq.~(\ref{eq:DoG_ds}) to get
 \begin{equation}
-\frac{R}{\sigma} = \sqrt{\frac{3\ln \alpha}{1-\alpha^{-2}}} \label{eq:R_dilute}
+\frac{R}{\sigma\sqrt{2}} = \sqrt{\frac{3\ln \alpha}{1-\alpha^{-2}}} \label{eq:R_dilute}
 \end{equation}
 
 One can show that the factor $3$ in the radical is the dimensionality of the space, thus Eq.~(\ref{eq:R_dilute}) can be generalised to other dimensions.
