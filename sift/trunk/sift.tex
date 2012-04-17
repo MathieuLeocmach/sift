@@ -47,23 +47,23 @@ In the following, we will start by recalling the principle of \textsc{sift}, the
 
 \section*{Principle}
 
-The \textsc{sift} consists in convolving the original image $I$ by Gaussian kernels $g_{\sigma_i}$ of logarithmically increasing widths $\sigma_i$ to obtain a series of blurred images $G_i$
+The \textsc{sift} consists in convolving the original image $I$ by Gaussian kernels $g_{\sigma_s}$ of logarithmically increasing widths $\sigma_s$ to obtain a series of blurred images $G_s$
 \begin{align}
-G_i = I \star g_{\sigma_i}, \label{eq:gaussian_blur}\\
+\forall s>0,\quad G_s = I \star g_{\sigma_s}, \label{eq:gaussian_blur}\\
 \intertext{where $\star$ is the convolution operator and}
-\sigma_{i+1} = 2^{1/n} \sigma_i ,
-\label{eq:sigma_i}
+\forall s>0,\quad \sigma_{s} = 2^{s/n} \sigma_0 ,
+\label{eq:sigma_s}
 \end{align}
-with $n$ a fixed integer, ($n=3$ being a good choice). Bright objects in the original image appear as bright blobs in the blurred images, and the blobs fuse together as the kernel width increases. This can be seen as a lower and lower-pass filter in the frequency domain. If we take the difference between consecutive blurred images we obtain a comb of band pass filtered versions of $I$: 
+with $n$ a fixed integer. Following \cite{Lowe2004} we use $\sigma_0=1.6$ and $n=3$. Bright objects in the original image appear as bright blobs in the blurred images, and the blobs fuse together as the kernel width increases. This can be seen as a lower and lower-pass filter in the frequency domain. If we take the difference between consecutive blurred images we obtain a comb of band pass filtered versions of $I$: 
 \begin{equation}
-DoG_i = G_{i+1} - G_{i} \label{eq:DoG_i}
+\forall s>1,\quad DoG_s = G_s - G_{s-1} \label{eq:DoG_s}
 \end{equation}
-The difference of Gaussians (DoG) response function defined in this way depends on the position in space and on the scale. Bright objects in the original image are detected as local minima in $DoG_i$. Furthermore, the intensity of the response is optimal at a $\sigma$ that can be related to the size of the object (see below). Thus a local minima in both space and scale in the response function DoG indicates both localisation and \emph{size} of an object, without any assumption on the target size (see Fig.~\ref{fig:localise}a).
+The difference of Gaussians (DoG) response function defined in this way depends on the position in space and on the scale. Bright objects in the original image are detected as local minima in $DoG_s$. Furthermore, the intensity of the response is optimal at a $\sigma$ that can be related to the size of the object (see below). Thus a local minima in both space and scale in the response function DoG indicates both localisation and \emph{size} of an object, without any assumption on the target size (see Fig.~\ref{fig:localise}a).
 
 \subsection*{Sub-pixel resolution and sub-scale sizing}
 The DoG constructed above is defined on a $d+1$ dimensional grid, with $d$ the spatial dimensionality. One can interpolate it as a continuous function and thus localise the minima with a precision below the grid size, which corresponds to sub-pixel resolution on the position and sub-scale sizing~\citep{Lowe2004}. We found that second order estimate of the spatial derivatives and first order estimates of the scale derivatives gave the best precision.
 
-The object-by-object optimal scale determination allows us to perform the spatial sub-pixel resolution step for each object on an image that is blurred just enough to have neither a flat intensity profile nor affected by the overlap with a nearby object's blob. This leads to a spatial resolution below $0.3$~pixels when two $10$-pixels wide particles are at hard-core contact, and less than $0.03$~pixels error ($0.3\%$ of the diameter) when any other particle's surface is further than $1$~pixel from the surface of the particle of interest.
+The object-by-object optimal scale determination allows us to perform the spatial sub-pixel resolution step for each object on an image that is blurred just enough to have neither a flat intensity profile nor affected by the overlap with a nearby object's blob. We found that if for a given object the DoG is minimum at $\sigma_s$, the best image to use is $G_{s-1}$. This leads to a spatial resolution below $0.3$~pixels when two $10$-pixels wide particles are at hard-core contact, and less than $0.03$~pixels error ($0.3\%$ of the diameter) when any other particle's surface is further than $1$~pixel from the surface of the particle of interest.
 
 
 
@@ -72,13 +72,13 @@ The object-by-object optimal scale determination allows us to perform the spatia
 In this section, we assume perfect noiseless, distortion-free, images. The objects to localise are thus (pixellised) balls of uniform intensity. Gaussian and DoG responses to a single binary ball are calculated in Appendix~\ref{sec:gaussian_vs_ball}. 
 
 \subsection*{Infinite dilution}
-Combining our definition of $\sigma$ (Eq.~(\ref{eq:sigma_i})) and Eq.~\ref{eq:R_dilute}, we find that at infinite dilution the radius $R$ of the particle is simply proportional to the scale $\sigma$ that minimises the DoG response at the center of the particle. The proportionality constant depends only on the sampling rate $n$ of the scale space:
+Combining our definition of $\sigma$ (Eq.~(\ref{eq:sigma_s})) and Eq.~\ref{eq:R_dilute}, we find that at infinite dilution the radius $R$ of the particle is simply proportional to the scale $\sigma$ that minimises the DoG response at the center of the particle. The proportionality constant depends only on the sampling rate $n$ of the scale space:
 \begin{equation}
 	R = \sigma \sqrt{\frac{3 \log 2}{n(1-2^{-2/n})}}. 
 	\label{eq:scale_dil}
 \end{equation}
 
-Note that $\sigma$ depends on $n$, however this dependence cancels out within the right-hand-side of Eq.~(\ref{eq:scale_dil}) so that we recover a method-independent radius. Nevertheless, the error on $R$ does depend on $n$. We found that with $n=3$ the radius of an isolated pixelated ball can be indeed measured within $0.3\%$ relative error with this method, provided a sub-scale resolution.
+Note that $\sigma$ depends on $n$, however this dependence cancels out within the right-hand-side of Eq.~(\ref{eq:scale_dil}) so that we recover a method-independent radius. Nevertheless, the error on $R$ does depend on $n$. We found that with $n=3$ the radius of an isolated pixelated ball can be indeed measured within $0.3\%$ relative error with this method.
 
 \subsection*{Finite dilution}
 The Gaussian (and DoG) response of a particle decays rapidly away from its surface (see Eq.~(\ref{eq:split_G}). However when two particles are closer than a few times the blurring width, their influence on each other cannot be neglected: the minima of the DoG is effectively shifted toward smaller scales, leading to smaller radii if one uses Eq.~(\ref{eq:scale_dil}) out of the dilute context.
@@ -138,7 +138,7 @@ The image $y$ acquired by a microscope can be expressed as
 \begin{equation}
 y = x \star h + \epsilon
 \end{equation}
-where $x$ is the perfect image, $h$ is the \textsc{psf} of the microscope and $\epsilon$ is the noise independent of both $x$ and $h$. The process of estimating $x$ from $y$ and some theoretical or measured expression of $h$ is called deconvolution. Deconvolution in presence of noise is a difficult problem. Hopefully here we don't need to reconstruct the original image, but only our first Gaussian blurred version of it, \emph{i.e.} $G_0$. Indeed, after a reasonable amount of blur in three dimensions, the noise can be neglected and we obtain:
+where $x$ is the perfect image, $h$ is the \textsc{psf} of the microscope and $\epsilon$ is the noise independent of both $x$ and $h$. The process of estimating $x$ from $y$ and some theoretical or measured expression of $h$ is called deconvolution. Deconvolution in presence of noise is a difficult problem~\cite{Riad1986}. Hopefully here we don't need to reconstruct the original image, but only our first Gaussian blurred version of it, \emph{i.e.} $G_0$. Indeed, after a reasonable amount of blur in three dimensions, the noise can be neglected and we obtain:
 \begin{equation}
 y_0 = (x \star h + \epsilon) \star g_{\sigma_0} \approx G_0 \star (h \star g_{\sigma_0})
 \end{equation}
