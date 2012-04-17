@@ -11,7 +11,7 @@
 \pgfplotsset{every axis/.append style={small}}
 
 \begin{document}
-
+\tikzset{external/force remake=false}
 \begin{figure}
 	\centering
 	\begin{tikzpicture}[
@@ -38,7 +38,7 @@
 	\caption{\textbf{Visualisation of the results of various tracking methods for the same portion of image.} \textbf{a} Multiscale 3D tracking. \textbf{b} Reconstruction from 2D tracking. \textbf{c-h} Crocker and Grier in 3D with blurring radius increasing from \unit{2}{px} to \unit{4.5}{px} by steps of \unit{0.5}{px}. The circles on each picture are the result of 2D multiscale tracking of each XY slice of the 3D pictures. Sphere are displayed with radii determined by the tracking methods in \textbf{a-b}, and equal to the blurring radius for \textbf{c-h}.}
 	\label{fig:result3d}
 \end{figure}
-%\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \begin{figure}
 	\centering
 	\begin{tikzpicture}[lab/.style={below left, text height=0.8em, text depth=0.2em, font=\Large\bfseries}]
@@ -88,6 +88,32 @@
 	\end{tikzpicture}
 	\caption{\textbf{Sizing} of our colloids. \textbf{a} Size distribution estimated \emph{in situ} (dashed line) by our multiscale algorithm ($\sim 1.8\times 10^6$ instantaneous sizing). Comparison with the size distribution estimated from scanning electron microscopy of only $140$ dry particles (steps) is possible once controlled for $23\%$ of swelling (full line). A careful comparison between confocal images and algorithm output suggest that the thick tail of small particles is not an artefact, thus the relative lack of small particles in the SEM measurement is probably due to bad sampling. \textbf{b} First peak of the radial distribution function with (full line) and without (dashed) the size data. Taking into account the measured sizes rectifies the effect of the polydispersity: the peak is thinner and higher.}
 	\label{fig:sizing}
+\end{figure}
+\clearpage
+\tikzset{external/force remake}
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[
+		pic3d/.style={inner sep=0}, %
+		lab/.style={above right, text height=0.8em, text depth=0.2em, font=\Large\bfseries}%
+		]%
+		\node[pic3d] (original) {\includegraphics[width=0.28\textwidth]{Zelong_original}};
+		\node[lab] at (original.south west) {a};
+		\node[pic3d, right=of original] (blurred) {\includegraphics[width=0.28\textwidth]{Zelong_blurred}};
+		\draw (blurred.north west) ++(0.0028\textwidth, -0.0028\textwidth)%
+			+(0.12481989\textwidth,  -0.12945125\textwidth) circle[radius=0.02522215\textwidth]
+			+(0.1244735\textwidth,  -0.17347244\textwidth) circle[radius=0.02467765\textwidth]
+			+(0.17678062\textwidth,  -0.20280568\textwidth) circle[radius=0.03087897\textwidth];
+		\node[lab] at (blurred.south west) {b};
+		\node[pic3d, right=of blurred] (deconvolved) {\includegraphics[width=0.28\textwidth]{Zelong_deconvolved}};
+		\draw (deconvolved.north west) ++(0.0028\textwidth, -0.0028\textwidth) %
+			+(0.12353147\textwidth,  -0.12286225\textwidth) circle[radius=0.02408037\textwidth]
+			+(0.12275197\textwidth,  -0.1833389\textwidth) circle[radius=0.02304905\textwidth]
+			+(0.17789003\textwidth,  -0.20213276\textwidth) circle[radius=0.02588051\textwidth];
+		\node[lab] at (deconvolved.south west) {c};
+	\end{tikzpicture}
+	\caption{\textbf{Deconvolution.} Detail of the same $YZ$ slice of \textbf{a} original confocal image ($y$), \textbf{b} previous blurred by $\sigma_0=1.6$ ($y_0$) \textbf{c} previous deconvolved by measured kernel (see text). Circles indicate the tracked particles position and size when using whether \textbf{b} or \textbf{c} as first Gaussian layer $G_0$.}
+	\label{fig:deconv}
 \end{figure}
 
 \end{document}
