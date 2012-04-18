@@ -188,7 +188,7 @@
 		width=0.45\textwidth,%
 		area legend,
 		const plot, no marks,%
-		xlabel={$R$ (px)}, ylabel={size distribution},%
+		xlabel={$R$ (px)}, ylabel={Size distribution},%
 		%xmin=8, xmax=18,%
 		extra tick style={grid=major},%
 		extra x ticks={5.298}, extra x tick labels={},%
@@ -199,10 +199,11 @@
 		\addplot+[gray, fill=gray, semitransparent] file {john_exact_mono_large_cor1.hist} \closedcycle;
 		\addplot+[pattern=dots] file {john_exact_mono_large_cor2.hist};
 		\legend{No correction, One iteration, Two iterations};
+		\draw[decorate,decoration=brace] (axis cs:4.75, 200) -- (axis cs:5.05, 200) node[midway, above] {edges};
 		\node[lab] at (rel axis cs:0,0) {d};
 	\end{axis}
 	\end{tikzpicture}
-	\caption{\textbf{Results from perfect images.} \textbf{a} Sizing of an isolated sphere. Left of the vertical line, the image was doubled. \textbf{b} Localisation error and \textbf{c} sizing error function of the distance between two particles. Oscillations are due to off-lattice centre position. \textbf{d} Size distribution extracted from digitized hard sphere configuration (vertical line indicates the input radius). The tail to the right is due to particles on the edge of the image who have fewer neighbours and thus are more `dilute'. \textbf{c} and \textbf{d} also show the effect of finite dilution correction up to convergence.}
+	\caption{\textbf{Results from perfect images.} \textbf{a} Sizing of an isolated sphere. Left of the vertical line our algorithm uses a doubled image. \textbf{b} Localisation error and \textbf{c} sizing error function of the distance between two particles. Oscillations are due to off-lattice centre position. \textbf{d} Size distribution extracted from digitized configuration of 4000 monodisperse hard spheres at $0.50$ volume fraction (vertical line indicates the input radius). The tail to the right is due to particles on the edges of the image who have fewer neighbours and thus are more `dilute'. \textbf{c} and \textbf{d} also show the effect of finite dilution correction up to convergence.}
 	\label{fig:perfect}
 \end{figure}
 
