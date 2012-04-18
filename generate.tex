@@ -5,6 +5,7 @@
 \usepgfplotslibrary{groupplots}
 \usetikzlibrary{positioning}
 \usetikzlibrary{plotmarks}
+\usetikzlibrary{patterns}
 \tikzexternalize
 \tikzset{external/force remake}
 \tikzset{every mark/.append style={scale=0.8}}
@@ -90,7 +91,7 @@
 	\label{fig:sizing}
 \end{figure}
 \clearpage
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \begin{figure}
 	\centering
 	\begin{tikzpicture}[
@@ -114,6 +115,95 @@
 	\end{tikzpicture}
 	\caption{\textbf{Deconvolution.} Detail of the same $YZ$ slice of \textbf{a} original confocal image ($y$), \textbf{b} previous blurred by $\sigma_0=1.6$ ($y_0$) \textbf{c} previous deconvolved by measured kernel (see text). Circles indicate the tracked particles position and size when using whether \textbf{b} or \textbf{c} as first Gaussian layer $G_0$.}
 	\label{fig:deconv}
+\end{figure}
+
+\clearpage
+\tikzset{external/force remake}
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[
+		lab/.style={above right, text height=0.8em, text depth=0.2em, font=\Large\bfseries}%
+		]%
+	\pgfplotsset{cycle list name=black white}
+	\begin{axis}[%
+		name=errorsize,
+		width=0.45\textwidth,%
+		xlabel={Input radius (px)}, ylabel={Radius relative error (\%)},%
+		extra x ticks={3.47}, extra x tick labels={}, extra tick style={grid=major},%
+		extra y ticks={0}, extra y tick labels={}
+		]
+		\addplot table [x index=0, y expr ={100*(\thisrowno{1}/\thisrowno{0}-1)}] {multiscale_relative_sizes.out};
+		\node[lab] at (rel axis cs:0,0) {a};
+	\end{axis}
+		
+	\begin{axis}[%
+		xlabel near ticks,ylabel near ticks,
+		tiny,
+		width=0.25\textwidth,%
+		at=(errorsize.north east),	anchor=north east,%
+		xlabel={Input radius}, ylabel={Output radius},%
+		extra x ticks={3.47}, extra x tick labels={}, extra tick style={grid=major},%
+		ytick={2,4,...,14},
+		axis background/.style={fill=white},%
+		]
+		\addplot+[only marks, mark size=0.5, mark=o] table [x index=0, y expr ={\thisrowno{1}}] {multiscale_relative_sizes.out};
+		\addplot+[no marks, domain=1.5:14] {x};
+	\end{axis}
+	
+	\begin{axis}[%
+		at={(0.5\textwidth,0)},%
+		width=0.45\textwidth,%
+		xlabel={$r_{ij}$ (px)}, ylabel={$r_{ij}$ error (\unit{0.01}{px})},%
+		xmin=8, xmax=18,%
+		extra tick style={grid=major},%
+		extra y ticks={0}, extra y tick labels={}
+		]
+		\addplot table [x index=0, y expr ={(\thisrowno{2}-\thisrowno{1}-\thisrowno{0})*100}] {close_neighbours3D.out};
+		\draw (axis cs:12,-6) circle[radius=0.03\textwidth] (axis cs:16,-6) circle[radius=0.03\textwidth];
+		\draw[dashed] (axis cs:12,-6) -- (axis cs:12,-8) (axis cs:16,-8) -- (axis cs:16,-6);
+		\draw[<->] (axis cs:12,-8) -- (axis cs:16,-8) node[midway, below] {$r_{ij}$};
+		\draw[->] (axis cs:12,-4) -- +(0.03\textwidth,0) node[midway, above] {\unit{4}{px}};
+		\draw[->] (axis cs:16,-4) -- +(-0.03\textwidth,0) node[midway, above] {\unit{4}{px}};
+		\draw[->, very thick] (axis cs:16,-6) -- (axis cs:14,-6);
+		\node[lab] at (rel axis cs:0,0) {b};
+	\end{axis}
+	
+	\begin{axis}[%
+		at={(0.5\textwidth,-0.4\textwidth)},%
+		width=0.45\textwidth,%
+		xlabel={$r_{ij}$ (px)}, ylabel={$R$ (px)},%
+		xmin=8, xmax=18,%
+		extra tick style={grid=major},%
+		extra y ticks={4}, extra y tick labels={},%
+		legend style={legend pos=south east}
+		]
+		\addplot table [x index=0, y index=4] {close_neighbours3D.out};
+		\addplot+[mark=square] table [x index=0,y index=6] {close_neighbours3D.out};
+		\legend{No correction, One iteration};
+		\node[lab] at (rel axis cs:0,0) {c};
+	\end{axis}
+	
+	\begin{axis}[%
+		at={(0,-0.4\textwidth)},%
+		width=0.45\textwidth,%
+		area legend,
+		const plot, no marks,%
+		xlabel={$R$ (px)}, ylabel={size distribution},%
+		%xmin=8, xmax=18,%
+		extra tick style={grid=major},%
+		extra x ticks={5.298}, extra x tick labels={},%
+		ymin=0,%		
+		legend style={legend pos=north west, cells={anchor=west}}
+		]
+		\addplot+[pattern=north west lines] file {john_exact_mono_large_init.hist} \closedcycle;
+		\addplot+[gray, fill=gray, semitransparent] file {john_exact_mono_large_cor1.hist} \closedcycle;
+		\addplot+[pattern=dots] file {john_exact_mono_large_cor2.hist};
+		\legend{No correction, One iteration, Two iterations};
+		\node[lab] at (rel axis cs:0,0) {d};
+	\end{axis}
+	\end{tikzpicture}
+	\caption{\textbf{Results from perfect images.} \textbf{a} Sizing of an isolated sphere. Left of the vertical line, the image was doubled. \textbf{b} Localisation error and \textbf{c} sizing error function of the distance between two particles. Oscillations are due to off-lattice centre position. \textbf{d} Size distribution extracted from digitized hard sphere configuration (vertical line indicates the input radius). The tail to the right is due to particles on the edge of the image who have fewer neighbours and thus are more `dilute'. \textbf{c} and \textbf{d} also show the effect of finite dilution correction up to convergence.}
+	\label{fig:perfect}
 \end{figure}
 
 \end{document}
