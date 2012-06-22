@@ -24,14 +24,17 @@ Particle-level confocal microscopy experiments usually access the coordinates of
 
 The choice of the width $\sigma$ of the blurring kernel is critical: if it is too small, then the intensity profile is flat near the centre  of a particle, leading to multiple and ill-localized maxima per particle; if it is too large, then the peaks of nearby particles overlap, leading to shifts in the detected positions, or even fusion of the particles (only one particle detected instead of two). If the colloids are fairly monodisperse one can argue (at least in the 3D-flavour) that there exists a range of possible width where the choice of $\sigma$ has almost no effect on the number of particles detected. Choosing $\sigma$ within this range gives confidence in the localisation results.
 
-However, we found that no such ``good blur width'' exists in our polydisperse sample (see Fig.~\ref{fig:localise}c-h). The detection of smaller particles with small blurring widths leads to the failure in detecting properly the larger particles. This unacceptable failure of the \citet{Crocker1996} algorithm, as well as the want of the particles' radii data, triggered our design of a novel localisation algorithm that would be robust even for a system of finite (arbitrary) polydispersity, which is unavoidable and sometime desired in real experiments.
+However, we found that no such ``good blur width'' exists in a sample of moderate ($6-7\%$) polydispersity (see Fig.~\ref{fig:localise}c-h). The detection of smaller particles with small blurring is incompatible with the detection of the larger particles, and conversely. This unacceptable failure of the \citet{Crocker1996} algorithm, as well as the want of the particles' radii data, triggered our design of a novel localisation algorithm that would be robust even for a system of any finite polydispersity, which is unavoidable and sometime desired in real experiments.
 
 The key notion to detect objects of unknown and possibly diverse sizes in an image is the \emph{scale space}~\cite{Lindeberg1993}. A popular implementation for isotropic objects (or ``blobs'') is the Scale Invariant Feature Transform (\textsc{sift}) of \citet{Lowe2004}. It is often used to match between different images from complex objects consisting of many rigidly linked blobs and further characterised by local histograms~\citep{Lowe2004, Urschler2006, Cheung2009}. To our knowledge, this method was never used for the quantitative localisation and sizing of independent single-blob objects like spherical colloids.
 
-In the following, we will start by recalling the principle of \textsc{sift}, then explaining our method in the ideal case of an isolated binary ball to add successively finite dilution, difference in brightness between the particles and distortion by a point-spread function. Finally, we will present the results of our method from real experimental data (see Fig.~\ref{fig:localise}a).
+In the following part, we will describe our localisation method and its results on synthetic but more and more realistic data. In the second part of the paper, we will focus on the specific case of 3D confocal data. In the third part we will apply our method to a supercooled liquid of polydisperse hard spheres observed by confocal microscopy and extract local polydispersity. Finally in the last part we will show more briefly other applications that we deem useful for the soft matter and microfluidics communities, including 2D data of wide field fluorescent microscopy and phase contrast microscopy.
 
-\section*{Principle}
+\section*{Localisation and sizing method}
 
+In this section, we will start by recalling the principle of \textsc{sift}, then we will explain our method in the ideal case of an isolated binary ball, to add successively finite dilution and difference in brightness between the particles. Here we assume perfect noiseless, distortion-free, images. The objects to localise are thus (pixellised) balls of uniform intensity. To mimic the low resolution of experimental images in our test images (see Fig.~\ref{fig:perfect}), we draw uniformly white balls on a 4 to 16 times larger image and then we reduce accordingly the resolution using area resampling.
+
+\subsection*{Scale invariant feature transform}
 The \textsc{sift} consists in convolving the original image $I$ by Gaussian kernels $g_{\sigma_s}$ of logarithmically increasing widths $\sigma_s$ to obtain a series of blurred images $G_s$
 \begin{align}
 \forall s>0,\quad G_s = I \star g_{\sigma_s}, \label{eq:gaussian_blur}\\
@@ -52,27 +55,23 @@ The DoG constructed above is defined on a $d+1$ dimensional grid, with $d$ the s
 
 The object-by-object optimal scale determination allows us to perform the spatial sub-pixel resolution step for each object on an image that is blurred just enough to have neither a flat intensity profile nor affected by the overlap with a nearby object's blob. We found that if for a given object the DoG is minimum at $\sigma_s$, the best image to use is $G_{s-1}$. This leads to a spatial resolution below $0.1$~pixels when two $8$-pixels wide particles are at hard-core contact, and less than $0.02$~pixels error ($0.3\%$ of the diameter) when any other particle's surface is further than $1$~pixel from the surface of the particle of interest (see Fig.~\ref{fig:perfect}b).
 
+\subsection*{Sizing at infinite dilution}
 
-\section*{Perfect images}
+The analytical response of a binary ball to a Gaussian blur, at the centre of the ball is a function of dimensionless ratio $x=R/\sqrt{2}\sigma$: $G(x)$ (see Appendix~\ref{sec:gaussian_vs_ball} for an exact expression). The DoG response function is the difference between the two such functions. However, the choice of the width of the two functions is not arbitrary: we make the difference between two consecutive blurred images, the image blurred by $\sigma_{j+1}$ and the image blurred by $\sigma_j$. Therefore, in each of our discrete DoG images the value at the centre of the particle can be expressed as
+\begin{align}
+DoG(R,\sigma_j, \alpha) = DoG(x_j, \alpha) &= G(x_j/\alpha) - G(x_j),\\
+\intertext{with $\alpha=2^{1/n}$. Given sub-scale refinement, this can be written as a continuous function of $\sigma$:}
+DoG(R,\sigma, \alpha) = DoG(x, \alpha) &= G(x/\alpha) - G(x).
+\end{align}
 
-In this section, we assume perfect noiseless, distortion-free, images. The objects to localise are thus (pixellised) balls of uniform intensity. Gaussian and DoG responses to a single binary ball are calculated in Appendix~\ref{sec:gaussian_vs_ball}. To mimic the low resolution of experimental images in our test images (see Fig.~\ref{fig:perfect}), we draw uniformly white balls on a 4 to 16 times larger image and then we reduce accordingly the resolution using area resampling.
-
-\subsection*{Infinite dilution}
-Combining our definition of $\sigma$ (Eq.~(\ref{eq:sigma_s})) and Eq.~\ref{eq:R_dilute}, we find that at infinite dilution the radius $R$ of the particle is simply proportional to the width $\sigma$ that minimises the DoG response at the center of the particle. The proportionality constant depends only on the sampling rate $n$ of the scale space:
+Here it is clear that minimizing $DoG(x, \alpha)$ with respect to $x$ yields a value $x^*$ that depends only on $\alpha$. Exact calculation yields:
 \begin{equation}
-	R = \sigma \sqrt{\frac{6 \log 2}{n(1-2^{-2/n})}}. 
-	\label{eq:sigma_dil}
-\end{equation}
-
-Combining Eq.~(\ref{eq:sigma_s}) and Eq.~(\ref{eq:sigma_dil}) we obtain the radius function of the algorithm parameters $\sigma_0$ and $n$:
-\begin{equation}
-	R = 2^{s/n} \sigma_0  \sqrt{\frac{6 \log 2}{n(1-2^{-2/n})}}. 
+	x^* = R/\sqrt{2}\sigma^* = \sqrt{\frac{3\ln \alpha}{1-\alpha^{-2}}}, 
 	\label{eq:scale_dil}
 \end{equation}
+Practically one obtains $\sigma^*$, the value of $\sigma$ that minimises $DoG(R,\sigma, \alpha)$, by a polynomial fit for discrete data $\sigma_j$. Eq.~(\ref{eq:scale_dil}) allows to translate the $n$-dependent $\sigma^*$ to the parameter-free real radius of the particle, $R$. The error on $R$ does depend on the number of subdivisions. We found that with $n=3$ the radius of an isolated pixelated ball can be indeed measured within $0.3\%$ relative error with this method (see Fig.~\ref{fig:perfect}a).
 
-Note that the value of the optimal $s$ (or $\sigma$) depends on $n$, however this dependence cancels out within the right-hand-side of Eq.~(\ref{eq:scale_dil}) so that we recover a method-independent radius. Nevertheless, the error on $R$ does depend on $n$. We found that with $n=3$ the radius of an isolated pixelated ball can be indeed measured within $0.3\%$ relative error with this method (see Fig.~\ref{fig:perfect}a).
-
-The scale $s=0.5$ corresponds to the smaller detectable radius $R_{min}\approx \unit{3.5}{px}$ ($\sigma_0=1.6$, $n=3$). In order to detect small objects, \citet{Lowe2004} recommends to double the size of the input image using linear interpolation prior to building the first level of the pyramid. This method fares relatively well in noiseless images (see Fig.~\ref{fig:perfect}a) despite larger errors, but we found that it has to be use with care in confocal images due to noise and deconvolution artefacts. In addition doubling image size implies a 8-fold increase in memory consumption (reaching \unit{60}{\giga b} in the case of a $(\unit{512}{px})^3$ original image). Our implementation allows this on $\unit{64}{byte}$ computers by relying on memory mapped files, nevertheless it is mostly impractical. All following tests results are obtained without relying on doubled images.
+The scale $s=0.5$ corresponds (via Eq.~(\ref{eq:sigma_s}) and Eq.~(\ref{eq:scale_dil})) to the smaller detectable radius $R_{min}\approx \unit{3.5}{px}$ ($\sigma_0=1.6$, $n=3$). In order to detect small objects, \citet{Lowe2004} recommends to double the size of the input image using linear interpolation prior to building the first level of the pyramid. This method fares relatively well in noiseless images (see Fig.~\ref{fig:perfect}a) despite larger errors, but we found that it has to be use with care in confocal images due to noise and deconvolution artefacts. In addition doubling image size implies a 8-fold increase in memory consumption (reaching \unit{60}{\giga b} in the case of a $(\unit{512}{px})^3$ original image). Our implementation allows this on $\unit{64}{byte}$ computers by relying on memory mapped files, nevertheless it is mostly impractical. All following tests results are obtained without relying on doubled images.
 
 \subsection*{Finite dilution}
 The Gaussian (and DoG) response of a particle decays rapidly away from its surface (see Eq.~(\ref{eq:split_G}). We found that even at contact the position shift induced by a nearby particle was less than a tenth of a pixel (see Fig.~\ref{fig:perfect}b). However when two particles are closer than a few times the blurring width, their influence on each other cannot be neglected: the minima of the DoG is effectively shifted toward smaller scales, leading to smaller radii if one uses Eq.~(\ref{eq:scale_dil}) out of the dilute context (see Fig.~\ref{fig:perfect}c).
@@ -157,12 +156,23 @@ Figure~\ref{fig:deconv} shows the particles localized from the original image an
 
 
 
-\section*{Experimental tests}
+\section*{Polydispersity of a colloidal hard sphere supercooled liquid}
+
+\subsection*{Experimental}
 We used \textsc{pmma} (poly(methyl methacrylate)) colloids sterically stabilized with methacryloxypropyl terminated \textsc{pdms} (poly(dimethyl siloxane)) and fluorescently labelled with rhodamine isothiocyanate chemically bonded to the \textsc{pmma}. The colloids were suspended in a solvent mixture of cis-decalin and cyclohexyl-bromide for both optical index and density matching. To screen any (weak) electrostatic interactions, we dissolved tetrabutylammonium bromide salt, to a concentration of \unit{300}{\nano\mole\per\liter}~\citep{royall2005}. The estimated Debye screening length is \unit{13}{\nano\metre}, well below the length scale of the colloids that can be considered as hard spheres. The \unit{8}{bit} graylevel data was collected on a Leica SP5 confocal microscope, using \unit{532}{\nano\meter} laser excitation and voxel size of $(\unit{283}{\nano\metre})^2\times\unit{293}{\nano\metre}$.
 
+\subsection*{Global polydispersity}
 Figure~\ref{fig:sizing}a shows the size distribution only $140$ dry colloids measured on high resolution scanning electron microscopy (\textsc{sem}) images. We also show the size distribution obtained by our \emph{in situ} measurements ($\sim 1.7\times 10^6$ instantaneous sizing in a $\approx 0.57$ volume fraction suspension). The later compares well with the former once a solvent swelling of $23\%$ in radius is taken into account. The polydispersity measured \emph{in situ} is $6.9\%$, where the polydispersity computed from \textsc{sem} is $6.2\%$.
 
 The consistency of our method can be checked by constructing the radial distribution function $g(r)$. In monodisperse hard spheres, the $g(r)$ has a sharp first peak at $r=2R$ corresponding to hard core contact. Polydispersity implies hard core contacts at various $r$ and thus broadens the peak. One can recover a sharp peak by constructing $g(\hat{r})$, with $\hat{r}_{ij} = r_{ij}/(R_i+R_j)$. In Fig.~\ref{fig:sizing}b we successfully used the sizes measured by our method to rectify the first peak.
+
+\subsection*{Polydispersity and structural heterogeneity}
+
+\section*{Other applications}
+
+\subsection*{Nucleation rate in a molecular liquid}
+
+\subsection*{Tracking droplets in a microfluidic device}
 
 \section*{Conclusion}
 Recently \citet{Kurita2011,Kurita2011b} have designed a sizing method using particle coordinates from confocal experiments. However their method do not work at the image processing level and relies on coordinates extracted via the \citet{Crocker1996} algorithm which, as described above, is defective when the size distribution is too broad. It may be possible to combine the two methods by feeding our coordinates and size as input to their method. We would expect an increase in sizing precision when the particles are close to contact.
