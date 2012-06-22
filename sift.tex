@@ -20,6 +20,9 @@ We propose a scale-space based method to extract both the individual 3D coordina
 \maketitle
 
 \section*{Introduction}
+
+Experimental physicists often need to recognize objects, count them, follow them and characterise them. \citet{perrin} had to count colloids by hand to establish the sedimentation-diffusion equilibrium. Nowadays computer vision algorithms are used routinely in the lab in fields as diverse as aeronautics, astronomy or biophysics to estimate velocity field (cite particle velocimetry) from the trajectory of tracers or to access with high precision the coordinates of hundreds of thousand monodisperse particles.
+
 Particle-level confocal microscopy experiments usually access the coordinates of the particles via the algorithm proposed by \citet{Crocker1996}. The original noisy image is blurred by convolution with a Gaussian kernel of width $\sigma$ to yield a soft peak per particle. Local intensity maxima within this blurred image give the coordinates of the particles with pixel resolution. Sub-pixel resolution ($0.1\sim0.3$~pixels error) can be achieved by taking the centre of mass of a neighbourhood around the local maxima. The extension of this algorithm in 3D has been done in two ways: either tracking particles in each confocal plane and reconstructing the results (2D-flavour)~\citep{dinsmore2001tdc}, or full image analysis on three dimensional pictures (3D-flavour)~\citep{vanblaaderen1995rss, Lu2007}.
 
 The choice of the width $\sigma$ of the blurring kernel is critical: if it is too small, then the intensity profile is flat near the centre  of a particle, leading to multiple and ill-localized maxima per particle; if it is too large, then the peaks of nearby particles overlap, leading to shifts in the detected positions, or even fusion of the particles (only one particle detected instead of two). If the colloids are fairly monodisperse one can argue (at least in the 3D-flavour) that there exists a range of possible width where the choice of $\sigma$ has almost no effect on the number of particles detected. Choosing $\sigma$ within this range gives confidence in the localisation results.
@@ -120,9 +123,9 @@ In our tests, we found that this algorithm converges as quickly with and without
 
 \section*{Confocal images}
 \subsection*{Effect of a point spread function}
-Real images suffer from optical limitations, \emph{e.g.} the point-spread function (\textsc{psf}) of the microscope. In particular, spherical particles observed by confocal microscopy seem elongated along $Z$. The influence of such anisotropic distortion on the Gaussian and DoG responses is not trivial and most of the equations given in Appendix~\ref{sec:gaussian_vs_ball} do not have analytical equivalents. In particular, the DoG response is minimal for larger values of $R/\sigma$, thus the naive use of the methods detailed in previous section lead to overestimate particle sizes.
+Real images suffer from optical limitations, \emph{e.g.} the point-spread function (\textsc{psf}) of the microscope. In particular, spherical particles observed by confocal microscopy seem elongated along $Z$. The influence of such anisotropic distortion on the Gaussian and DoG responses is not trivial and most of the equations given in Appendix~\ref{sec:gaussian_vs_ball} do not have analytical equivalents. In particular, the minimum of the DoG response is found at larger values of $R/\sigma$, thus the naive use of the methods detailed in previous section lead to overestimate particle sizes.
 
-In addition, the overlap of neighbouring particle images is no more negligible when the particles are aligned along $Z$. This leads to large imprecision in particle positions, especially in the case of anisotropic environment (\emph{e.g.} isolated pair of particles, interface). Typically particles centres are often found closer than the sum of their hard core radii, as shown in Fig.~\ref{fig:deconv}b.
+In addition, the overlap of neighbouring particle images is no more negligible when the particles are aligned along $Z$. This leads to large imprecision in particle positions, especially in the case of anisotropic environment (e.g. isolated pair of particles, interface, gel). Typically particles centres are often found closer than the sum of their hard core radii, as shown in Fig.~\ref{fig:deconv}b.
 
 We found that these issues were better addressed by pre-processing the images (as detailed below) rather than post processing the \textsc{sift} output \emph{via} analytical methods.
 
@@ -156,7 +159,7 @@ Figure~\ref{fig:deconv} shows the particles localized from the original image an
 
 
 
-\section*{Polydispersity of a colloidal hard sphere supercooled liquid}
+\section*{Study of a colloidal hard sphere supercooled liquid}
 
 \subsection*{Experimental}
 We used \textsc{pmma} (poly(methyl methacrylate)) colloids sterically stabilized with methacryloxypropyl terminated \textsc{pdms} (poly(dimethyl siloxane)) and fluorescently labelled with rhodamine isothiocyanate chemically bonded to the \textsc{pmma}. The colloids were suspended in a solvent mixture of cis-decalin and cyclohexyl-bromide for both optical index and density matching. To screen any (weak) electrostatic interactions, we dissolved tetrabutylammonium bromide salt, to a concentration of \unit{300}{\nano\mole\per\liter}~\citep{royall2005}. The estimated Debye screening length is \unit{13}{\nano\metre}, well below the length scale of the colloids that can be considered as hard spheres. The \unit{8}{bit} graylevel data was collected on a Leica SP5 confocal microscope, using \unit{532}{\nano\meter} laser excitation and voxel size of $(\unit{283}{\nano\metre})^2\times\unit{293}{\nano\metre}$.
