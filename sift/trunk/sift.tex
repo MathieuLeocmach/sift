@@ -101,6 +101,13 @@ Particle-level confocal microscopy experiments usually access the coordinates of
 
 The choice of the width $\sigma$ of the blurring kernel is critical: if it is too small, then the intensity profile is flat near the centre  of a particle, leading to multiple and ill-localized maxima per particle; if it is too large, then the peaks of nearby particles overlap, leading to shifts in the detected positions, or even fusion of the particles (only one particle detected instead of two). If the colloids are fairly monodisperse one can argue (at least in the 3D-flavour) that there exists a range of possible width where the choice of $\sigma$ has almost no effect on the number of particles detected. Choosing $\sigma$ within this range gives confidence in the localisation results.
 
+\begin{figure*}
+\centering
+\includegraphics{fig_localise.pdf}
+\caption{\textbf{Visualisation of the results of various tracking methods for the same portion of image.} \textbf{a,} Multiscale 3D tracking. \textbf{b,} Reconstruction from multiscale 2D tracking. \textbf{c-h,} Crocker and Grier in 3D with blurring radius increasing from \unit{2}{px} to \unit{4.5}{px} by steps of \unit{0.5}{px}. The circles on each picture are the result of 2D multiscale tracking of each XY slice of the 3D pictures. Sphere are displayed with radii determined by the tracking methods in \textbf{a-b}, and equal to the blurring radius for \textbf{c-h}.}
+	\label{fig:localise}
+\end{figure*}
+
 However, we found that no such ``good blur width'' exists in a sample of moderate ($6-7\%$) polydispersity (see Fig.~\ref{fig:localise}c-h). The detection of smaller particles with small blurring is incompatible with the detection of the larger particles, and conversely. This unacceptable failure of the \citet{Crocker1996} algorithm, as well as the want of the particles' radii data, triggered our design of a novel localisation algorithm that would be robust even for a system of any finite polydispersity, which is unavoidable and sometime desired in real experiments.
 
 The key notion to detect objects of unknown and possibly diverse sizes in an image is the \emph{scale space}~\cite{Lindeberg1993}. A popular implementation for isotropic objects (or ``blobs'') is the Scale Invariant Feature Transform (\textsc{sift}) of \citet{Lowe2004}. It is often used to match between different images from complex objects consisting of many rigidly linked blobs (e.g. to create a large scale image from overlapping pictures)~\citep{Lowe2004, Urschler2006, Cheung2009}. To our knowledge, this method was never used for the quantitative localisation and sizing of independent single-blob objects like spherical colloids, droplets in an emulsion or crystal nuclei.
@@ -108,6 +115,13 @@ The key notion to detect objects of unknown and possibly diverse sizes in an ima
 In the following part, we will describe our localisation method and its results on synthetic but more and more realistic data. In the second part of the paper, we will focus on the specific case of 3D confocal data. In the third part we will apply our method to a supercooled liquid of polydisperse hard spheres observed by confocal microscopy and extract local polydispersity. Finally in the last part we will show more briefly other applications that we deem useful for the soft matter and microfluidics communities, including 2D data of wide field fluorescent microscopy and phase contrast microscopy.
 
 \section*{Localisation and sizing method}
+
+\begin{figure*}
+\centering
+\includegraphics{fig_perfect.pdf}
+	\caption{\textbf{Results from perfect images.} \textbf{a} Sizing of an isolated sphere. Left of the vertical line our algorithm uses a doubled image. \textbf{b} Localisation error and \textbf{c} sizing error function of the distance between two particles. Oscillations are due to off-lattice centre position. \textbf{d} Size distribution extracted from digitized configuration of 4000 monodisperse hard spheres at $0.50$ volume fraction (vertical line indicates the input radius). The tail to the right is due to particles on the edges of the image who have fewer neighbours and thus are more `dilute'. \textbf{c} and \textbf{d} also show the effect of finite dilution correction up to convergence.}
+	\label{fig:perfect}
+\end{figure*}
 
 In this section, we will start by recalling the principle of \textsc{sift}, then we will explain our method in the ideal case of an isolated binary ball, to add successively finite dilution and difference in brightness between the particles. Here we assume perfect noiseless, distortion-free, images. The objects to localise are thus (pixellised) balls of uniform intensity. To mimic the low resolution of experimental images in our test images (see Fig.~\ref{fig:perfect}), we draw uniformly white balls on a 4 to 16 times larger image and then we reduce accordingly the resolution using area resampling.
 
@@ -210,6 +224,13 @@ In our tests, we found that this algorithm converges as quickly with and without
 \subsection*{Effect of a point spread function}
 Real images suffer from optical limitations, \emph{e.g.} the point-spread function (\textsc{psf}) of the microscope. In particular, spherical particles observed by confocal microscopy seem elongated along $Z$. The influence of such anisotropic distortion on the Gaussian and DoG responses is not trivial and most of the equations given in Appendix~\ref{sec:gaussian_vs_ball} do not have analytical equivalents. In particular, the minimum of the DoG response is found at larger values of $R/\sigma$, thus the naive use of the methods detailed in previous section lead to overestimate particle sizes.
 
+\begin{figure*}
+\centering
+\includegraphics{fig_deconv.pdf}
+	\caption{\textbf{Deconvolution.} Detail of the same $YZ$ slice of \textbf{a} original confocal image, \textbf{b} previous blurred by $\sigma_0=1.6$, \textbf{c} previous deconvolved by measured kernel (see text). Circles indicate the tracked particles position and size when using whether \textbf{b} or \textbf{c} as first Gaussian layer $G_0$. All three centres are in the slice $\pm \unit{0.5}{px}$}
+	\label{fig:deconv}
+\end{figure*}
+
 In addition, the overlap of neighbouring particle images is no more negligible when the particles are aligned along $Z$. This leads to large imprecision in particle positions, especially in the case of anisotropic environment (e.g. isolated pair of particles, interface, gel). Typically particles centres are often found closer than the sum of their hard core radii, as shown in Fig.~\ref{fig:deconv}b.
 
 We found that these issues were better addressed by pre-processing the images (as detailed below) rather than post processing the \textsc{sift} output \emph{via} analytical methods.
@@ -250,6 +271,14 @@ Figure~\ref{fig:deconv} shows the particles localized from the original image an
 We used \textsc{pmma} (poly(methyl methacrylate)) colloids sterically stabilized with methacryloxypropyl terminated \textsc{pdms} (poly(dimethyl siloxane)) and fluorescently labelled with rhodamine isothiocyanate chemically bonded to the \textsc{pmma}. The colloids were suspended in a solvent mixture of cis-decalin and cyclohexyl-bromide for both optical index and density matching. To screen any (weak) electrostatic interactions, we dissolved tetrabutylammonium bromide salt, to a concentration of \unit{300}{\nano\mole\per\liter}~\citep{royall2005}. The estimated Debye screening length is \unit{13}{\nano\metre}, well below the length scale of the colloids that can be considered as hard spheres. The \unit{8}{bit} graylevel data was collected on a Leica SP5 confocal microscope, using \unit{532}{\nano\meter} laser excitation and voxel size of $(\unit{283}{\nano\metre})^2\times\unit{293}{\nano\metre}$.
 
 \subsection*{Global polydispersity}
+
+\begin{figure*}
+\centering
+\includegraphics{generate-figure1.pdf}
+	\caption{\textbf{Sizing of our colloids.} \textbf{a,} Size distribution estimated \emph{in situ} (dashed line) by our multiscale algorithm ($\sim 1.7\times 10^6$ instantaneous sizing). Comparison with the size distribution estimated from \textsc{sem} of only $140$ dry particles (steps) is possible once $23\%$ of swelling of particle diameters is taken into account (full line). \textbf{b,} First peak of the radial distribution function with (full line) and without (dashed) the individual sizes data. Taking into account the measured sizes rectifies the effect of the polydispersity: the peak is thinner and higher.}
+	\label{fig:sizing}
+\end{figure*}
+
 Figure~\ref{fig:sizing}a shows the size distribution only $140$ dry colloids measured on high resolution scanning electron microscopy (\textsc{sem}) images. We also show the size distribution obtained by our \emph{in situ} measurements ($\sim 1.7\times 10^6$ instantaneous sizing in a $\approx 0.57$ volume fraction suspension). The later compares well with the former once a solvent swelling of $23\%$ in radius is taken into account. The polydispersity measured \emph{in situ} is $6.9\%$, where the polydispersity computed from \textsc{sem} is $6.2\%$.
 
 The consistency of our method can be checked by constructing the radial distribution function $g(r)$. In monodisperse hard spheres, the $g(r)$ has a sharp first peak at $r=2R$ corresponding to hard core contact. Polydispersity implies hard core contacts at various $r$ and thus broadens the peak. One can recover a sharp peak by constructing $g(\hat{r})$, with $\hat{r}_{ij} = r_{ij}/(R_i+R_j)$. In Fig.~\ref{fig:sizing}b we successfully used the sizes measured by our method to rectify the first peak.
@@ -318,35 +347,5 @@ One can show that the factor $3$ in the radical is the dimensionality of the spa
 \bibliography{ico_dyn}
 \bibliographystyle{rsc} %the RSC's .bst file
 }
-
-
-\clearpage
-\begin{figure*}
-\centering
-\includegraphics{generate-figure0.pdf}
-\caption{\textbf{Visualisation of the results of various tracking methods for the same portion of image.} \textbf{a,} Multiscale 3D tracking. \textbf{b,} Reconstruction from multiscale 2D tracking. \textbf{c-h,} Crocker and Grier in 3D with blurring radius increasing from \unit{2}{px} to \unit{4.5}{px} by steps of \unit{0.5}{px}. The circles on each picture are the result of 2D multiscale tracking of each XY slice of the 3D pictures. Sphere are displayed with radii determined by the tracking methods in \textbf{a-b}, and equal to the blurring radius for \textbf{c-h}.}
-	\label{fig:localise}
-\end{figure*}
-
-\begin{figure*}
-\centering
-\includegraphics{generate-figure3.pdf}
-	\caption{\textbf{Results from perfect images.} \textbf{a} Sizing of an isolated sphere. Left of the vertical line our algorithm uses a doubled image. \textbf{b} Localisation error and \textbf{c} sizing error function of the distance between two particles. Oscillations are due to off-lattice centre position. \textbf{d} Size distribution extracted from digitized configuration of 4000 monodisperse hard spheres at $0.50$ volume fraction (vertical line indicates the input radius). The tail to the right is due to particles on the edges of the image who have fewer neighbours and thus are more `dilute'. \textbf{c} and \textbf{d} also show the effect of finite dilution correction up to convergence.}
-	\label{fig:perfect}
-\end{figure*}
-
-\begin{figure*}
-\centering
-\includegraphics{generate-figure2.pdf}
-	\caption{\textbf{Deconvolution.} Detail of the same $YZ$ slice of \textbf{a} original confocal image, \textbf{b} previous blurred by $\sigma_0=1.6$, \textbf{c} previous deconvolved by measured kernel (see text). Circles indicate the tracked particles position and size when using whether \textbf{b} or \textbf{c} as first Gaussian layer $G_0$. All three centres are in the slice $\pm \unit{0.5}{px}$}
-	\label{fig:deconv}
-\end{figure*}
-
-\begin{figure*}
-\centering
-\includegraphics{generate-figure1.pdf}
-	\caption{\textbf{Sizing of our colloids.} \textbf{a,} Size distribution estimated \emph{in situ} (dashed line) by our multiscale algorithm ($\sim 1.7\times 10^6$ instantaneous sizing). Comparison with the size distribution estimated from \textsc{sem} of only $140$ dry particles (steps) is possible once $23\%$ of swelling of particle diameters is taken into account (full line). \textbf{b,} First peak of the radial distribution function with (full line) and without (dashed) the individual sizes data. Taking into account the measured sizes rectifies the effect of the polydispersity: the peak is thinner and higher.}
-	\label{fig:sizing}
-\end{figure*}
 
 \end{document}
