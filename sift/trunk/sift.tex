@@ -1,23 +1,97 @@
-\input{preamble}
+\documentclass[8.5pt,twoside,twocolumn]{article}
+\oddsidemargin -1.2cm
+\evensidemargin -1.2cm
+\textwidth 18cm
+\headheight 1.0in
+\topmargin -3.5cm
+\textheight 22cm
+\usepackage[super,sort&compress,comma]{natbib} 
+\usepackage{mhchem}
+\usepackage{times,mathptmx}
+% \usepackage{times}
+% feel free not to use mathptmx if it causes difficulties
+\usepackage{sectsty}
+\usepackage{balance} 
 
+\usepackage{graphicx} %eps figures can be used instead
+\usepackage{lastpage}
+\usepackage[format=plain,justification=raggedright,singlelinecheck=false,font=small,labelfont=bf,labelsep=space]{caption} 
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\usepackage{SIunits}
 \DeclareMathOperator{\erf}{erf}
 
 \begin{document}
+
+\thispagestyle{plain}
+\fancypagestyle{plain}{
+\fancyhead[L]{\includegraphics[height=8pt]{headers/LH}}
+\fancyhead[C]{\hspace{-1cm}\includegraphics[height=20pt]{headers/CH}}
+\fancyhead[R]{\includegraphics[height=10pt]{headers/RH}\vspace{-0.2cm}}
+\renewcommand{\headrulewidth}{1pt}}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\renewcommand\footnoterule{\vspace*{1pt}% 
+\hrule width 3.4in height 0.4pt \vspace*{5pt}} 
+\setcounter{secnumdepth}{5}
+
+
+
+\makeatletter 
+\def\subsubsection{\@startsection{subsubsection}{3}{10pt}{-1.25ex plus -1ex minus -.1ex}{0ex plus 0ex}{\normalsize\bf}} 
+\def\paragraph{\@startsection{paragraph}{4}{10pt}{-1.25ex plus -1ex minus -.1ex}{0ex plus 0ex}{\normalsize\textit}} 
+\renewcommand\@biblabel[1]{#1}            
+\renewcommand\@makefntext[1]% 
+{\noindent\makebox[0pt][r]{\@thefnmark\,}#1}
+\makeatother 
+\renewcommand{\figurename}{\small{Fig.}~}
+\sectionfont{\large}
+\subsectionfont{\normalsize} 
+
+\fancyfoot{}
+\fancyfoot[LO,RE]{\vspace{-7pt}\includegraphics[height=9pt]{headers/LF}}
+\fancyfoot[CO]{\vspace{-7.2pt}\hspace{12.2cm}\includegraphics{headers/RF}}
+\fancyfoot[CE]{\vspace{-7.5pt}\hspace{-13.5cm}\includegraphics{headers/RF}}
+\fancyfoot[RO]{\footnotesize{\sffamily{1--\pageref{LastPage} ~\textbar  \hspace{2pt}\thepage}}}
+\fancyfoot[LE]{\footnotesize{\sffamily{\thepage~\textbar\hspace{3.45cm} 1--\pageref{LastPage}}}}
+\fancyhead{}
+\renewcommand{\headrulewidth}{1pt} 
+\renewcommand{\footrulewidth}{1pt}
+\setlength{\arrayrulewidth}{1pt}
+\setlength{\columnsep}{6.5mm}
+\setlength\bibsep{1pt}
+
+\twocolumn[
+  \begin{@twocolumnfalse}
+\noindent\LARGE{\textbf{Quantitative localisation and sizing of polydisperse colloids from confocal microscopy images}}
+\vspace{0.6cm}
+
+\noindent\large{\textbf{Mathieu Leocmach\textit{$^{a}$} and
+Hajime Tanaka$^{\ast}$\textit{$^{a}$}}}\vspace{0.5cm}
+%Please note that \ast indicates the corresponding author(s) but no footnote text is required. 
+
+
+\noindent\textit{\small{\textbf{Received Xth XXXXXXXXXX 20XX, Accepted Xth XXXXXXXXX 20XX\newline
+First published on the web Xth XXXXXXXXXX 200X}}}
+
+\noindent \textbf{\small{DOI: 10.1039/b000000x}}
+\vspace{0.6cm}
+%Please do not change this text.
+
+\noindent \normalsize{We propose a scale-space based method to extract both the individual 3D coordinates and the radii of spherical colloids from confocal microscopy images. According to synthetic and real data, dilute or crowded, particles can be detected correctly without assumption on their sizes, even when particle diameters differ by large factors. Moreover the size of each particle can be estimated within a few percent error (less than $0.3\%$ if the diameter is larger than \unit{5}{px}).}
+\vspace{0.5cm}
+ \end{@twocolumnfalse}
+  ]
 \title{Quantitative localisation and sizing of polydisperse colloids from confocal microscopy images}
 
+\footnotetext{\textit{$^{a}$~Institute of Industrial Science, University of Tokyo, 4-6-1 Komaba, Meguro-ku, Tokyo 153-8505, Japan. E-mail: tanaka@iis.u-tokyo.ac.jp}}
 
+%\author{Mathieu Leocmach} 
 
-\author{Mathieu Leocmach} 
+%\author{Hajime Tanaka}
+%\affiliation{ {Institute of Industrial Science, University of Tokyo, 4-6-1 Komaba, Meguro-ku, Tokyo 153-8505, Japan} }
 
-\author{Hajime Tanaka}
-\affiliation{ {Institute of Industrial Science, University of Tokyo, 4-6-1 Komaba, Meguro-ku, Tokyo 153-8505, Japan} }
-
-\date{Received \today}
-
-\begin{abstract}
-We propose a scale-space based method to extract both the individual 3D coordinates and the radii of spherical colloids from confocal microscopy images. According to synthetic and real data, dilute or crowded, particles can be detected correctly without assumption on their sizes, even when particle diameters differ by large factors. Moreover the size of each particle can be estimated within a few percent error (less than $0.3\%$ if the diameter is larger than \unit{5}{px}).
-\end{abstract}
-\maketitle
+%\date{Received \today}
 
 \section*{Introduction}
 
@@ -89,7 +163,8 @@ The Gaussian (and DoG) response of a particle decays rapidly away from its surfa
 
 The response of $N$ particles of radii $\lbrace R_i\rbrace$ can be superimposed at any scale $\sigma$ and at any point of space, in particular we define $DoG_i$ as the response at the centre of particle $i$.
 \begin{equation}
-\forall i,\quad DoG_i(\lbrace A_j\rbrace, \lbrace r_{ij}\rbrace, \lbrace R_j\rbrace, \sigma) = \sum_j A_j DoG(r=r_{ij}, R=R_j, \sigma),
+%\forall i,\quad 
+DoG_i(\lbrace A_j\rbrace, \lbrace r_{ij}\rbrace, \lbrace R_j\rbrace, \sigma) = \sum_j A_j DoG(r=r_{ij}, R=R_j, \sigma),
 \label{eq:superpos}
 \end{equation}
 where the function $DoG(r,R,\sigma)$ is the response of a particle of radius $R$ at distance $r$ from its centre; $r_{ij}$ is the distances between particles $i$ and $j$ and $\lbrace A_i\rbrace$ are the respective brightness of the particles. The \textsc{sift} algorithm yields $\lbrace \sigma_i\rbrace$ so that for all $i$, $DoG_i$ is minimum with respect to $\sigma$ at $\sigma_i$, thus differentiating Eq.~(\ref{eq:superpos}) with respect to $\sigma$:
@@ -237,39 +312,37 @@ When the difference of Gaussians is minimum at the centre of the ball, we combin
 One can show that the factor $3$ in the radical is the dimensionality of the space, thus Eq.~(\ref{eq:R_dilute}) can be generalised to other dimensions.
 
 
-%\bibliographystyle{naturemag3}
-\bibliographystyle{apsrev4-1}
+\footnotesize{
 \bibliography{ico_dyn}
+\bibliographystyle{rsc} %the RSC's .bst file
+}
+
 
 \clearpage
 \begin{figure*}
-\begin{center}
+\centering
 \includegraphics{generate-figure0.pdf}
-\end{center}
 \caption{\textbf{Visualisation of the results of various tracking methods for the same portion of image.} \textbf{a,} Multiscale 3D tracking. \textbf{b,} Reconstruction from multiscale 2D tracking. \textbf{c-h,} Crocker and Grier in 3D with blurring radius increasing from \unit{2}{px} to \unit{4.5}{px} by steps of \unit{0.5}{px}. The circles on each picture are the result of 2D multiscale tracking of each XY slice of the 3D pictures. Sphere are displayed with radii determined by the tracking methods in \textbf{a-b}, and equal to the blurring radius for \textbf{c-h}.}
 	\label{fig:localise}
 \end{figure*}
 
 \begin{figure*}
-\begin{center}
+\centering
 \includegraphics{generate-figure3.pdf}
-\end{center}
 	\caption{\textbf{Results from perfect images.} \textbf{a} Sizing of an isolated sphere. Left of the vertical line our algorithm uses a doubled image. \textbf{b} Localisation error and \textbf{c} sizing error function of the distance between two particles. Oscillations are due to off-lattice centre position. \textbf{d} Size distribution extracted from digitized configuration of 4000 monodisperse hard spheres at $0.50$ volume fraction (vertical line indicates the input radius). The tail to the right is due to particles on the edges of the image who have fewer neighbours and thus are more `dilute'. \textbf{c} and \textbf{d} also show the effect of finite dilution correction up to convergence.}
 	\label{fig:perfect}
 \end{figure*}
 
 \begin{figure*}
-\begin{center}
+\centering
 \includegraphics{generate-figure2.pdf}
-\end{center}
 	\caption{\textbf{Deconvolution.} Detail of the same $YZ$ slice of \textbf{a} original confocal image, \textbf{b} previous blurred by $\sigma_0=1.6$, \textbf{c} previous deconvolved by measured kernel (see text). Circles indicate the tracked particles position and size when using whether \textbf{b} or \textbf{c} as first Gaussian layer $G_0$. All three centres are in the slice $\pm \unit{0.5}{px}$}
 	\label{fig:deconv}
 \end{figure*}
 
 \begin{figure*}
-\begin{center}
+\centering
 \includegraphics{generate-figure1.pdf}
-\end{center}
 	\caption{\textbf{Sizing of our colloids.} \textbf{a,} Size distribution estimated \emph{in situ} (dashed line) by our multiscale algorithm ($\sim 1.7\times 10^6$ instantaneous sizing). Comparison with the size distribution estimated from \textsc{sem} of only $140$ dry particles (steps) is possible once $23\%$ of swelling of particle diameters is taken into account (full line). \textbf{b,} First peak of the radial distribution function with (full line) and without (dashed) the individual sizes data. Taking into account the measured sizes rectifies the effect of the polydispersity: the peak is thinner and higher.}
 	\label{fig:sizing}
 \end{figure*}
