@@ -21,7 +21,7 @@ We propose a scale-space based method to extract both the individual 3D coordina
 
 \section*{Introduction}
 
-Experimental physicists often need to recognize objects, count them, follow them and characterise them. \citet{perrin} had to count colloids by hand to establish the sedimentation-diffusion equilibrium. Nowadays computer vision algorithms are used routinely in the lab in fields as diverse as aeronautics, astronomy or biophysics to estimate velocity field (cite particle velocimetry) from the trajectory of tracers or to access with high precision the coordinates of hundreds of thousand monodisperse particles.
+Experimental physicists often need to recognize objects, count them, follow them and characterise them. \citet{perrin} had to count colloids by hand to establish the sedimentation-diffusion equilibrium. Nowadays computer vision algorithms are used routinely in the lab to track hundreds of thousands of objects as diverse as stars in a galaxy, tracers in a wind tunnel, dust in a plasma or viruses in a living cell~\cite{Brandenburg2007}. In all these cases, tracking is allowed provided that the particles are either point-like and far apart, or several pixel wide and almost monodisperse in size.
 
 Particle-level confocal microscopy experiments usually access the coordinates of the particles via the algorithm proposed by \citet{Crocker1996}. The original noisy image is blurred by convolution with a Gaussian kernel of width $\sigma$ to yield a soft peak per particle. Local intensity maxima within this blurred image give the coordinates of the particles with pixel resolution. Sub-pixel resolution ($0.1\sim0.3$~pixels error) can be achieved by taking the centre of mass of a neighbourhood around the local maxima. The extension of this algorithm in 3D has been done in two ways: either tracking particles in each confocal plane and reconstructing the results (2D-flavour)~\citep{dinsmore2001tdc}, or full image analysis on three dimensional pictures (3D-flavour)~\citep{vanblaaderen1995rss, Lu2007}.
 
@@ -53,7 +53,7 @@ The difference of Gaussians (DoG) response function defined in this way depends 
 
 We used the same construction algorithm as \cite{Lowe2004} (iterative, pyramidal) but ported in three dimensions~\cite{Urschler2006, Cheung2009}. However we are not using the feature characterisation and matching (covered in the United States by US Patent 6,711,293) that would be trivial for our spherical objects. We stress that a volumetric implementation of \textsc{sift} implies a large amount of data (typically more than \unit{1}{\giga b} for a $(\unit{256}{px})^3$ picture) and thus requires careful memory management.
 
-\subsection*{Sub-pixel resolution and sub-scale sizing}
+\subsection*{Sub-pixel and sub-scale resolution}
 The DoG constructed above is defined on a $d+1$ dimensional grid, with $d$ the spatial dimensionality. One can interpolate it as a continuous function of the position $\vec{r}$ and the scale $s$ and thus localise the minima with a precision below the grid size, which corresponds to sub-pixel resolution on the position and sub-scale sizing~\citep{Lowe2004}. We found that second order estimate of the spatial derivatives and first order estimates of the scale derivatives gave the best precision.
 
 The object-by-object optimal scale determination allows us to perform the spatial sub-pixel resolution step for each object on an image that is blurred just enough to have neither a flat intensity profile nor affected by the overlap with a nearby object's blob. We found that if for a given object the DoG is minimum at $\sigma_s$, the best image to use is $G_{s-1}$. This leads to a spatial resolution below $0.1$~pixels when two $8$-pixels wide particles are at hard-core contact, and less than $0.02$~pixels error ($0.3\%$ of the diameter) when any other particle's surface is further than $1$~pixel from the surface of the particle of interest (see Fig.~\ref{fig:perfect}b).
@@ -76,15 +76,23 @@ Practically one obtains $\sigma^*$, the value of $\sigma$ that minimises $DoG(R,
 
 The scale $s=0.5$ corresponds (via Eq.~(\ref{eq:sigma_s}) and Eq.~(\ref{eq:scale_dil})) to the smaller detectable radius $R_{min}\approx \unit{3.5}{px}$ ($\sigma_0=1.6$, $n=3$). In order to detect small objects, \citet{Lowe2004} recommends to double the size of the input image using linear interpolation prior to building the first level of the pyramid. This method fares relatively well in noiseless images (see Fig.~\ref{fig:perfect}a) despite larger errors, but we found that it has to be use with care in confocal images due to noise and deconvolution artefacts. In addition doubling image size implies a 8-fold increase in memory consumption (reaching \unit{60}{\giga b} in the case of a $(\unit{512}{px})^3$ original image). Our implementation allows this on $\unit{64}{byte}$ computers by relying on memory mapped files, nevertheless it is mostly impractical. All following tests results are obtained without relying on doubled images.
 
+\subsection*{Edge and overlap removal}
+
+The difference-of-Gaussian function has a strong response not only at the center of bright objects but also along there edges. To eliminate these spurious detections, \citet{Lowe2004} suggests to construct the local Hessian matrix around each minimum of the DoG and then compare its eigenvalues to identify elongated objects.
+
+We found that this was often not enough, especially in crowded environments. Using the above radius, we looked for pairs of particles closer to each other than the larger of their radii. This means the centre of one of the particles is situated inside the other. In the physical systems we study, this cannot be correct due to excluded volume effects, thus we remove the feature of lesser DoG response. One may be tempted to implement a hard core exclusion (no pair of particle closer than the sum of their radii) to eliminate even more spurious detection. We found that the gain was extremely limited ($0.01\%$ of the detected features suppressed) and that imprecision in positioning or in sizing caused valid particles to be discarded.
+
+We note that the orientation of non-spherical particles or the deformation of soft objects can be monitored in principle by using the local Hessian matrix.
+
 \subsection*{Finite dilution}
 The Gaussian (and DoG) response of a particle decays rapidly away from its surface (see Eq.~(\ref{eq:split_G}). We found that even at contact the position shift induced by a nearby particle was less than a tenth of a pixel (see Fig.~\ref{fig:perfect}b). However when two particles are closer than a few times the blurring width, their influence on each other cannot be neglected: the minima of the DoG is effectively shifted toward smaller scales, leading to smaller radii if one uses Eq.~(\ref{eq:scale_dil}) out of the dilute context (see Fig.~\ref{fig:perfect}c).
 
-The response of $N$ particles of radii $\lbrace R_i\rbrace$ can be superimposed at any scale $\sigma$ and at any point of space, in particular we define $DoG_i$ as the response at the center of particle $i$.
+The response of $N$ particles of radii $\lbrace R_i\rbrace$ can be superimposed at any scale $\sigma$ and at any point of space, in particular we define $DoG_i$ as the response at the centre of particle $i$.
 \begin{equation}
 \forall i,\quad DoG_i(\lbrace A_j\rbrace, \lbrace r_{ij}\rbrace, \lbrace R_j\rbrace, \sigma) = \sum_j A_j DoG(r=r_{ij}, R=R_j, \sigma),
 \label{eq:superpos}
 \end{equation}
-where the function $DoG(r,R,\sigma)$ is the response of a particle of radius $R$ at distance $r$ from its center; $r_{ij}$ is the distances between particles $i$ and $j$ and $\lbrace A_i\rbrace$ are the respective brightness of the particles. The \textsc{sift} algorithm yields $\lbrace \sigma_i\rbrace$ so that for all $i$, $DoG_i$ is minimum with respect to $\sigma$ at $\sigma_i$, thus differentiating Eq.~(\ref{eq:superpos}) with respect to $\sigma$:
+where the function $DoG(r,R,\sigma)$ is the response of a particle of radius $R$ at distance $r$ from its centre; $r_{ij}$ is the distances between particles $i$ and $j$ and $\lbrace A_i\rbrace$ are the respective brightness of the particles. The \textsc{sift} algorithm yields $\lbrace \sigma_i\rbrace$ so that for all $i$, $DoG_i$ is minimum with respect to $\sigma$ at $\sigma_i$, thus differentiating Eq.~(\ref{eq:superpos}) with respect to $\sigma$:
 \begin{equation}
 \forall i,\quad \frac{\partial DoG_i}{\partial\sigma}(\lbrace A_j\rbrace, \lbrace r_{ij}\rbrace, \lbrace R_j\rbrace, \sigma_i) = 0.
 \label{eq:DoG_min}
@@ -203,7 +211,7 @@ G(r,R,\sigma) &= \frac{1}{2}\left( g(r,R,\sigma) + g(-r,R,\sigma)\right)
 g(r,R,\sigma) &= \erf\left(\frac{R+r}{\sigma\sqrt{2}}\right) + \sqrt{\frac{2}{\pi}}\frac{\sigma}{r}e^{-\frac{(R+r)^2}{2\sigma^2}}
 %
 %
-\intertext{At the center of the ball, Eq.~(\ref{eq:split_G}) reduces to}
+\intertext{At the centre of the ball, Eq.~(\ref{eq:split_G}) reduces to}
 G(r=0,R,\sigma) &= \erf\left(\frac{R}{\sigma\sqrt{2}}\right) - \sqrt{\frac{2}{\pi}}\frac{R}{\sigma}e^{-\frac{R^2}{2\sigma^2}}
 \end{align}
 
@@ -221,7 +229,7 @@ DoG(r,R,\sigma,\alpha) &= G(r,R,\alpha\sigma)-G(r,R,\sigma)
 \intertext{and has the partial derivative relative to the scale}
 \frac{\partial DoG}{\partial \sigma}(r,R,\sigma,\alpha) &= \alpha \frac{\partial G}{\partial \sigma}(r,R,\alpha\sigma) - \frac{\partial G}{\partial \sigma}(r,R,\sigma) \label{eq:DoG_ds}
 \end{align}
-When the difference of Gaussians is minimum at the center of the ball, we combine Eq.~(\ref{eq:Gc_ds}) and Eq.~(\ref{eq:DoG_ds}) to get
+When the difference of Gaussians is minimum at the centre of the ball, we combine Eq.~(\ref{eq:Gc_ds}) and Eq.~(\ref{eq:DoG_ds}) to get
 \begin{equation}
 \frac{R}{\sigma\sqrt{2}} = \sqrt{\frac{3\ln \alpha}{1-\alpha^{-2}}} \label{eq:R_dilute}
 \end{equation}
