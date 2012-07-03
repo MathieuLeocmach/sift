@@ -222,14 +222,14 @@ In our tests, we found that this algorithm converges as quickly with and without
 
 \section*{Confocal images}
 \subsection*{Effect of a point spread function}
-Real images suffer from optical limitations, \emph{e.g.} the point-spread function (\textsc{psf}) of the microscope. In particular, spherical particles observed by confocal microscopy seem elongated along $Z$. The influence of such anisotropic distortion on the Gaussian and DoG responses is not trivial and most of the equations given in Appendix~\ref{sec:gaussian_vs_ball} do not have analytical equivalents. In particular, the minimum of the DoG response is found at larger values of $R/\sigma$, thus the naive use of the methods detailed in previous section lead to overestimate particle sizes.
-
-\begin{figure*}
+\begin{figure}
 \centering
 \includegraphics{fig_deconv.pdf}
-	\caption{\textbf{Deconvolution.} Detail of the same $YZ$ slice of \textbf{a} original confocal image, \textbf{b} previous blurred by $\sigma_0=1.6$, \textbf{c} previous deconvolved by measured kernel (see text). Circles indicate the tracked particles position and size when using whether \textbf{b} or \textbf{c} as first Gaussian layer $G_0$. All three centres are in the slice $\pm \unit{0.5}{px}$}
+	\caption{\textbf{Deconvolution.} Detail of the same $YZ$ slice of \textbf{a} original confocal image, \textbf{b} previous blurred by $\sigma_0=1.6$, \textbf{c} previous deconvolved by measured kernel (see text). Circles indicate the tracked particles position and size when using whether \textbf{b} or \textbf{c} as first Gaussian layer $G_0$. All three centres are in the slice $\pm \unit{0.5}{px}$. \textbf{d} Radial distribution function of sticky spheres localised (blue) without and (red) with deconvolution.}
 	\label{fig:deconv}
-\end{figure*}
+\end{figure}
+
+Real images suffer from optical limitations, \emph{e.g.} the point-spread function (\textsc{psf}) of the microscope. In particular, spherical particles observed by confocal microscopy seem elongated along $Z$. The influence of such anisotropic distortion on the Gaussian and DoG responses is not trivial and most of the equations given in Appendix~\ref{sec:gaussian_vs_ball} do not have analytical equivalents. In particular, the minimum of the DoG response is found at larger values of $R/\sigma$, thus the naive use of the methods detailed in previous section lead to overestimate particle sizes.
 
 In addition, the overlap of neighbouring particle images is no more negligible when the particles are aligned along $Z$. This leads to large imprecision in particle positions, especially in the case of anisotropic environment (e.g. isolated pair of particles, interface, gel). Typically particles centres are often found closer than the sum of their hard core radii, as shown in Fig.~\ref{fig:deconv}b.
 
