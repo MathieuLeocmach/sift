@@ -5,8 +5,9 @@
 \headheight 1.0in
 \topmargin -3.5cm
 \textheight 22cm
-\usepackage[super,sort&compress,comma]{natbib} 
-\usepackage{mhchem}
+\usepackage[super,sort&compress,comma]{natbib}
+\usepackage{amsmath}
+%\usepackage{mhchem}
 \usepackage{times,mathptmx}
 % \usepackage{times}
 % feel free not to use mathptmx if it causes difficulties
@@ -225,13 +226,13 @@ In our tests, we found that this algorithm converges as quickly with and without
 \begin{figure}
 \centering
 \includegraphics{fig_deconv.pdf}
-	\caption{\textbf{Deconvolution.} Detail of the same $YZ$ slice of \textbf{a} original confocal image, \textbf{b} previous blurred by $\sigma_0=1.6$, \textbf{c} previous deconvolved by measured kernel (see text). Circles indicate the tracked particles position and size when using whether \textbf{b} or \textbf{c} as first Gaussian layer $G_0$. All three centres are in the slice $\pm \unit{0.5}{px}$. \textbf{d} Radial distribution function of sticky spheres localised (blue) without and (red) with deconvolution.}
+	\caption{\textbf{Deconvolution.} Detail of the same $YZ$ slice of \textbf{a} original confocal image, \textbf{b} previous blurred by $\sigma_0=1.6$, \textbf{c} previous deconvolved by measured kernel. Circles indicate the tracked particles position and size when using whether \textbf{b} or \textbf{c} as first Gaussian layer $G_0$. All three centres are in the slice $\pm \unit{0.5}{px}$. \textbf{d} Radial distribution function of sticky spheres localised (blue) without and (red) with deconvolution.}
 	\label{fig:deconv}
 \end{figure}
 
 Real images suffer from optical limitations, \emph{e.g.} the point-spread function (\textsc{psf}) of the microscope. In particular, spherical particles observed by confocal microscopy seem elongated along $Z$. The influence of such anisotropic distortion on the Gaussian and DoG responses is not trivial and most of the equations given in Appendix~\ref{sec:gaussian_vs_ball} do not have analytical equivalents. In particular, the minimum of the DoG response is found at larger values of $R/\sigma$, thus the naive use of the methods detailed in previous section lead to overestimate particle sizes.
 
-In addition, the overlap of neighbouring particle images is no more negligible when the particles are aligned along $Z$. This leads to large imprecision in particle positions, especially in the case of anisotropic environment (e.g. isolated pair of particles, interface, gel). Typically particles centres are often found closer than the sum of their hard core radii, as shown in Fig.~\ref{fig:deconv}b.
+In addition, the overlap of neighbouring particle images is no more negligible when the particles are aligned along $Z$. This leads to large imprecision in particle positions, especially in the case of anisotropic environment (e.g. isolated pair of particles, interface, gel). In Fig.~\ref{fig:deconv}d the radial distribution function of almost monodisperse colloids with short range attraction displays a shoulder before its first peak, indicating that particles centres are often found closer than the sum of their hard core radii, as illustrated in Fig.~\ref{fig:deconv}b.
 
 We found that these issues were better addressed by pre-processing the images (as detailed below) rather than post processing the \textsc{sift} output \emph{via} analytical methods.
 
@@ -261,7 +262,7 @@ Once $\mathcal{F}[H]$ is known the deconvolution reduces to a simple division in
 \mathcal{F}_Z[H] &= \sqrt{\frac{\left\langle \left|\mathcal{F}_Z[y_0]\right|^2\right\rangle}{\left\langle\left|\mathcal{F}_X[y_0]\right|^2 \right\rangle}}
 \end{align}
 
-Figure~\ref{fig:deconv} shows the particles localized from the original image and from the deconvolved image. Deconvolution mends both size overestimation and imprecision in $z$ coordinate.
+Figure~\ref{fig:deconv}b-c shows the particles localized from the original image and from the deconvolved image. Deconvolution mends both size overestimation and imprecision in $z$ coordinate. This also translates in the radial distribution function (Fig.~\ref{fig:deconv}d), where the shoulder before the first peak disappears.
 
 
 
@@ -302,12 +303,12 @@ Recently \citet{Kurita2011,Kurita2011b} have designed a sizing method using part
 A binary ball $\mathcal{B}_R$ of radius $R$ is convolved by a Gaussian kernel of width $\sigma$. The response at a distance $r$ (along z-axis without loss of generality) is
 
 \begin{align}
-G(r,R,\sigma) &= \frac{1}{(2\pi)^{3/2}\sigma^3} \int_{\mathcal{B}_R}{\exp\left( -\frac{(z-r)^2+y^2+x^2}{2\sigma^2}\right)dx dy dz }
+G(r,R,\sigma) =& \frac{1}{(2\pi)^{3/2}\sigma^3} \int_{\mathcal{B}_R}{e^{ -\frac{(z-r)^2+y^2+x^2}{2\sigma^2}} dx dy dz }
 %
 \intertext{or in spherical coordinates $(\rho, \theta, \phi)$ after integration along $\phi$}
 %
- &= \frac{e^{-\frac{r^2}{2\sigma^2}}}{\sqrt{2\pi}\sigma^3} \int_0^R \rho^2 e^{-\frac{\rho^2}{2\sigma^2}} d\rho \int_0^\pi \sin\theta e^{\frac{\rho r}{\sigma^2}\cos\theta} d\theta \\
- &= \frac{1}{r\sigma\sqrt{2\pi}}\left[ \int_0^R \rho e^{-\frac{(\rho-r)^2}{2\sigma^2}}d\rho - \int_0^R \rho e^{-\frac{(\rho+r)^2}{2\sigma^2}}d\rho \right] 
+=& \frac{e^{-\frac{r^2}{2\sigma^2}}}{\sqrt{2\pi}\sigma^3} \int_0^R \rho^2 e^{-\frac{\rho^2}{2\sigma^2}} d\rho \int_0^\pi \sin\theta e^{\frac{\rho r}{\sigma^2}\cos\theta} d\theta \\
+ =& \frac{1}{r\sigma\sqrt{2\pi}}\left[ \int_0^R \rho e^{-\frac{(\rho-r)^2}{2\sigma^2}}d\rho - \int_0^R \rho e^{-\frac{(\rho+r)^2}{2\sigma^2}}d\rho \right] 
  %
 \intertext{this can be integrated using the error function $\erf$}
 %
