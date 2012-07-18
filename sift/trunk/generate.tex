@@ -149,11 +149,11 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 		ymin=0, ytick=\empty,%
 		no marks,%
 		]
-		\addplot table[x expr ={2*\thisrow{r}}, y=all] {all_ico_icongb_mrco_X.rdist};
+		\addplot+[dashed] table[x expr ={2*\thisrow{r}}, y=all] {all_ico_icongb_mrco_X.rdist};
 		\addplot table [x expr ={2*\thisrow{r}/1.23}, y index=1] {all_ico_icongb_mrco_X.rdist};
 		\draw[->, ultra thick] (axis cs:3.15,3) -- (axis cs: 3.9, 3);% node[right)] {swelling};
 	\end{axis}
-	\node[lab] at (hist.outer south west) {a};
+	\node[lab] at (hist.outer south west) {b};
 	
 	\begin{axis}[%
 		name=srdf,
@@ -170,9 +170,25 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 		\addplot file {yon6.srdf};
 		\legend{$g(r)$, $g(\hat{r})$};
 	\end{axis}
-	\node[lab] at (srdf.outer south west) {b};
+	\node[lab] at (srdf.outer south west) {c};
+	
+	\begin{axis}[%
+		name=peak_pos,%
+		at={(srdf.above north east)},%
+		anchor=below south east,%
+		width=0.925\columnwidth,%
+		height=0.5\columnwidth,%
+		xmin=2, xmax=6, xlabel={detected radius [px]},%
+		ymin=0, ymax=20,%
+		ylabel={Position of the first peak of $g_R(r)$ [px]},
+		y label style={align=center, text width=0.5\columnwidth},%
+		]
+		\addplot+[black,forget plot, no marks, domain=2:6] {3*x};
+		\addplot+[black,only marks, mark=o] file {rdf_peak_pos_radius};
+	\end{axis}
+	\node[lab] at (peak_pos.outer south west) {a};
 	\end{tikzpicture}
-	\caption{\textbf{Sizing} of our colloids. \textbf{a} Size distribution estimated \emph{in situ} (dashed line) by our multiscale algorithm ($\sim 1.8\times 10^6$ instantaneous sizing). Comparison with the size distribution estimated from scanning electron microscopy of only $140$ dry particles (steps) is possible once controlled for $23\%$ of swelling (full line). A careful comparison between confocal images and algorithm output suggest that the thick tail of small particles is not an artefact, thus the relative lack of small particles in the SEM measurement is probably due to bad sampling. \textbf{b} First peak of the radial distribution function with (full line) and without (dashed) the size data. Taking into account the measured sizes rectifies the effect of the polydispersity: the peak is thinner and higher.}
+	\caption{\textbf{\emph{In situ} sizing of colloids in a glass.} \textbf{a,} Position of the first peak of the partial $g_R(r)$ function of the optical radius $R$. Solid line corresponds to a real radius to optical radius ratio of $1.5$. \textbf{b,} Size distribution estimated \emph{in situ} (dashed line) by our multiscale algorithm ($\sim 10^7$ instantaneous sizing). Comparison with the size distribution estimated from \textsc{sem} of only $140$ dry particles (steps) is possible once $23\%$ of swelling of particle diameters is taken into account (full line). \textbf{c,} First peak of the radial distribution function with (full line) and without (dashed) the individual sizes data. Taking into account the measured sizes rectifies the effect of the polydispersity: the peak is thinner and higher.}
 	\label{fig:sizing}
 \end{figure}
 
