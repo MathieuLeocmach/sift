@@ -236,12 +236,12 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 \end{figure}
 
 
-\tikzset{external/force remake=false}
+\tikzset{external/force remake}
 \tikzsetnextfilename{perfect}
 \begin{figure*}
 	\centering
 	\begin{tikzpicture}[
-		lab/.style={above right, text height=0.8em, text depth=0.2em, font=\Large\bfseries}%
+		lab/.style={anchor=south west, text height=0.8em, text depth=0.2em, font=\Large\bfseries}%
 		]%
 	\pgfplotsset{cycle list name=black white}
 	\begin{axis}[%
@@ -252,8 +252,8 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 		extra y ticks={0}, extra y tick labels={}
 		]
 		\addplot table [x index=0, y expr ={100*(\thisrowno{1}/\thisrowno{0}-1)}] {multiscale_relative_sizes.out};
-		\node[lab] at (rel axis cs:0,0) {a};
 	\end{axis}
+	\node[lab] at (errorsize.outer south west) {a};
 		
 	\begin{axis}[%
 		xlabel near ticks,ylabel near ticks,
@@ -270,6 +270,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\end{axis}
 	
 	\begin{axis}[%
+		name=dist_er,
 		at={(0.5\textwidth,0)},%
 		width=0.45\textwidth,%
 		xlabel={$r_{ij}$ (px)}, ylabel={$r_{ij}$ error (\unit{0.01}{px})},%
@@ -284,10 +285,11 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 		\draw[->] (axis cs:12,-4) -- +(0.03\textwidth,0) node[midway, above] {\unit{4}{px}};
 		\draw[->] (axis cs:16,-4) -- +(-0.03\textwidth,0) node[midway, above] {\unit{4}{px}};
 		\draw[->, very thick] (axis cs:16,-6) -- (axis cs:14,-6);
-		\node[lab] at (rel axis cs:0,0) {b};
 	\end{axis}
+	\node[lab] at (dist_er.outer south west) {b};
 	
 	\begin{axis}[%
+		name=near_R,
 		at={(0.5\textwidth,-0.4\textwidth)},%
 		width=0.45\textwidth,%
 		xlabel={$r_{ij}$ (px)}, ylabel={$R$ (px)},%
@@ -299,10 +301,11 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 		\addplot table [x index=0, y index=4] {close_neighbours3D.out};
 		\addplot+[mark=square] table [x index=0,y index=6] {close_neighbours3D.out};
 		\legend{No correction, One iteration};
-		\node[lab] at (rel axis cs:0,0) {c};
 	\end{axis}
+	\node[lab] at (near_R.outer south west) {c};
 	
 	\begin{axis}[%
+		name=finite,
 		at={(0,-0.4\textwidth)},%
 		width=0.45\textwidth,%
 		area legend,
@@ -319,14 +322,14 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 		\addplot+[pattern=dots] file {john_exact_mono_large_cor2.hist};
 		\legend{No correction, One iteration, Two iterations};
 		\draw[decorate,decoration=brace] (axis cs:4.75, 200) -- (axis cs:5.05, 200) node[midway, above] {edges};
-		\node[lab] at (rel axis cs:0,0) {d};
 	\end{axis}
+	\node[lab] at (finite.outer south west) {d};
 	\end{tikzpicture}
 	\caption{\textbf{Results from perfect images.} \textbf{a} Sizing of an isolated sphere. Left of the vertical line our algorithm uses a doubled image. \textbf{b} Localisation error and \textbf{c} sizing error function of the distance between two particles. Oscillations are due to off-lattice centre position. \textbf{d} Size distribution extracted from digitized configuration of 4000 monodisperse hard spheres at $0.50$ volume fraction (vertical line indicates the input radius). The tail to the right is due to particles on the edges of the image who have fewer neighbours and thus are more `dilute'. \textbf{c} and \textbf{d} also show the effect of finite dilution correction up to convergence.}
 	\label{fig:perfect}
 \end{figure*}
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{size_struc}
 \begin{figure}
 	\centering
