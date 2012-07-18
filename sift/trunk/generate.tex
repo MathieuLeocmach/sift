@@ -123,7 +123,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\label{fig:localise}
 \end{figure*}
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{sizing}
 \begin{figure}
 	\centering
@@ -325,5 +325,43 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\caption{\textbf{Results from perfect images.} \textbf{a} Sizing of an isolated sphere. Left of the vertical line our algorithm uses a doubled image. \textbf{b} Localisation error and \textbf{c} sizing error function of the distance between two particles. Oscillations are due to off-lattice centre position. \textbf{d} Size distribution extracted from digitized configuration of 4000 monodisperse hard spheres at $0.50$ volume fraction (vertical line indicates the input radius). The tail to the right is due to particles on the edges of the image who have fewer neighbours and thus are more `dilute'. \textbf{c} and \textbf{d} also show the effect of finite dilution correction up to convergence.}
 	\label{fig:perfect}
 \end{figure*}
+
+\tikzset{external/force remake}
+\tikzsetnextfilename{size_struc}
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[
+		lab/.style={above right, text height=0.8em, text depth=0.2em, font=\Large\bfseries}%
+		]%
+	\begin{groupplot}[%
+		group style={
+			group name=distrib,
+			group size=1 by 2,
+			},%
+		width=\columnwidth,%
+		height=0.5\columnwidth,%
+		no marks,%
+		xlabel={$R$ [$\micro\metre$]}, xmin=0.8, xmax=2.5,%
+		ylabel={Size distribution}, ymin=0, ymax=12,%
+		legend style={legend pos=north west},
+		]
+		\nextgroupplot
+		\addplot table[x=r, y=all] {all_ico_icongb_mrco_X.rdist};
+		\addplot table[x=r, y=mrco] {all_ico_icongb_mrco_X.rdist};
+		\addplot table[x=r, y=X] {all_ico_icongb_mrco_X.rdist};
+		\legend{all, \textsc{mrco}, crystalline};
+		
+		\nextgroupplot
+		\addplot table[x=r, y=all] {all_ico_icongb_mrco_X.rdist};
+		\addplot table[x=r, y=ico] {all_ico_icongb_mrco_X.rdist};
+		\addplot table[x=r, y=icongb] {all_ico_icongb_mrco_X.rdist};
+		\legend{all, ico. centre, ico. surf.};
+	\end{groupplot}
+	\node[lab, above right=0 of distrib c1r1.outer south west] {a};
+	\node[lab, above right=0 of distrib c1r2.outer south west] {b};
+	\end{tikzpicture}
+	\caption{\textbf{Size distribution within local structures in a hard sphere colloidal glass.} \textbf{a} With increasing local crystalline order: all particles, MRCO particles ($Q_6>0.25$) and crystalline particles ($Q_6>0.4$). Crystalline ordered regions are less polydisperse. \textbf{b} Particles at the centre or on the surface of icosahedra ($w_6<-0.023$). A small central particle with large surface particles tend to stabilize icosahedra.}
+	\label{fig:size_struc}
+\end{figure}
 
 \end{document}
