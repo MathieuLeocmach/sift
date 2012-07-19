@@ -123,7 +123,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\label{fig:localise}
 \end{figure*}
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{sizing}
 \begin{figure}
 	\centering
@@ -347,7 +347,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\label{fig:perfect}
 \end{figure*}
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{size_struc}
 \begin{figure}
 	\centering
@@ -383,6 +383,50 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\end{tikzpicture}
 	\caption{\textbf{Size distribution within local structures in a hard sphere colloidal glass.} \textbf{a} With increasing local crystalline order: all particles, MRCO particles ($Q_6>0.25$) and crystalline particles ($Q_6>0.4$). Crystalline ordered regions are less polydisperse. \textbf{b} Particles at the centre or on the surface of icosahedra ($w_6<-0.023$). A small central particle with large surface particles tend to stabilize icosahedra.}
 	\label{fig:size_struc}
+\end{figure}
+
+\tikzset{external/force remake}
+\tikzsetnextfilename{applications}
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[
+		lab/.style={above right, text height=0.8em, text depth=0.2em, font=\Large\bfseries}%
+		]%
+		\begin{groupplot}[%
+		group style={
+			group size=2 by 1,
+			horizontal sep=0.01\textwidth,
+			},%
+		width=0.48\columnwidth,%
+		height=0.48\columnwidth,%
+		axis lines=none,%
+		scale only axis=true,%
+		point meta=explicit symbolic,%
+        scatter/@post marker code/.code={\endscope} 
+		]
+		\nextgroupplot[xmin=0,xmax=511,ymin=0,ymax=511,%
+			scatter/@pre marker code/.code={%
+        	\pgfmathparse{1.5*\pgfplotspointmetatransformed*\pgfplotsunitxlength}%
+            \def\markopts{mark=o,blue,mark size=\pgfmathresult}%
+            \expandafter\scope\expandafter[\markopts]
+            },]
+			\addplot graphics [xmin=0,xmax=511,ymin=0,ymax=511]{microfluidic.png};
+			\addplot+[only marks, scatter] table [x index=0, y expr={511-\thisrowno{1}}, meta index=2] {microfluidic.xyr};
+			\draw[ultra thick, white] (axis cs:25,490) -- (axis cs:125,490)  node[midway, below]{200\micro\metre};
+			
+		\nextgroupplot[xmin=0,xmax=1500,ymin=0,ymax=1500,%
+			scatter/@pre marker code/.code={%
+        	\pgfmathparse{0.15*\pgfplotspointmetatransformed*\pgfplotsunitxlength}%
+            \def\markopts{mark=o,blue,mark size=\pgfmathresult}%
+            \expandafter\scope\expandafter[\markopts]
+            },]
+			\addplot graphics [xmin=0,xmax=1500,ymin=0,ymax=1500]{llt.png};
+			\addplot+[only marks, scatter] table [x index=0, y expr={1500-\thisrowno{1}}, meta index=2] {llt.xyr};
+			%\draw[ultra thick, white] (axis cs:25,490) -- (axis cs:125,490)  node[midway, below]{200\micro\metre};
+		\end{groupplot}
+	\end{tikzpicture}
+	\caption{\textbf{Other application.} \textbf{a} Fluorescent droplets in a microfluidic device. \textbf{b} Crystal nucleation under phase contrast microscope. The circles are the result of our algorithm.}
+	\label{fig:applications}
 \end{figure}
 
 \end{document}
