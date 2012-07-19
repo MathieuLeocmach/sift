@@ -270,17 +270,19 @@ Figure~\ref{fig:deconv}b-c shows the particles localized from the original image
 
 The method exposed above relies on the uniformity of the brightness within each particle to extract optical radii that is a good approximation to the physical (hard core) radii. However a colloidal particle often shows a smooth intensity profile under the microscope, less bright at the edge than at the center of the particle. This can be due to inhomogeneous fixation of the dye during the colloid synthesis, but the bottom line is the in-plane \textsc{psf} corresponding to the wavelength of light, not corrected for in our above deconvolution method.
 
-Under such conditions, the particles are detected smaller than their expected size. We estimate the hard-core diameter function of the detected radius $R$ by locating the first peak of the partial radial distribution function $g_R(r)$ of the particles having $R_i$ close to $R$. As shown in Fig.~\ref{fig:sizing}a, the ratio between the hard-core radius and the optical radius can be as large as $1.5$ but is rather constant, thus a single overall scaling factor is enough. It can be determined by a single partial $g_R(r)$ with $R$ near the peak of the size distribution, or by locating the peak of $g(\hat{r})$. 
+Under such conditions, the particles are detected smaller than their expected size. The real to optical size ratio has to be set using our knowledge of the sample. For example one may use the position of the first peak of the $g(r)$ to measure the average hard-core diameter. In general the real to optical size ratio may depends on the size of the particles and may evolve in time (i.e. because of photobleaching). We present below a detailed analysis of these issues for a case system.
 
 We also note that darker edges lead to smaller influence of a particle on the DoG response of its neighbours. A smaller optical radius makes the particles optically further from each other. Accordingly, we found that finite dilution corrections were less important in real images than in our synthetic test images. For the same reason, the scaling factor must be applied after --- \emph{not} before --- finite dilution corrections.
 
 
-\section*{Study of a colloidal hard sphere supercooled liquid}
+\section*{Case study of a colloidal hard sphere supercooled liquid}
 
 \subsection*{Experimental}
 We used \textsc{pmma} (poly(methyl methacrylate)) colloids sterically stabilized with methacryloxypropyl terminated \textsc{pdms} (poly(dimethyl siloxane)) and fluorescently labelled with rhodamine isothiocyanate chemically bonded to the \textsc{pmma}. The colloids were suspended in a solvent mixture of cis-decalin and cyclohexyl-bromide for both optical index and density matching. To screen any (weak) electrostatic interactions, we dissolved tetrabutylammonium bromide salt, to a concentration of \unit{300}{\nano\mole\per\liter}~\citep{royall2005}. The estimated Debye screening length is \unit{13}{\nano\metre}, well below the length scale of the colloids that can be considered as hard spheres. The \unit{8}{bit} graylevel data was collected on a Leica SP5 confocal microscope, using \unit{532}{\nano\meter} laser excitation and voxel size of $(\unit{283}{\nano\metre})^2\times\unit{293}{\nano\metre}$.
 
 \subsection*{Global polydispersity}
+
+We localise the particles using our method, removed half-overlapping features and applied a single iteration of finite dilution corrections for both intensities and radii to obtain the optical radius of each particle. We then estimate the hard-core diameter function of the optical radius $R$ by locating the first peak of the partial radial distribution function $g_R(r)$ of the particles having $R_i$ close to $R$. As shown in Fig.~\ref{fig:sizing}a, the real to optical size ratio is around $1.5$ and is rather constant respective to $R$, thus a single overall scaling factor is enough. It can be determined by a single partial $g_R(r)$ with $R$ near the peak of the size distribution, or by locating the peak of $g(\hat{r})$. However, we found that this ratio was increasing with time due to photobleaching. We fit this increase by a linear relation and applied the resulting time-dependent ratio to obtain the real size of each particles.
 
 \begin{figure}
 \centering
