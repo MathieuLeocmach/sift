@@ -282,7 +282,7 @@ We used \textsc{pmma} (poly(methyl methacrylate)) colloids sterically stabilized
 
 \subsection*{Global polydispersity}
 
-We localise the particles using our method, removed half-overlapping features and applied a single iteration of finite dilution corrections for both intensities and radii to obtain the optical radius of each particle. We then estimate the hard-core diameter function of the optical radius $R$ by locating the first peak of the partial radial distribution function $g_R(r)$ of the particles having $R_i$ close to $R$. As shown in Fig.~\ref{fig:sizing}a, the real to optical size ratio is around $1.5$ and is rather constant respective to $R$, thus a single overall scaling factor is enough. It can be determined by a single partial $g_R(r)$ with $R$ near the peak of the size distribution, or by locating the peak of $g(\hat{r})$. However, we found that this ratio was increasing with time due to photobleaching. We fit this increase by a linear relation and applied the resulting time-dependent ratio to obtain the real size of each particles.
+We localise the particles using our method, removed half-overlapping features and applied a single iteration of finite dilution corrections for both intensities and radii to obtain the optical radius of each particle. We then estimate the hard-core diameter function of the optical radius $R$ by locating the first peak of the partial radial distribution function $g_R(r)$ of the particles having $R_i$ close to $R$. As shown in Fig.~\ref{fig:sizing}a, the real to optical size ratio is around $1.5$ and is rather constant respective to $R$, thus a single overall scaling factor is enough. It can be determined by a single partial $g_R(r)$ with $R$ near the peak of the size distribution, or by locating the peak of $g(\hat{r})$, with $\hat{r}_{ij} = r_{ij}/(R_i+R_j)$. However, we found that this ratio was increasing with time due to photobleaching. We fit this increase by a linear relation and applied the resulting time-dependent ratio to obtain the real size of each particles.
 
 \begin{figure}
 \centering
@@ -293,9 +293,22 @@ We localise the particles using our method, removed half-overlapping features an
 
 Figure~\ref{fig:sizing}b shows the size distribution only $140$ dry colloids measured on high resolution scanning electron microscopy (\textsc{sem}) images. We also show the size distribution obtained by our \emph{in situ} measurements ($\sim 1.7\times 10^6$ instantaneous sizing in a $\approx 0.57$ volume fraction suspension). The later compares well with the former once a solvent swelling of $23\%$ in radius is taken into account. The polydispersity measured \emph{in situ} is $6.9\%$, where the polydispersity computed from \textsc{sem} is $6.2\%$.
 
-The consistency of our method can be checked by constructing the radial distribution function $g(r)$. In monodisperse hard spheres, the $g(r)$ has a sharp first peak at $r=2R$ corresponding to hard core contact. Polydispersity implies hard core contacts at various $r$ and thus broadens the peak. One can recover a sharp peak by constructing $g(\hat{r})$, with $\hat{r}_{ij} = r_{ij}/(R_i+R_j)$. In Fig.~\ref{fig:sizing}c we successfully used the sizes measured by our method to rectify the first peak.
+The consistency of our method can be checked by constructing the radial distribution function $g(r)$. In monodisperse hard spheres, the $g(r)$ has a sharp first peak at $r=2R$ corresponding to hard core contact. Polydispersity implies hard core contacts at various $r$ and thus broadens the peak. One can recover a sharp peak by constructing $g(\hat{r})$. In Fig.~\ref{fig:sizing}c we successfully used the sizes measured by our method to rectify the first peak.
 
 \subsection*{Polydispersity and structural heterogeneity}
+
+Hard sphere supercooled liquids contain both medium ranged crystal-like ordering (\textsc{mrco}) and local icosahedral ordering~\cite{Leocmach2012}. The later acts as a frustration against the expansion of the former and thus against crystallisation. Both kind of strucures can be detected using bond orientational order (\textsc{boo})~\citet{steinhardt1983boo}. As we have described elsewhere~\cite{Leocmach2012}, crystal-like bond ordering is well described by the scalar bond order parameter $Q_6$, and the icosahedral bond ordering by $w_6$. \textsc{fcc} or \textsc{hcp} crystals under thermal vibrations typically have $Q_6>0.4$~\cite{Lechner2008}. We distinguish \textsc{mrco} from liquid structures by a threshold at $Q_6=0.25$. The perfect 13 particles icosahedron is the minimum of $w_6$, at negative values. We consider that a neighbourhood is icosahedral when $w_6<-0.023$.
+
+\begin{figure}
+	\centering
+	\includegraphics{fig_size_struc.pdf}
+	\caption{\textbf{Size distribution within local structures in a hard sphere colloidal glass.} \textbf{a} With increasing local crystalline order: all particles, MRCO particles ($Q_6>0.25$) and crystalline particles ($Q_6>0.4$). Crystalline ordered regions are less polydisperse. \textbf{b} Particles at the centre or on the surface of icosahedra ($w_6<-0.023$). A small central particle with large surface particles tend to stabilize icosahedra.}
+	\label{fig:size_struc}
+\end{figure}
+
+In Fig.~\ref{fig:size_struc}, we compare the overall size distribution to the size distribution within each remarkable structure. We note that the tail of small particles characteristic of our overall size distribution is less important in \textsc{mrco} and almost disappears in well-formed crystals (Fig.~\ref{fig:size_struc}a). However, the width of the main peak of the distribution does not change significantly upon crystal-like ordering. This means that a small amount of polydispersity is acceptable inside the (defective) crystalline lattice, however \textsc{mrco} cannot appear where markedly smaller particles are present.
+
+In contrast to a crystal where all the particles are equivalent, the roles of the particle at the centre of an icosahedron and of the particles surrounding it are asymmetric. The size distribution of the particles at the surface of icosahedra is rather close to the \textsc{mrco} with less small particles than average. The size distribution of the particles at the center of icosahedra features a low main peak and a second peak, absent in all the other species, about at $80\%$ smaller radii. The tail at small sizes is comparable to the overall size distribution. A centre to surface size ratio of $0.8$ seems to stabilize icosahedral order.
 
 \section*{Other applications}
 
