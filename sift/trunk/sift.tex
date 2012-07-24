@@ -94,7 +94,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 
 %\date{Received \today}
 
-\section*{Introduction}
+\section{Introduction}
 
 Experimental physicists often need to recognize objects, count them, follow them and characterise them. \citet{perrin} had to count colloids by hand to establish the sedimentation-diffusion equilibrium. Nowadays computer vision algorithms are used routinely in the lab to track hundreds of thousands of objects as diverse as stars in a galaxy~\cite{Bertin1996}, tracers in a microfluidic device~\cite{Wereley2010}, dust in a plasma or viruses in a living cell~\cite{Brandenburg2007}. In all these cases, tracking is possible if the particles are either point-like and far apart, or several pixel wide and almost monodisperse in size. To our knowledge, algorithm that allow tracking of polydisperse particles in crowded environments have not reached the softmatter community.
 
@@ -115,9 +115,10 @@ However, we found that no such ``good blur width'' exists in a sample of moderat
 
 The key notion to detect objects of unknown and possibly diverse sizes in an image is the \emph{scale space}~\cite{Lindeberg1993}. A popular implementation for isotropic objects (or ``blobs'') is the Scale Invariant Feature Transform (\textsc{sift}) of \citet{Lowe2004}. It is often used to match between different images from complex objects consisting of many rigidly linked blobs (e.g. to create a large scale image from overlapping pictures)~\citep{Lowe2004, Urschler2006, Cheung2009}. To our knowledge, this method was never used for the quantitative localisation and sizing of independent single-blob objects like spherical colloids, droplets in an emulsion or crystal nuclei.
 
-In the following part, we will describe our localisation method and its results on synthetic but more and more realistic data. In the second part of the paper, we will focus on the specific case of 3D confocal data. In the third part we will apply our method to a supercooled liquid of polydisperse hard spheres observed by confocal microscopy and extract local polydispersity. Finally in the last part we will show more briefly other applications that we deem useful for the soft matter and microfluidics communities, including 2D data of wide field fluorescent microscopy and phase contrast microscopy.
+In Section~\ref{sec:method}, we will describe our localisation method and its results on synthetic but more and more realistic data. In Section~\ref{sec:confocal} of the paper, we will focus on the specific case of 3D confocal data. In Section~\ref{sec:yon6} we will apply our method to a supercooled liquid of polydisperse hard spheres observed by confocal microscopy and extract local polydispersity. Finally in the last part we will show more briefly other applications that we deem useful for the soft matter and microfluidics communities, including 2D data of wide field fluorescent microscopy and phase contrast microscopy.
 
-\section*{Localisation and sizing method}
+\section{Localisation and sizing method}
+\label{sec:method}
 
 \begin{figure*}
 \centering
@@ -128,7 +129,7 @@ In the following part, we will describe our localisation method and its results 
 
 In this section, we will start by recalling the principle of \textsc{sift}, then we will explain our method in the ideal case of an isolated binary ball, to add successively finite dilution and difference in brightness between the particles. Here we assume perfect noiseless, distortion-free, images. The objects to localise are thus (pixellised) balls of uniform intensity. To mimic the low resolution of experimental images in our test images (see Fig.~\ref{fig:perfect}), we draw uniformly white balls on a 4 to 16 times larger image and then we reduce accordingly the resolution using area resampling.
 
-\subsection*{Scale invariant feature transform}
+\subsection{Scale invariant feature transform}
 The \textsc{sift} consists in convolving the original image $I$ by Gaussian kernels $g_{\sigma_s}$ of logarithmically increasing widths $\sigma_s$ to obtain a series of blurred images $G_s$
 \begin{align}
 \forall s>0,\quad G_s = I \star g_{\sigma_s}, \label{eq:gaussian_blur}\\
@@ -146,12 +147,12 @@ As in the case of the \citet{Crocker1996} algorithm, the \textsc{sift} can be ex
 
 We stress that a volumetric implementation of \textsc{sift} implies a large amount of data (typically more than \unit{1}{\giga b} for a $(\unit{256}{px})^3$ picture) and thus requires careful memory management.
 
-\subsection*{Sub-pixel and sub-scale resolution}
+\subsection{Sub-pixel and sub-scale resolution}
 The DoG constructed above is defined on a $d+1$ dimensional grid, with $d$ the spatial dimensionality. One can interpolate it as a continuous function of the position $\vec{r}$ and the scale $s$ and thus localise the minima with a precision below the grid size, which corresponds to sub-pixel resolution on the position and sub-scale sizing~\citep{Lowe2004}. We found that second order estimate of the spatial derivatives and first order estimates of the scale derivatives gave the best precision.
 
 The object-by-object optimal scale determination allows us to perform the spatial sub-pixel resolution step for each object on an image that is blurred just enough to have neither a flat intensity profile nor affected by the overlap with a nearby object's blob. We found that if for a given object the DoG is minimum at $\sigma_s$, the best image to use is $G_{s-1}$. This leads to a spatial resolution below $0.1$~pixels when two $8$-pixels wide particles are at hard-core contact, and less than $0.02$~pixels error ($0.3\%$ of the diameter) when any other particle's surface is further than $1$~pixel from the surface of the particle of interest (see Fig.~\ref{fig:perfect}b).
 
-\subsection*{Sizing at infinite dilution}
+\subsection{Sizing at infinite dilution}
 
 The analytical response of a binary ball to a Gaussian blur, at the centre of the ball is a function of dimensionless ratio $x=R/\sqrt{2}\sigma$: $G(x)$ (see Appendix~\ref{sec:gaussian_vs_ball} for an exact expression). The DoG response function is the difference between the two such functions. However, the choice of the width of the two functions is not arbitrary: we make the difference between two consecutive blurred images, the image blurred by $\sigma_{j+1}$ and the image blurred by $\sigma_j$. Therefore, in each of our discrete DoG images the value at the centre of the particle can be expressed as
 \begin{align}
@@ -169,7 +170,7 @@ Practically one obtains $\sigma^*$, the value of $\sigma$ that minimises $DoG(R,
 
 The scale $s=0.5$ corresponds (via Eq.~(\ref{eq:sigma_s}) and Eq.~(\ref{eq:scale_dil})) to the smaller detectable radius $R_{min}\approx \unit{3.5}{px}$ ($\sigma_0=1.6$, $n=3$). In order to detect small objects, \citet{Lowe2004} recommends to double the size of the input image using linear interpolation prior to building the first level of the pyramid. This method fares relatively well in noiseless images (see Fig.~\ref{fig:perfect}a) despite larger errors, but we found that it has to be use with care in confocal images due to noise and deconvolution artefacts. In addition doubling image size implies a 8-fold increase in memory consumption (reaching \unit{60}{\giga b} in the case of a $(\unit{512}{px})^3$ original image). Our implementation allows this on $\unit{64}{byte}$ computers by relying on memory mapped files, nevertheless it is mostly impractical. All following tests results are obtained without relying on doubled images.
 
-\subsection*{Edge and overlap removal}
+\subsection{Edge and overlap removal}
 
 The difference-of-Gaussian function has a strong response not only at the center of bright objects but also along their edges. To eliminate these spurious detections, \citet{Lowe2004} suggests to construct the local Hessian matrix around each minimum of the DoG and then compare its eigenvalues to identify elongated objects.
 
@@ -177,7 +178,7 @@ We found that this was often not enough, especially in crowded environments wher
 
 We note that the orientation of non-spherical particles or the deformation of soft objects can be monitored in principle by using the local Hessian matrix.
 
-\subsection*{Finite dilution}
+\subsection{Finite dilution}
 The Gaussian (and DoG) response of a particle decays rapidly away from its surface (see Eq.~(\ref{eq:split_G}). We found that even at contact the position shift induced by a nearby particle was less than a tenth of a pixel (see Fig.~\ref{fig:perfect}b). However when two particles are closer than a few times the blurring width, their influence on each other cannot be neglected: the minima of the DoG is effectively shifted toward smaller scales, leading to smaller radii if one uses Eq.~(\ref{eq:scale_dil}) out of the dilute context (see Fig.~\ref{fig:perfect}c).
 
 The response of $N$ particles of radii $\lbrace R_i\rbrace$ can be superimposed at any scale $\sigma$ and at any point of space, in particular we define $DoG_i$ as the response at the centre of particle $i$.
@@ -206,7 +207,7 @@ Using Eq.~(\ref{eq:superpos}), the elements of the matrix simplify to
 
 In principle Eq.~(\ref{eq:Newton}) is a $N\times N$ system of equations. However the DoG functions and its derivatives are rapidly decaying functions, thus the matrices are actually very sparse (about as many non-zero coefficients as particles in the first coordination shell), alleviating dramatically the computational burden when using sparse system solvers. Figure~\ref{fig:perfect}c shows the result of such correction for two identical particles, where Eq.~(\ref{eq:Newton}) converges in a single iteration. In many body case (see Fig.~\ref{fig:perfect}d) convergence is reached in two iterations. However the extremely low error of the dilute case is not totally recovered ($\approx 3\%$ relative error rather than $0.3\%$).
 
-\subsection*{Brightnesses}
+\subsection{Brightnesses}
 
 To solve Eq.~(\ref{eq:Newton}), one needs knowledge of the brightnesses $\lbrace A_i\rbrace$. In a first approximation, they can be assumed equal to a constant, which allow to simplify them out. This is often a sensible approximation. Nevertheless, the particles in an experimental image are not uniformly bright due to synthesis imperfection (quantity of dye fixed by each particle) and photo bleaching. If one does not take into account the relative brightness of the particles the less bright will appear smaller.
 
@@ -223,8 +224,10 @@ To sum up, the coefficients $\lbrace A_i\rbrace$ can be computed along with the 
 
 In our tests, we found that this algorithm converges as quickly with and without the brightness determination.
 
-\section*{Confocal images}
-\subsection*{Effect of a point spread function}
+\section{Confocal images}
+\label{sec:confocal}
+
+\subsection{Effect of a point spread function}
 \begin{figure}
 \centering
 \includegraphics{fig_deconv.pdf}
@@ -238,7 +241,7 @@ In addition, the overlap of neighbouring particle images is no more negligible w
 
 We found that these issues were better addressed by pre-processing the images (as detailed below) rather than post processing the \textsc{sift} output \emph{via} analytical methods.
 
-\subsection*{Deconvolution}
+\subsection{Deconvolution}
 The image $y$ acquired by a microscope can be expressed as 
 \begin{equation}
 y = x \star h + \epsilon
@@ -266,7 +269,7 @@ Once $\mathcal{F}[H]$ is known the deconvolution reduces to a simple division in
 
 Figure~\ref{fig:deconv}b-c shows the particles localized from the original image and from the deconvolved image. Deconvolution mends both size overestimation and imprecision in $z$ coordinate. This also translates in the radial distribution function (Fig.~\ref{fig:deconv}d), where the shoulder before the first peak disappears.
 
-\subsection*{From optical to hard-core radius}
+\subsection{From optical to hard-core radius}
 
 The method exposed above relies on the uniformity of the brightness within each particle to extract optical radii that is a good approximation to the physical (hard core) radii. However a colloidal particle often shows a smooth intensity profile under the microscope, less bright at the edge than at the center of the particle. This can be due to inhomogeneous fixation of the dye during the colloid synthesis, but the bottom line is the in-plane \textsc{psf} not corrected for in our above deconvolution method.
 
@@ -275,12 +278,15 @@ Under such conditions, the particles are detected smaller than their expected si
 We also note that darker edges lead to smaller influence of a particle on the DoG response of its neighbours. A smaller optical radius makes the particles optically further from each other. Accordingly, we found that finite dilution corrections were less important in real images than in our synthetic test images. For the same reason, the scaling factor must be applied after --- \emph{not} before --- finite dilution corrections.
 
 
-\section*{Case study of a colloidal hard sphere supercooled liquid}
+\section{Case study of a colloidal hard sphere supercooled liquid}
+\label{sec:yon6}
 
-\subsection*{Experimental}
+\subsection{Experimental}
 We used \textsc{pmma} (poly(methyl methacrylate)) colloids sterically stabilized with methacryloxypropyl terminated \textsc{pdms} (poly(dimethyl siloxane)) and fluorescently labelled with rhodamine isothiocyanate chemically bonded to the \textsc{pmma}. The colloids were suspended in a solvent mixture of cis-decalin and cyclohexyl-bromide for both optical index and density matching. To screen any (weak) electrostatic interactions, we dissolved tetrabutylammonium bromide salt, to a concentration of \unit{300}{\nano\mole\per\liter}~\citep{royall2005}. The estimated Debye screening length is \unit{13}{\nano\metre}, well below the length scale of the colloids that can be considered as hard spheres. The \unit{8}{bit} graylevel data was collected on a Leica SP5 confocal microscope, using \unit{532}{\nano\meter} laser excitation and voxel size of $(\unit{283}{\nano\metre})^2\times\unit{293}{\nano\metre}$.
 
-\subsection*{Global polydispersity}
+To allow a more precise density matching, the temperature was controlled on both stage and objective lens. This setup allows to alter the buoyancy by a simple temperature change, thus to set the effective gravity upward, downward or almost null. After careful shear melting, the sample was filled into a $\unit{100}{\micro\metre}\times\unit{1}{\milli\metre}$ capillary (Vitrocom) and set on the microscope stage. We then spent a few days to find the temperature corresponding to exact density matching (within \unit{0.1}{\celsius}). This waiting time was enough for crystallites to form on both top and and bottom walls. Then, we heat up our sample by a few degrees compared to the density-matching temperature in order to make the colloids heavier than the solvent. At the top of the sample (close to the objective lens and thus allowing much clear imaging) the volume fraction drops and all crystallites melt. Finally, we set back the thermostat to the density-matching temperature, allowing the top of the sample to slowly return to its supercooled state. We could then observe the heterogeneous nucleation from the beginning. We tracked the sample from top to bottom and we are thus sure that the crystallite actually form at the wall and do not come from the rest of the sample.
+
+\subsection{Global polydispersity}
 
 We localise the particles using our method, removed half-overlapping features and applied a single iteration of finite dilution corrections for both intensities and radii to obtain the optical radius of each particle. We then estimate the hard-core diameter function of the optical radius $R$ by locating the first peak of the partial radial distribution function $g_R(r)$ of the particles having $R_i$ close to $R$. As shown in Fig.~\ref{fig:sizing}a, the real to optical size ratio is around $1.5$ and is rather constant respective to $R$, thus a single overall scaling factor is enough. It can be determined by a single partial $g_R(r)$ with $R$ near the peak of the size distribution, or by locating the peak of $g(\hat{r})$, with $\hat{r}_{ij} = r_{ij}/(R_i+R_j)$. However, we found that this ratio was increasing with time due to photobleaching. We fit this increase by a linear relation and applied the resulting time-dependent ratio to obtain the real size of each particles.
 
@@ -295,7 +301,7 @@ Figure~\ref{fig:sizing}b shows the size distribution only $140$ dry colloids mea
 
 The consistency of our method can be checked by constructing the radial distribution function $g(r)$. In monodisperse hard spheres, the $g(r)$ has a sharp first peak at $r=2R$ corresponding to hard core contact. Polydispersity implies hard core contacts at various $r$ and thus broadens the peak. One can recover a sharp peak by constructing $g(\hat{r})$. In Fig.~\ref{fig:sizing}c we successfully used the sizes measured by our method to rectify the first peak.
 
-\subsection*{Polydispersity and structural heterogeneity}
+\subsection{Polydispersity and structural heterogeneity}
 
 Hard sphere supercooled liquids contain both medium ranged crystal-like ordering (\textsc{mrco}) and local icosahedral ordering~\cite{Leocmach2012}. The later acts as a frustration against the expansion of the former and thus against crystallisation. Both kind of strucures can be detected using bond orientational order (\textsc{boo})~\citet{steinhardt1983boo}. As we have described elsewhere~\cite{Leocmach2012}, crystal-like bond ordering is well described by the scalar bond order parameter $Q_6$, and the icosahedral bond ordering by $w_6$. \textsc{fcc} or \textsc{hcp} crystals under thermal vibrations typically have $Q_6>0.4$~\cite{Lechner2008}. We distinguish \textsc{mrco} from liquid structures by a threshold at $Q_6=0.25$. The perfect 13 particles icosahedron is the minimum of $w_6$, at negative values. We consider that a neighbourhood is icosahedral when $w_6<-0.023$.
 
@@ -308,17 +314,28 @@ Hard sphere supercooled liquids contain both medium ranged crystal-like ordering
 
 In Fig.~\ref{fig:size_struc}, we compare the overall size distribution to the size distribution within each remarkable structure. We note that the tail of small particles characteristic of our overall size distribution is less important in \textsc{mrco} and almost disappears in well-formed crystals (Fig.~\ref{fig:size_struc}a). However, the width of the main peak of the distribution does not change significantly upon crystal-like ordering. This means that a small amount of polydispersity is acceptable inside the (defective) crystalline lattice, however \textsc{mrco} cannot appear where markedly smaller particles are present.
 
+\begin{figure}
+	\centering
+	\includegraphics{fig_small_expelled.pdf}
+	\caption{\textbf{Heterogeneous nucleation.} Successive computer reconstruction of the first three layers from the wall, every \unit{12}{\hour}, seen from the fluid side. Particles sizes are according to our method. Small ($R<\unit{1.5}{\micro\metre}$) particles are shown in green. Other particles are coloured according to their crystal-like order. Note how the small particles are expelled from the forming crystallites to concentrate in the grain boundaries.}
+	\label{fig:small_expelled}
+\end{figure}
+
+We confirmed this view by looking at the behaviour of small particles during heterogeneous nucleation (Fig.~\ref{fig:small_expelled} and Supplementary Movie 1). Before crystallisation, small particles are scattered randomly and \textsc{mrco} develop where no small particle is present. Then, crystallisation proceeds from the \textsc{mrco}, pushing away the small particles that accumulate in the grain boundaries.
+
 In contrast to a crystal where all the particles are equivalent, the roles of the particle at the centre of an icosahedron and of the particles surrounding it are asymmetric. The size distribution of the particles at the surface of icosahedra is almost identical to the overall size distribution, however the size distribution of the particles at the center of icosahedra features a long shoulder towards small sizes that ends at radii about $80\%$ smaller than the main peak. A centre to surface size ratio between $1$ and $0.8$ seems to stabilize icosahedral order.
 
-\section*{Other applications}
+We also checked the difference between \textsc{fcc} ($w_4<0$) and \textsc{hcp} ($w_4>0$) to find that they have both exactly the same size distribution (not shown).
 
-\subsection*{Nucleation rate in a molecular liquid}
+\section{Other applications}
+\label{sec:other_applications}
+\subsection{Nucleation rate in a molecular liquid}
 
-\subsection*{Tracking droplets in a microfluidic device}
+\subsection{Tracking droplets in a microfluidic device}
 
 Fluorescently labelled water-in-oil droplets obtained by standard microfluidic procedures~\cite{Montagne2011}
 
-\section*{Conclusion}
+\section{Conclusion}
 Recently \citet{Kurita2011,Kurita2011b} have designed a sizing method using particle coordinates from confocal experiments. However their method do not work at the image processing level and relies on coordinates extracted via the \citet{Crocker1996} algorithm which, as described above, is defective when the size distribution is too broad. It may be possible to combine the two methods by feeding our coordinates and size as input to their method. We would expect an increase in sizing precision when the particles are close to contact.
 
 \appendix
