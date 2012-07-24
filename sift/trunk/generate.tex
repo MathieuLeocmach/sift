@@ -28,6 +28,7 @@
 \usetikzlibrary{positioning}
 \usetikzlibrary{plotmarks}
 \usetikzlibrary{patterns}
+\usetikzlibrary{matrix}
 \tikzexternalize
 \tikzsetexternalprefix{fig_}
 \tikzset{external/force remake}
@@ -123,7 +124,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\label{fig:localise}
 \end{figure*}
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{sizing}
 \begin{figure}
 	\centering
@@ -347,7 +348,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\label{fig:perfect}
 \end{figure*}
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{size_struc}
 \begin{figure}
 	\centering
@@ -427,6 +428,27 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\end{tikzpicture}
 	\caption{\textbf{Other application.} \textbf{a} Fluorescent droplets in a microfluidic device. \textbf{b} Crystal nucleation under phase contrast microscope. The circles are the result of our algorithm.}
 	\label{fig:applications}
+\end{figure}
+
+\tikzset{external/force remake}
+\tikzsetnextfilename{small_expelled}
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[
+		lab/.style={above right, text height=0.8em, text depth=0.2em, font=\Large\bfseries}%
+		]%
+		\matrix[matrix of nodes, inner sep=1pt]%
+		{%
+			\includegraphics[width=0.3\columnwidth]{anim_small_boo000.png} & %
+			\includegraphics[width=0.3\columnwidth]{anim_small_boo060.png} & %
+			\includegraphics[width=0.3\columnwidth]{anim_small_boo120.png}\\
+			\includegraphics[width=0.3\columnwidth]{anim_small_boo180.png} & %
+			\includegraphics[width=0.3\columnwidth]{anim_small_boo240.png} & %
+			\includegraphics[width=0.3\columnwidth]{anim_small_boo299.png}\\%
+		};
+	\end{tikzpicture}
+	\caption{\textbf{Heterogeneous nucleation.} Successive computer reconstruction of the first three layers from the wall, every \unit{12}{\hour}, seen from the fluid side. Particles sizes are according to our method. Small ($R<\unit{1.5}{\micro\metre}$) particles are shown in green. Other particles are coloured according to their crystal-like order, from blue ($Q_6=0$) to red ($Q_6>0.55$). Note how the small particles are expelled from the forming crystallites to concentrate in the grain boundaries.}
+	\label{fig:small_expelled}
 \end{figure}
 
 \end{document}
