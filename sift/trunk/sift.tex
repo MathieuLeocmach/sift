@@ -120,8 +120,6 @@ In Section~\ref{sec:method}, we will describe our localisation method and its re
 \section{Localisation and sizing method}
 \label{sec:method}
 
-In this section, we will start by recalling the principle of \textsc{sift}, then we will explain our method in the ideal case of an isolated binary ball, to add successively finite dilution and difference in brightness between the particles. Here we assume perfect noiseless, distortion-free, images. The objects to localise are thus (pixellised) balls of uniform intensity. To mimic the low resolution of experimental images in our test images (see Fig.~\ref{fig:perfect}), we draw uniformly white balls on a 4 to 16 times larger image and then we reduce accordingly the resolution using area resampling.
-
 \subsection{Scale invariant feature transform}
 The \textsc{sift} consists in convolving the original image $I$ by Gaussian kernels $g_{\sigma_s}$ of logarithmically increasing widths $\sigma_s$ to obtain a series of blurred images $G_s$
 \begin{align}
@@ -143,13 +141,17 @@ The difference of Gaussians (DoG) response function defined in this way depends 
 	\label{fig:applications}
 \end{figure}
 
-Because of the inherent polydispersity of many softmatter systems, the possible applications of \textsc{sift} are countless. For example, droplets of an emulsion can be followed through a microfluidic device. Fig.~\ref{fig:applications}a shows the result of \textsc{sift} on a very polydispered and dense emulsion observed by wide-field fluorescence microscopy~\cite{Montagne2011}. When a phase transition proceeds via nucleation growth, the size of the nuclei are very diverse, making their automatic counting difficult by other methods. As shown in Fig.~\ref{fig:applications}b \textsc{sift} allows to count and to measure the size of nuclei during a liquid-liquid transition in a water-glycerol mixture~\cite{Murata2012}.
+Because of the inherent polydispersity of many softmatter systems, the possible applications of \textsc{sift} are countless. For example, droplets of an emulsion can be followed through a microfluidic device. Fig.~\ref{fig:applications}a shows the result of our version of the \textsc{sift} on a very polydispered and dense emulsion observed by wide-field fluorescence microscopy~\cite{Montagne2011}. When a phase transition proceeds via nucleation growth, the size of the nuclei are very diverse, making their automatic counting difficult by other methods. As shown in Fig.~\ref{fig:applications}b the \textsc{sift} allows to count and to measure the size of nuclei during a liquid-liquid transition in a water-glycerol mixture~\cite{Murata2012}.
 
-As in the case of the \citet{Crocker1996} algorithm, the \textsc{sift} can be extended in three dimensions (e.g. confocal images) in two ways: either by extracting 2D blobs independently on each slice and then reconstructing 3D objects (Fig.~\ref{fig:localise}b) or by working directly in three dimensions~\cite{Urschler2006, Cheung2009} (Fig.~\ref{fig:localise}a). We found that the former method is prone to errors, missing about a tenth of the particles in our best implementation (Fig.~\ref{fig:localise}b). The 3D results presented in this paper are obtained solely by the later method.
+However, to the extent of our knowledge, the \textsc{sift} has not been used in a physics context to obtain reliable measurements of particles numbers and sizes from well calibrated images. We will address this reliability in the following.
+
+We will mainly cope with the three-dimensional extension of the \textsc{sift}. As in the case of the \citet{Crocker1996} algorithm, the \textsc{sift} can be extended in three dimensions (e.g. confocal images) in two ways: either by extracting 2D blobs independently on each slice and then reconstructing 3D objects (Fig.~\ref{fig:localise}b) or by working directly in three dimensions~\cite{Urschler2006, Cheung2009} (Fig.~\ref{fig:localise}a). We found that the former method is prone to errors, missing about a tenth of the particles in our best implementation (Fig.~\ref{fig:localise}b). The 3D results presented in this paper are obtained solely by the later method.
 
 We stress that a volumetric implementation of \textsc{sift} implies a large amount of data (typically more than \unit{1}{\giga b} for a $(\unit{256}{px})^3$ picture) and thus requires careful memory management.
 
 \subsection{Sub-pixel and sub-scale resolution}
+
+In this section, we will start by recalling the principle of \textsc{sift}, then we will explain our method in the ideal case of an isolated binary ball, to add successively finite dilution and difference in brightness between the particles. Here we assume perfect noiseless, distortion-free, images. The objects to localise are thus (pixellised) balls of uniform intensity. To mimic the low resolution of experimental images in our test images (see Fig.~\ref{fig:perfect}), we draw uniformly white balls on a 4 to 16 times larger image and then we reduce accordingly the resolution using area resampling.
 
 \begin{figure*}
 \centering
