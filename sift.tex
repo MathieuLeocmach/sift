@@ -115,17 +115,10 @@ However, we found that no such ``good blur width'' exists in a sample of moderat
 
 The key notion to detect objects of unknown and possibly diverse sizes in an image is the \emph{scale space}~\cite{Lindeberg1993}. A popular implementation for isotropic objects (or ``blobs'') is the Scale Invariant Feature Transform (\textsc{sift}) of \citet{Lowe2004}. It is often used to match between different images from complex objects consisting of many rigidly linked blobs (e.g. to create a large scale image from overlapping pictures)~\citep{Lowe2004, Urschler2006, Cheung2009}. To our knowledge, this method was never used for the quantitative localisation and sizing of independent single-blob objects like spherical colloids, droplets in an emulsion or crystal nuclei.
 
-In Section~\ref{sec:method}, we will describe our localisation method and its results on synthetic but more and more realistic data. In Section~\ref{sec:confocal} of the paper, we will focus on the specific case of 3D confocal data. In Section~\ref{sec:yon6} we will apply our method to a supercooled liquid of polydisperse hard spheres observed by confocal microscopy and extract local polydispersity. Finally in the last part we will show more briefly other applications that we deem useful for the soft matter and microfluidics communities, including 2D data of wide field fluorescent microscopy and phase contrast microscopy.
+In Section~\ref{sec:method}, we will describe our localisation method and its results on synthetic but more and more realistic data. In Section~\ref{sec:confocal} of the paper, we will focus on the specific case of 3D confocal data. In Section~\ref{sec:yon6} we will apply our method to a supercooled liquid of polydisperse hard spheres observed by confocal microscopy and extract local polydispersity.
 
 \section{Localisation and sizing method}
 \label{sec:method}
-
-\begin{figure*}
-\centering
-\includegraphics{fig_perfect.pdf}
-	\caption{\textbf{Results from perfect images.} \textbf{a} Sizing of an isolated sphere. Left of the vertical line our algorithm uses a doubled image. \textbf{b} Localisation error and \textbf{c} sizing error function of the distance between two particles. Oscillations are due to off-lattice centre position. \textbf{d} Size distribution extracted from digitized configuration of 4000 monodisperse hard spheres at $0.50$ volume fraction (the vertical line indicates the input radius). The tail to the right is due to particles on the edges of the image who have fewer neighbours and thus are more `dilute'. \textbf{c} and \textbf{d} also show the effect of finite dilution correction up to convergence.}
-	\label{fig:perfect}
-\end{figure*}
 
 In this section, we will start by recalling the principle of \textsc{sift}, then we will explain our method in the ideal case of an isolated binary ball, to add successively finite dilution and difference in brightness between the particles. Here we assume perfect noiseless, distortion-free, images. The objects to localise are thus (pixellised) balls of uniform intensity. To mimic the low resolution of experimental images in our test images (see Fig.~\ref{fig:perfect}), we draw uniformly white balls on a 4 to 16 times larger image and then we reduce accordingly the resolution using area resampling.
 
@@ -143,11 +136,28 @@ with $n$ a fixed integer. Following \cite{Lowe2004} we use $\sigma_0=1.6$ and $n
 \end{equation}
 The difference of Gaussians (DoG) response function defined in this way depends on the position in space and on the scale. Bright objects in the original image are detected as local minima in $DoG_s$. Furthermore, the intensity of the response is optimal at a $\sigma$ that can be related to the size of the object (see below). Thus a local minima in both space and scale in the response function DoG indicates both localisation and \emph{size} of an object, without any assumption on the target size.
 
-As in the case of the \citet{Crocker1996} algorithm, the \textsc{sift} can be extended in three dimensions in two ways: either by extracting 2D blobs independently on each slice and then reconstructing 3D objects (Fig.~\ref{fig:localise}b) or by working directly in three dimensions~\cite{Urschler2006, Cheung2009} (Fig.~\ref{fig:localise}a). We found that the former method is prone to errors, missing about a tenth of the particles in our best implementation (Fig.~\ref{fig:localise}b). The 3D results presented in this paper are obtained solely by the later method.
+\begin{figure}
+	\centering
+	\includegraphics{fig_applications.pdf}
+	\caption{\textbf{Application of \textsc{sift} in 2D.} \textbf{a} Fluorescent droplets in a microfluidic device. The wall of the device is visible in the top-left corner.\textbf{b} Nucleation under phase contrast microscope. The circles are the result of our algorithm.}
+	\label{fig:applications}
+\end{figure}
+
+Because of the inherent polydispersity of many softmatter systems, the possible applications of \textsc{sift} are countless. For example, droplets of an emulsion can be followed through a microfluidic device. Fig.~\ref{fig:applications}a shows the result of \textsc{sift} on a very polydispered and dense emulsion observed by wide-field fluorescence microscopy~\cite{Montagne2011}. When a phase transition proceeds via nucleation growth, the size of the nuclei are very diverse, making their automatic counting difficult by other methods. As shown in Fig.~\ref{fig:applications}b \textsc{sift} allows to count and to measure the size of nuclei during a liquid-liquid transition in a water-glycerol mixture~\cite{Murata2012}.
+
+As in the case of the \citet{Crocker1996} algorithm, the \textsc{sift} can be extended in three dimensions (e.g. confocal images) in two ways: either by extracting 2D blobs independently on each slice and then reconstructing 3D objects (Fig.~\ref{fig:localise}b) or by working directly in three dimensions~\cite{Urschler2006, Cheung2009} (Fig.~\ref{fig:localise}a). We found that the former method is prone to errors, missing about a tenth of the particles in our best implementation (Fig.~\ref{fig:localise}b). The 3D results presented in this paper are obtained solely by the later method.
 
 We stress that a volumetric implementation of \textsc{sift} implies a large amount of data (typically more than \unit{1}{\giga b} for a $(\unit{256}{px})^3$ picture) and thus requires careful memory management.
 
 \subsection{Sub-pixel and sub-scale resolution}
+
+\begin{figure*}
+\centering
+\includegraphics{fig_perfect.pdf}
+	\caption{\textbf{Results from perfect images.} \textbf{a} Sizing of an isolated sphere. Left of the vertical line our algorithm uses a doubled image. \textbf{b} Localisation error and \textbf{c} sizing error function of the distance between two particles. Oscillations are due to off-lattice centre position. \textbf{d} Size distribution extracted from digitized configuration of 4000 monodisperse hard spheres at $0.50$ volume fraction (the vertical line indicates the input radius). The tail to the right is due to particles on the edges of the image who have fewer neighbours and thus are more `dilute'. \textbf{c} and \textbf{d} also show the effect of finite dilution correction up to convergence.}
+	\label{fig:perfect}
+\end{figure*}
+
 The DoG constructed above is defined on a $d+1$ dimensional grid, with $d$ the spatial dimensionality. One can interpolate it as a continuous function of the position $\vec{r}$ and the scale $s$ and thus localise the minima with a precision below the grid size, which corresponds to sub-pixel resolution on the position and sub-scale sizing~\citep{Lowe2004}. We found that second order estimate of the spatial derivatives and first order estimates of the scale derivatives gave the best precision.
 
 The object-by-object optimal scale determination allows us to perform the spatial sub-pixel resolution step for each object on an image that is blurred just enough to have neither a flat intensity profile nor affected by the overlap with a nearby object's blob. We found that if for a given object the DoG is minimum at $\sigma_s$, the best image to use is $G_{s-1}$. This leads to a spatial resolution below $0.1$~pixels when two $8$-pixels wide particles are at hard-core contact, and less than $0.02$~pixels error ($0.3\%$ of the diameter) when any other particle's surface is further than $1$~pixel from the surface of the particle of interest (see Fig.~\ref{fig:perfect}b).
@@ -326,14 +336,6 @@ We confirmed this view by looking at the behaviour of small particles during het
 In contrast to a crystal where all the particles are equivalent, the roles of the particle at the centre of an icosahedron and of the particles surrounding it are asymmetric. The size distribution of the particles at the surface of icosahedra is almost identical to the overall size distribution, however the size distribution of the particles at the center of icosahedra features a long shoulder towards small sizes that ends at radii about $80\%$ smaller than the main peak. A centre to surface size ratio between $1$ and $0.8$ seems to stabilize icosahedral order.
 
 We also checked the difference between \textsc{fcc} ($w_4<0$) and \textsc{hcp} ($w_4>0$) to find that they have both exactly the same size distribution (not shown).
-
-\section{Other applications}
-\label{sec:other_applications}
-\subsection{Nucleation rate in a molecular liquid}
-
-\subsection{Tracking droplets in a microfluidic device}
-
-Fluorescently labelled water-in-oil droplets obtained by standard microfluidic procedures~\cite{Montagne2011}
 
 \section{Conclusion}
 Recently \citet{Kurita2011,Kurita2011b} have designed a sizing method using particle coordinates from confocal experiments. However their method do not work at the image processing level and relies on coordinates extracted via the \citet{Crocker1996} algorithm which, as described above, is defective when the size distribution is too broad. It may be possible to combine the two methods by feeding our coordinates and size as input to their method. We would expect an increase in sizing precision when the particles are close to contact.
