@@ -386,7 +386,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\label{fig:size_struc}
 \end{figure}
 
-\tikzset{external/force remake=false}
+\tikzset{external/force remake}
 \tikzsetnextfilename{applications}
 \begin{figure}
 	\centering
@@ -402,6 +402,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 		height=0.48\columnwidth,%
 		axis lines=none,%
 		scale only axis=true,%
+		clip marker paths=true,%
 		point meta=explicit symbolic,%
         scatter/@post marker code/.code={\endscope} 
 		]
@@ -413,7 +414,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
             },]
 			\addplot graphics [xmin=0,xmax=511,ymin=0,ymax=511]{microfluidic.png};
 			\addplot+[only marks, scatter] table [x index=0, y expr={511-\thisrowno{1}}, meta index=2] {microfluidic.xyr};
-			\draw[ultra thick, white] (axis cs:25,490) -- (axis cs:125,490)  node[midway, below]{200\micro\metre};
+			\draw[ultra thick, red!50!white] (axis cs:25,490) -- (axis cs:125,490)  node[midway, below]{200\micro\metre};
 			
 		\nextgroupplot[xmin=0,xmax=1500,ymin=0,ymax=1500,%
 			scatter/@pre marker code/.code={%
@@ -423,14 +424,14 @@ First published on the web Xth XXXXXXXXXX 200X}}}
             },]
 			\addplot graphics [xmin=0,xmax=1500,ymin=0,ymax=1500]{llt.png};
 			\addplot+[only marks, scatter] table [x index=0, y expr={1500-\thisrowno{1}}, meta index=2] {llt.xyr};
-			%\draw[ultra thick, white] (axis cs:25,490) -- (axis cs:125,490)  node[midway, below]{200\micro\metre};
+			\draw[ultra thick, red!50!white] (axis cs:75,1435) -- (axis cs:375,1435)  node[midway, below]{50\micro\metre};
 		\end{groupplot}
 	\end{tikzpicture}
-	\caption{\textbf{Other application.} \textbf{a} Fluorescent droplets in a microfluidic device. \textbf{b} Crystal nucleation under phase contrast microscope. The circles are the result of our algorithm.}
+	\caption{\textbf{Application of \textsc{sift} in 2D.} \textbf{a} Fluorescent droplets in a microfluidic device. \textbf{b} Nucleation under phase contrast microscope. The circles are the result of our algorithm.}
 	\label{fig:applications}
 \end{figure}
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{small_expelled}
 \begin{figure}
 	\centering
