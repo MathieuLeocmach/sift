@@ -124,7 +124,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\label{fig:localise}
 \end{figure*}
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{sizing}
 \begin{figure}
 	\centering
@@ -194,9 +194,9 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 \end{figure}
 
 
-\tikzset{external/force remake=false}
+\tikzset{external/force remake}
 \tikzsetnextfilename{deconv}
-\begin{figure}
+\begin{figure*}
 	\centering
 	\begin{tikzpicture}[
 		lab/.style={above right, text height=0.8em, text depth=0.2em, font=\Large\bfseries}%
@@ -204,7 +204,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 		\begin{groupplot}[%
 		group style={
 				group name=pics,
-				group size=2 by 2,%
+				group size=4 by 1,%
 				horizontal sep=0.0075\textwidth,
 				vertical sep=0.0075\textwidth,
 				},%
@@ -237,7 +237,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 			\node[lab] at (rel axis cs:0,0){d};
 		\end{groupplot}
 		\begin{axis}[%
-			at={(pics c2r2.south west)},%
+			at={(pics c4r1.south west)},%
 			anchor=outer south west,
 			width=0.225\textwidth,%
 			height=0.28\textwidth,%
@@ -252,7 +252,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\end{tikzpicture}
 	\caption{\textbf{Deconvolution.} Detail of the same $YZ$ slice of \textbf{a} original confocal image, \textbf{b} previous blurred by $\sigma_0=1.6$, \textbf{c} previous deconvolved by measured kernel (see text). Circles indicate the tracked particles position and size when using whether \textbf{b} or \textbf{c} as first Gaussian layer $G_0$. All three centres are in the slice $\pm \unit{0.5}{px}$. \textbf{d} Radial distribution function of sticky spheres (blue) without and (red) with deconvolution.}
 	\label{fig:deconv}
-\end{figure}
+\end{figure*}
 
 
 \tikzset{external/force remake=false}
@@ -348,7 +348,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\label{fig:perfect}
 \end{figure*}
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{size_struc}
 \begin{figure}
 	\centering
@@ -431,7 +431,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\label{fig:applications}
 \end{figure}
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{small_expelled}
 \begin{figure}
 	\centering
