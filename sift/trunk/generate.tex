@@ -124,7 +124,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\label{fig:localise}
 \end{figure*}
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{sizing}
 \begin{figure}
 	\centering
@@ -255,30 +255,18 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 \end{figure*}
 
 
-\tikzset{external/force remake=false}
+\tikzset{external/force remake}
 \tikzsetnextfilename{perfect}
-\begin{figure*}
+\begin{figure}
 	\centering
 	\begin{tikzpicture}[
 		lab/.style={anchor=south west, text height=0.8em, text depth=0.2em, font=\Large\bfseries}%
 		]%
-	\pgfplotsset{cycle list name=black white}
+	\pgfplotsset{cycle list name=black white, clip marker paths=true,}
 	\begin{axis}[%
-		name=errorsize,
-		width=0.45\textwidth,%
-		xlabel={Input radius (px)}, ylabel={Radius relative error (\%)},%
-		extra x ticks={3.47}, extra x tick labels={}, extra tick style={grid=major},%
-		extra y ticks={0}, extra y tick labels={}
-		]
-		\addplot table [x index=0, y expr ={100*(\thisrowno{1}/\thisrowno{0}-1)}] {multiscale_relative_sizes.out};
-	\end{axis}
-	\node[lab] at (errorsize.outer south west) {a};
-		
-	\begin{axis}[%
-		xlabel near ticks,ylabel near ticks,
-		tiny,
-		width=0.25\textwidth,%
-		at=(errorsize.north east),	anchor=north east,%
+		name=size,
+		width=0.5\columnwidth,%
+		height=0.5\columnwidth,%
 		xlabel={Input radius}, ylabel={Output radius},%
 		extra x ticks={3.47}, extra x tick labels={}, extra tick style={grid=major},%
 		ytick={2,4,...,14},
@@ -287,32 +275,49 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 		\addplot+[only marks, mark size=0.5, mark=o] table [x index=0, y expr ={\thisrowno{1}}] {multiscale_relative_sizes.out};
 		\addplot+[no marks, domain=1.5:14] {x};
 	\end{axis}
+	\node[lab] at (size.outer south west) {a};
+	\begin{axis}[%
+		name=errorsize,
+		at={(0.5\columnwidth,0)},%
+		width=0.5\columnwidth,%
+		height=0.5\columnwidth,%
+		xlabel={Input radius (px)}, ylabel={$R$ relative error (\%)},%
+		extra x ticks={3.47}, extra x tick labels={}, extra tick style={grid=major},%
+		extra y ticks={0}, extra y tick labels={},%
+		ylabel near ticks,
+		]
+		\addplot table [x index=0, y expr ={100*(\thisrowno{1}/\thisrowno{0}-1)}] {multiscale_relative_sizes.out};
+	\end{axis}
+	\node[lab] at (errorsize.outer south west) {b};
+		
 	
 	\begin{axis}[%
 		name=dist_er,
-		at={(0.5\textwidth,0)},%
-		width=0.45\textwidth,%
+		at={(0,-0.45\columnwidth)},%
+		height=0.5\columnwidth,%
+		width=\columnwidth,%
 		xlabel={$r_{ij}$ (px)}, ylabel={$r_{ij}$ error (\unit{0.01}{px})},%
-		xmin=8, xmax=18,%
+		xmin=8, xmax=18, xtick={8,...,17},%
 		extra tick style={grid=major},%
 		extra y ticks={0}, extra y tick labels={}
 		]
 		\addplot table [x index=0, y expr ={(\thisrowno{2}-\thisrowno{1}-\thisrowno{0})*100}] {close_neighbours3D.out};
 		\draw (axis cs:12,-6) circle[radius=0.03\textwidth] (axis cs:16,-6) circle[radius=0.03\textwidth];
-		\draw[dashed] (axis cs:12,-6) -- (axis cs:12,-8) (axis cs:16,-8) -- (axis cs:16,-6);
-		\draw[<->] (axis cs:12,-8) -- (axis cs:16,-8) node[midway, below] {$r_{ij}$};
-		\draw[->] (axis cs:12,-4) -- +(0.03\textwidth,0) node[midway, above] {\unit{4}{px}};
-		\draw[->] (axis cs:16,-4) -- +(-0.03\textwidth,0) node[midway, above] {\unit{4}{px}};
+		\draw[dashed] (axis cs:12,-6) -- (axis cs:12,-9) (axis cs:16,-9) -- (axis cs:16,-6);
+		\draw[<->] (axis cs:12,-9) -- (axis cs:16,-9) node[midway, above] {$r_{ij}$};
+		\draw[->] (axis cs:11.05,-6) -- +(0,0.03\textwidth,0) node[midway, left] {\unit{4}{px}};
+		\draw[->] (axis cs:16.95,-6) -- +(0,0.03\textwidth,0) node[midway, right] {\unit{4}{px}};
 		\draw[->, very thick] (axis cs:16,-6) -- (axis cs:14,-6);
 	\end{axis}
-	\node[lab] at (dist_er.outer south west) {b};
+	\node[lab] at (dist_er.outer south west) {c};
 	
 	\begin{axis}[%
 		name=near_R,
-		at={(0.5\textwidth,-0.4\textwidth)},%
-		width=0.45\textwidth,%
+		at={(0,-0.9\columnwidth)},%
+		height=0.5\columnwidth,%
+		width=\columnwidth,%
 		xlabel={$r_{ij}$ (px)}, ylabel={$R$ (px)},%
-		xmin=8, xmax=18,%
+		xmin=8, xmax=18, xtick={8,...,17},%
 		extra tick style={grid=major},%
 		extra y ticks={4}, extra y tick labels={},%
 		legend style={legend pos=south east}
@@ -321,12 +326,13 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 		\addplot+[mark=square] table [x index=0,y index=6] {close_neighbours3D.out};
 		\legend{No correction, One iteration};
 	\end{axis}
-	\node[lab] at (near_R.outer south west) {c};
+	\node[lab] at (near_R.outer south west) {d};
 	
 	\begin{axis}[%
 		name=finite,
-		at={(0,-0.4\textwidth)},%
-		width=0.45\textwidth,%
+		at={(0,-1.35\columnwidth)},%
+		height=0.5\columnwidth,%
+		width=\columnwidth,%
 		area legend,
 		const plot, no marks,%
 		xlabel={$R$ (px)}, ylabel={Size distribution},%
@@ -342,11 +348,12 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 		\legend{No correction, One iteration, Two iterations};
 		\draw[decorate,decoration=brace] (axis cs:4.75, 200) -- (axis cs:5.05, 200) node[midway, above] {edges};
 	\end{axis}
-	\node[lab] at (finite.outer south west) {d};
+	\node[lab] at (finite.outer south west) {e};
 	\end{tikzpicture}
-	\caption{\textbf{Results from perfect images.} \textbf{a} Sizing of an isolated sphere. Left of the vertical line our algorithm uses a doubled image. \textbf{b} Localisation error and \textbf{c} sizing error function of the distance between two particles. Oscillations are due to off-lattice centre position. \textbf{d} Size distribution extracted from digitized configuration of 4000 monodisperse hard spheres at $0.50$ volume fraction (vertical line indicates the input radius). The tail to the right is due to particles on the edges of the image who have fewer neighbours and thus are more `dilute'. \textbf{c} and \textbf{d} also show the effect of finite dilution correction up to convergence.}
+	\caption{\textbf{Results from perfect images.} \textbf{a,b} Sizing of an isolated sphere. Left of the vertical line our algorithm uses a doubled image. \textbf{c} Localisation error and \textbf{d} sizing error function of the distance between two particles. Oscillations are due to off-lattice centre position. \textbf{e} Size distribution extracted from digitized configuration of 4000 monodisperse hard spheres at $0.50$ volume fraction (the vertical line indicates the input radius). The tail to the right is due to particles on the edges of the image who have fewer neighbours and thus are more `dilute'. \textbf{d} and \textbf{e} also show the effect of finite dilution correction up to convergence.}
 	\label{fig:perfect}
-\end{figure*}
+\end{figure}
+
 
 \tikzset{external/force remake=false}
 \tikzsetnextfilename{size_struc}
