@@ -31,7 +31,7 @@
 \usetikzlibrary{matrix}
 \tikzexternalize
 \tikzsetexternalprefix{fig_}
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzset{every mark/.append style={scale=0.8}}
 \pgfplotsset{every axis/.append style={small}}
 
@@ -255,7 +255,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 \end{figure*}
 
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{perfect}
 \begin{figure}
 	\centering
@@ -473,6 +473,58 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\end{tikzpicture}
 	\caption{\textbf{Heterogeneous nucleation.} Successive computer reconstruction of the first three layers from the wall, every \unit{12}{\hour}, seen from the fluid side. Particles sizes are according to our method. Small ($R<\unit{1.5}{\micro\metre}$) particles are shown in green. Other particles are coloured according to their crystal-like order. Note how the small particles are expelled from the forming crystallites to concentrate in the grain boundaries.}
 	\label{fig:small_expelled}
+\end{figure}
+
+\tikzset{external/force remake}
+\tikzsetnextfilename{profiles}
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[
+		lab/.style={above right, text height=0.8em, text depth=0.2em, font=\Large\bfseries}%
+		]%
+		\begin{groupplot}[%
+			group style={
+				group size=2 by 2,
+				y descriptions at=edge left,%
+				x descriptions at=edge bottom,%
+				horizontal sep=0,
+				vertical sep=0,
+			},%
+			width=0.6\columnwidth,
+			height=0.5\columnwidth,%
+			ymin=0, ymax=1,%
+			ytick={0,0.2,...,1},%
+			no marks,%
+			ylabel near ticks,%
+			xlabel=$z/(2R_\text{peak})$,%
+			xmin=1, xmax=26,%
+			axis on top,
+			]
+		\nextgroupplot[ylabel={$\rho$}]
+		\addplot+[gray!50, fill=gray!50] table[x index=0, y index=1]{large_small_mrco_t000.gauss.zhist} \closedcycle;
+		\addplot table[x index=0, y index=3]{large_small_mrco_t000.gauss.zhist};
+		\addplot+[black] table[x index=0, y index=1]{large_small_mrco_t000.zhist};
+		\node at (rel axis cs:0.5, 0.8) {$t=0$};
+		
+		\nextgroupplot
+		\addplot+[gray!50, fill=gray!50] table[x index=0, y index=1]{large_small_mrco_t200.gauss.zhist} \closedcycle;
+		\addplot table[x index=0, y index=3]{large_small_mrco_t200.gauss.zhist};
+		\addplot+[black] table[x index=0, y index=1]{large_small_mrco_t200.zhist};
+		\node at (rel axis cs:0.5, 0.8) {$t=\unit{40}{\hour}$};
+		
+		\nextgroupplot[ymax=0.15, ytick={0,0.1}, ylabel={$\rho$}]
+		\addplot+[gray!50, fill=gray!50] table[x index=0, y index=2]{large_small_mrco_t000.gauss.zhist} \closedcycle;
+		\addplot table[x index=0, y index=3]{large_small_mrco_t000.gauss.zhist} ;
+		\addplot+[black] table[x index=0, y index=2]{large_small_mrco_t000.zhist};
+		
+		\nextgroupplot[ymax=0.15, ytick={0,0.1}]
+		\addplot+[gray!50, fill=gray!50] table[x index=0, y index=2]{large_small_mrco_t200.gauss.zhist} \closedcycle;
+		\addplot table[x index=0, y index=3]{large_small_mrco_t200.gauss.zhist};
+		\addplot+[black] table[x index=0, y index=2]{large_small_mrco_t200.zhist};
+		\end{groupplot}
+	\end{tikzpicture}
+	\caption{\textbf{Instantaneous density profiles.} Top: large particles ($R>\unit{1.5}{\micro\metre}$) without smoothing (black line) and with a Gaussian smoothing of the size of the particles (gray area). Bottom: small particles ($R<\unit{1.5}{\micro\metre}$) with the same color code. The red curve is the smoothed density of ordered particles ($Q_6>0.25$) irrespective of their size. Left: $t=0$. Right: $t=\unit{40}{\hour}$.}
+	\label{fig:profiles}
 \end{figure}
 
 \end{document}
