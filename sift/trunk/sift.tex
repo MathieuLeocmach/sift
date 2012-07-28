@@ -23,6 +23,8 @@
 \usepackage{SIunits}
 \DeclareMathOperator{\erf}{erf}
 
+\usepackage{algpseudocode}
+
 \begin{document}
 
 \thispagestyle{plain}
@@ -227,16 +229,16 @@ In principle Eq.~(\ref{eq:Newton}) is a $N\times N$ system of equations. However
 
 To solve Eq.~(\ref{eq:Newton}), one needs knowledge of the brightnesses $\lbrace A_i\rbrace$. In a first approximation, they can be assumed equal to a constant, which allow to simplify them out. This is often a sensible approximation. Nevertheless, the particles in an experimental image are not uniformly bright due to synthesis imperfection (quantity of dye fixed by each particle) and photo bleaching. If one does not take into account the relative brightness of the particles the less bright will appear smaller.
 
-A better approximation is to measure during the \textsc{sift} process the value of the DoG response at the position and scale of each particle, \emph{i.e.} $DoG_i(\lbrace A_j\rbrace, \lbrace r_{ij}\rbrace, \lbrace R_j\rbrace, \sigma_i)$. Given the (iterative) values of the $\lbrace R_j\rbrace^{(k)}$, one can solve Eq.~(\ref{eq:superpos}) to get an iterative value of $\lbrace A_i\rbrace^{(k)}$. With respect to the brightnesses, Eq.~(\ref{eq:superpos}) is a linear system of $N$ equations with $N$ unknowns, thus directly solvable. It is also as sparse as Eq.~(\ref{eq:Newton}).
+A better approximation is to measure during the \textsc{sift} process the value of the DoG response at the position and scale of each particle, \emph{i.e.} $DoG_i(\lbrace A_j\rbrace, \lbrace r_{ij}\rbrace, \lbrace R_j\rbrace, \sigma_i^*)$. Given the (iterative) values of the $\lbrace R_j\rbrace^{(k)}$, one can solve Eq.~(\ref{eq:superpos}) to get an iterative value of $\lbrace A_i\rbrace^{(k)}$. With respect to the brightnesses, Eq.~(\ref{eq:superpos}) is a linear system of $N$ equations with $N$ unknowns, thus directly solvable. It is also as sparse as Eq.~(\ref{eq:Newton}).
 
 To sum up, the coefficients $\lbrace A_i\rbrace$ can be computed along with the radii in a joint iterative process:
-\begin{enumerate}
-\item Use Eq.~(\ref{eq:scale_dil}) to get the $\lbrace R_i\rbrace^{(0)}$
-\item Solve the linear system given by Eq.~(\ref{eq:superpos}) to get the $\lbrace A_i\rbrace^{(k)}$ \label{it:A}
-\item Solve the system given by Eq.~(\ref{eq:Newton}) to get the $\lbrace R_i\rbrace^{(k+1)}$ \label{it:R}
-\item Iterate through steps \ref{it:A} and \ref{it:R} until convergence
-\end{enumerate}
-
+\begin{algorithmic}
+\State $\lbrace R_i\rbrace^{(0)} \xleftarrow{\text{Eq.~(\ref{eq:scale_dil})}} \lbrace \sigma_i^*\rbrace$
+\Repeat 
+	\State $\lbrace A_i\rbrace^{(k+1)} \xleftarrow{\text{Eq.~(\ref{eq:superpos})}} \lbrace DoG_i \rbrace, \lbrace R_i\rbrace^{(k)}, \lbrace \sigma_i^*\rbrace, \lbrace r_{ij}\rbrace$
+	\State $\lbrace R_i\rbrace^{(k+1)} \xleftarrow{\text{Eq.~(\ref{eq:Newton})}} \lbrace R_i\rbrace^{(k)}, \lbrace A_i\rbrace^{(k+1)}, \lbrace \sigma_i^*\rbrace, \lbrace r_{ij}\rbrace$ 
+\Until{convergence}
+\end{algorithmic}
 
 In our tests, we found that this algorithm converges as quickly with and without the brightness determination.
 
