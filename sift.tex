@@ -5,7 +5,9 @@
 \headheight 1.0in
 \topmargin -3.5cm
 \textheight 22cm
-\usepackage[super,sort&compress,comma]{natbib}
+\usepackage{hyperref}
+\usepackage[usedoi,linkdoi]{rsc} 
+%\usepackage[super,sort&compress,comma]{natbib}
 \usepackage{amsmath}
 %\usepackage{mhchem}
 \usepackage{times,mathptmx}
@@ -70,7 +72,7 @@
 \vspace{0.6cm}
 
 \noindent\large{\textbf{Mathieu Leocmach\textit{$^{a}$} and
-Hajime Tanaka$^{\ast}$\textit{$^{a}$}}}\vspace{0.5cm}
+Hajime Tanaka$^{\ast}$\textit{$^{b}$}}}\vspace{0.5cm}
 %Please note that \ast indicates the corresponding author(s) but no footnote text is required. 
 
 
@@ -81,12 +83,13 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 \vspace{0.6cm}
 %Please do not change this text.
 
-\noindent \normalsize{We propose a scale-space based method to extract both the individual 3D coordinates and the radii of spherical colloids from confocal microscopy images. According to synthetic and real data, dilute or crowded, particles can be detected correctly without assumption on their sizes, even when particle diameters differ by large factors. Moreover the size of each particle can be estimated within a few percent error (less than $0.3\%$ if the diameter is larger than \unit{5}{px}).}
+\noindent \normalsize{We propose a method to localise spherical particles of arbitrary relative sizes from either 2D or 3D (confocal) images either in dilute or crowded environment. Moreover the size of each particle can be estimated reliably. We use this method to analyse the heterogeneous crystallisation in a glassy colloidal hard spheres suspension and found non trivial influence of a tail of small particles on the shape and size of the crystallites.}
 \vspace{0.5cm}
  \end{@twocolumnfalse}
   ]
-
-\footnotetext{\textit{$^{a}$~Institute of Industrial Science, University of Tokyo, 4-6-1 Komaba, Meguro-ku, Tokyo 153-8505, Japan. E-mail: tanaka@iis.u-tokyo.ac.jp}}
+  
+\footnotetext{\textit{$^{a}$~Laboratoire de Physique, CNRS UMR 5672, Ecole Normale Supérieure de Lyon, 46 allée d'Italie 69364 Lyon cedex 07, France}}
+\footnotetext{\textit{$^{b}$~Institute of Industrial Science, University of Tokyo, 4-6-1 Komaba, Meguro-ku, Tokyo 153-8505, Japan. E-mail: tanaka@iis.u-tokyo.ac.jp}}
 
 %\author{Mathieu Leocmach} 
 
@@ -359,15 +362,15 @@ Once the short oscillations removed via a Gaussian smoothing of width $2R_\text{
 	\label{fig:small_expelled}
 \end{figure}
 
-We confirmed this view by looking at the behaviour of small particles and crystalline order in a constant plain (Fig.~\ref{fig:small_expelled} and Supplementary Movie 1). Before crystallisation, small particles are scattered randomly and \textsc{mrco} develop where no small particle is present. Then, crystallisation proceeds from the \textsc{mrco}, pushing away the small particles that accumulate in the grain boundaries. As a consequence, heterogeneous crystallisation do not proceed via a spatially homogeneous layer-by-layer growth, as observed at low polydispersity~\cite{Sandomirski2011}, but by many nucleation-growth events reflecting the initial fluctuations of the \textsc{mrco}. This dynamics is reminiscent of the heterogeneous nucleation case~\cite{Kawasaki2010c} but enhanced by the wetting of the wall by crystalline order. 
+We confirmed this view by looking at the behaviour of small particles and crystalline order in a constant plain (Fig.~\ref{fig:small_expelled} and Supplementary Movie 1). Before crystallisation, small particles are scattered randomly and \textsc{mrco} develop where no small particle is present. Then, crystallisation proceeds from the \textsc{mrco}, pushing away the small particles that accumulate in the grain boundaries. As a consequence, heterogeneous crystallisation do not proceed via a spatially homogeneous layer-by-layer growth, as observed at low polydispersity~\cite{Sandomirski2011}, but by many nucleation-growth events reflecting the initial fluctuations of the \textsc{mrco}. This dynamics is reminiscent of the heterogeneous nucleation case~\cite{Kawasaki2010c} but enhanced by the wetting of the wall by crystalline order.
 
-
+To sum up, the small particles affect the growth of the crystal by coupling ordering to diffusion. Without the small particles, moving grain boundaries implies moving particles locally and thus propagation is easy. With small particles, moving grain boundaries implies moving them by the same amount. In the same way, the crystallisation front has to push the small particles in front of it, effectively increasing the polydispersity in the glass and thus slowing its propagation. Indeed, weeks after preparation our samples was still only partially crystallised and highly polycrystalline. We note that this coupling is due to the conserved nature of the species `small particles'. Non-conserved species defined by local ordering like icosahedra cannot produce such a coupling.
 
 \section{Conclusion}
 
 We have presented a new method to extract the coordinates of particles of very diverse sizes even when they are very close (at contact) to each other. This opens new experimental possibilities in soft matter systems where the particles are polydisperse (e.g. colloids, emulsions) or even changing size (e.g. phase separation dynamics). Our method also reliably extracts the size of each particle, which allows a \emph{in situ} analysis of the consequences of naturally occurring size distributions (beyond monodisperse, bidisperse or Gaussian distribution).
 
-We showed that in the case of colloidal hard sphere, a size distribution with a main peak and a tail toward small sizes induces different behaviours than what would be expected from a Gaussian size distribution. Our method allowed us to measure this distribution properly and to look into the interactions between size distribution, local ordering and heterogeneous crystal nucleation in a glass.
+We showed that in the case of colloidal hard sphere, a size distribution with a main peak and a tail toward small sizes induces different behaviours than what would be expected from a Gaussian size distribution. Our method allowed us to measure this distribution properly and to look into the interactions between size distribution, local ordering and heterogeneous crystal nucleation in a glass. We found that the presence of a long tail toward small sizes in the size distribution, was leading to highly polycrystalline materials that may be of interest for engineering purposes.
 
 
 \appendix
