@@ -66,7 +66,7 @@
 
 \twocolumn[
   \begin{@twocolumnfalse}
-\noindent\LARGE{\textbf{Particle-level size determination and its influence on the ordering of supercooled hard sphere colloids}}
+\noindent\LARGE{\textbf{Particle-level size determination and its influence on the ordering of glassy hard sphere colloids}}
 \vspace{0.6cm}
 
 \noindent\large{\textbf{Mathieu Leocmach\textit{$^{a}$} and
@@ -85,7 +85,6 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 \vspace{0.5cm}
  \end{@twocolumnfalse}
   ]
-\title{Particle-level size determination and its influence on the ordering of supercooled hard sphere colloids.}
 
 \footnotetext{\textit{$^{a}$~Institute of Industrial Science, University of Tokyo, 4-6-1 Komaba, Meguro-ku, Tokyo 153-8505, Japan. E-mail: tanaka@iis.u-tokyo.ac.jp}}
 
@@ -98,7 +97,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 
 \section{Introduction}
 
-Experimental physicists often need to recognize objects, count them, follow them and characterise them. \citet{perrin} had to count colloids by hand to establish the sedimentation-diffusion equilibrium. Nowadays computer vision algorithms are used routinely in the lab to track hundreds of thousands of objects as diverse as stars in a galaxy~\cite{Bertin1996}, tracers in a microfluidic device~\cite{Wereley2010}, dust in a plasma or viruses in a living cell~\cite{Brandenburg2007}. In all these cases, tracking is possible if the particles are either point-like and far apart, or several pixel wide and almost monodisperse in size. To our knowledge, algorithm that allow tracking of polydisperse particles in crowded environments have not reached the softmatter community.
+Experimental physicists often need to recognize objects, count them, follow them and characterise them. \citet{perrin} had to count colloids by hand to establish the sedimentation-diffusion equilibrium. Nowadays computer vision algorithms are used routinely in the lab to track hundreds of thousands of objects as diverse as stars in a galaxy~\cite{Bertin1996}, tracers in a microfluidic device~\cite{Wereley2010}, dust in a plasma or viruses in a living cell~\cite{Brandenburg2007}. In all these cases, tracking is possible if the particles are either point-like and far apart, or several pixel wide and almost monodisperse in size. To our knowledge, algorithm that allow tracking of polydisperse particles in crowded environments have not reached the soft matter community.
 
 Overall size distribution influences crystallisation~\cite{Pusey1987,Henderson1996,Fasolo2003,Schope2007,pusey2009hard}, glass forming ability~\cite{Pusey1987,Henderson1996,Senkov2001,Schope2007,pusey2009hard}, sedimentation~\cite{Binks1998,Leocmach2010} and emulsion stability~\cite{Biben1993,Binks1998} among other physical phenomena. It can be characterized by various methods that rely on measurements done in well-controlled environments~\cite{Lange1995,Provder1997,Finder2004}. However the local size distribution is not accessible experimentally in situ and is thus not studied.
 
@@ -113,11 +112,11 @@ The choice of the width $\sigma$ of the blurring kernel is critical: if it is to
 	\label{fig:localise}
 \end{figure*}
 
-However, we found that no such ``good blur width'' exists in a sample of moderate ($6-7\%$) polydispersity (see Fig.~\ref{fig:localise}c-h). The detection of smaller particles with small blurring is incompatible with the detection of the larger particles, and conversely. This unacceptable failure of the \citet{Crocker1996} algorithm, as well as the want of the particles' radii data, triggered our design of a novel localisation algorithm that would be robust even for a system of any finite polydispersity, which is unavoidable and sometime desired in real experiments.
+However, we found that no such ``good blur width'' exists in a sample of moderate ($6-7\%$) polydispersity (see Fig.~\ref{fig:localise}c-h). The detection of smaller particles with small blurring is incompatible with the detection of the larger particles, and conversely. This unacceptable failure of the \citet{Crocker1996} algorithm, as well as the want of the particles' radii data, triggered our design of a novel localisation algorithm that would be robust even for a system of any finite polydispersity, which is unavoidable and sometime desired in real experiments. Recently \citet{Kurita2011,Kurita2011b} have designed a sizing method using particle coordinates from confocal experiments. However their method do not work at the image processing level and relies on coordinates extracted via the \citet{Crocker1996} algorithm. If these coordinates are wrong or if some particles are missed (as shown above), the output of their method should not be exact.
 
 The key notion to detect objects of unknown and possibly diverse sizes in an image is the \emph{scale space}~\cite{Lindeberg1993}. A popular implementation for isotropic objects (or ``blobs'') is the Scale Invariant Feature Transform (\textsc{sift}) of \citet{Lowe2004}. It is often used to match between different images from complex objects consisting of many rigidly linked blobs (e.g. to create a large scale image from overlapping pictures)~\citep{Lowe2004, Urschler2006, Cheung2009}. To our knowledge, this method was never used for the quantitative localisation and sizing of independent single-blob objects like spherical colloids, droplets in an emulsion or crystal nuclei.
 
-In Section~\ref{sec:method}, we will describe our localisation method and its results on synthetic but more and more realistic data. In Section~\ref{sec:confocal} of the paper, we will focus on the specific case of 3D confocal data. In Section~\ref{sec:yon6} we will apply our method to a supercooled liquid of polydisperse hard spheres observed by confocal microscopy and extract local polydispersity.
+In Section~\ref{sec:method}, we will describe our localisation method and its results on synthetic but more and more realistic data. In Section~\ref{sec:confocal} of the paper, we will focus on the specific case of 3D confocal data. In Section~\ref{sec:yon6} we will apply our method to a crystallizing glass of polydisperse hard spheres observed by confocal microscopy and discuss the influence of size distribution on the ordering process.
 
 \section{Localisation and sizing method}
 \label{sec:method}
@@ -145,7 +144,7 @@ The difference of Gaussians (DoG) response function defined in this way depends 
 	\label{fig:applications}
 \end{figure}
 
-Because of the inherent polydispersity of many softmatter systems, the possible applications of \textsc{sift}-based localisation are countless. For example, droplets of an emulsion can be followed through a microfluidic device. Fig.~\ref{fig:applications}a shows the result of our version of the \textsc{sift} on a very polydispered and dense emulsion observed by wide-field fluorescence microscopy~\cite{Montagne2011}. When a phase transition proceeds via nucleation growth, the size of the nuclei are very diverse, making their automatic counting difficult by other methods. As shown in Fig.~\ref{fig:applications}b the \textsc{sift} allows to count and to measure the size of nuclei during a liquid-liquid transition in a water-glycerol mixture~\cite{Murata2012}.
+Because of the inherent polydispersity of many soft matter systems, the possible applications of \textsc{sift}-based localisation are countless. For example, droplets of an emulsion can be followed through a microfluidic device. Fig.~\ref{fig:applications}a shows the result of our version of the \textsc{sift} on a very polydispered and dense emulsion observed by wide-field fluorescence microscopy~\cite{Montagne2011}. When a phase transition proceeds via nucleation growth, the size of the nuclei are very diverse, making their automatic counting difficult by other methods. As shown in Fig.~\ref{fig:applications}b the \textsc{sift} allows to count and to measure the size of nuclei during a liquid-liquid transition in a water-glycerol mixture~\cite{Murata2012}.
 
 However, to the extent of our knowledge, the \textsc{sift} has not been used in a physics context to obtain reliable measurements of particles numbers and sizes from well calibrated images. We will address this reliability in the following.
 
@@ -190,7 +189,7 @@ The scale $s=0.5$ corresponds (via Eq.~(\ref{eq:sigma_s}) and Eq.~(\ref{eq:scale
 
 The difference-of-Gaussian function has a strong response not only at the center of bright objects but also along their edges. To eliminate these spurious detections, \citet{Lowe2004} suggests to construct the local Hessian matrix around each minimum of the DoG and then compare its eigenvalues to identify elongated objects.
 
-We found that this was often not enough, especially in crowded environments where an isolated void induces local minima of the DoG response with rather isotropic signatures on the edge of nearby particles. An other case not covered by the Hessian technique is the physically hierarchical structure of many softmatter systems, e.g. particles forming clusters. In this situation our algorithm detects a blob for each particle and a much larger blob for the cluster. In both cases the DoG response of the spurious feature is smaller (less negative) than the one of the valid particles covering the same portion of space. 
+We found that this was often not enough, especially in crowded environments where an isolated void induces local minima of the DoG response with rather isotropic signatures on the edge of nearby particles. An other case not covered by the Hessian technique is the physically hierarchical structure of many soft matter systems, e.g. particles forming clusters. In this situation our algorithm detects a blob for each particle and a much larger blob for the cluster. In both cases the DoG response of the spurious feature is smaller (less negative) than the one of the valid particles covering the same portion of space. 
 
 Our method to remove spurious feature is as follow: we looked for pairs of particles closer to each other than the larger of their radii (assuming infinite dilution). This means the centre of one of the particles is situated inside the other. In the physical systems we study, this cannot be correct due to excluded volume effects, thus we remove the feature of lesser DoG response. We name this method `half overlap removal'. One may be tempted to implement a full overlap removal (no pair of particle closer than the sum of their radii) to eliminate even more spurious detection. We found that the gain was extremely limited ($0.01\%$ of the detected features suppressed) and that imprecision in positioning or in sizing caused valid particles to be discarded.
 
@@ -365,7 +364,11 @@ We confirmed this view by looking at the behaviour of small particles and crysta
 
 
 \section{Conclusion}
-Recently \citet{Kurita2011,Kurita2011b} have designed a sizing method using particle coordinates from confocal experiments. However their method do not work at the image processing level and relies on coordinates extracted via the \citet{Crocker1996} algorithm which, as described above, is defective when the size distribution is too broad. It may be possible to combine the two methods by feeding our coordinates and size as input to their method. We would expect an increase in sizing precision when the particles are close to contact.
+
+We have presented a new method to extract the coordinates of particles of very diverse sizes even when they are very close (at contact) to each other. This opens new experimental possibilities in soft matter systems where the particles are polydisperse (e.g. colloids, emulsions) or even changing size (e.g. phase separation dynamics). Our method also reliably extracts the size of each particle, which allows a \emph{in situ} analysis of the consequences of naturally occurring size distributions (beyond monodisperse, bidisperse or Gaussian distribution).
+
+We showed that in the case of colloidal hard sphere, a size distribution with a main peak and a tail toward small sizes induces different behaviours than what would be expected from a Gaussian size distribution. Our method allowed us to measure this distribution properly and to look into the interactions between size distribution, local ordering and heterogeneous crystal nucleation in a glass.
+
 
 \appendix
 
