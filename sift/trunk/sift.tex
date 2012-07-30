@@ -305,18 +305,18 @@ To allow a more precise density matching, the temperature was controlled on both
 
 \subsection{Global size distribution}
 
-We localise the particles using our method with a preblur of only $k=1.0$ to be able to detect the smaller particles ($R_{min}\approx \unit{2}{px}$) without expensive oversampling. We checked that choosing higher $k$ truncates the size distribution but has no other effect on its shape. After removing half-overlapping features, we applied a single iteration of finite dilution corrections for both intensities and radii to obtain the optical radius of each particle. 
-
-We then estimate the hard-core diameter function of the optical radius $R$ by locating the first peak of the partial radial distribution function $g_R(r)$ of the particles having $R_i$ close to $R$. As shown in Fig.~\ref{fig:sizing}a, the real to optical size ratio is around $1.5$ and is rather constant respective to $R$, thus a single overall scaling factor is enough. It can be determined by a single partial $g_R(r)$ with $R$ near the peak of the size distribution, or by locating the peak of $g(\hat{r})$, with $\hat{r}_{ij} = r_{ij}/(R_i+R_j)$. We found that the real-to-optical size ratio was increasing with time due to photobleaching. We fit this increase by a linear relation and applied the resulting time-dependent ratio to obtain the real size of each particles.
-
-The consistency of our method can be checked by constructing the radial distribution function $g(r)$. In monodisperse hard spheres, the $g(r)$ has a sharp first peak at $r=2R$ corresponding to hard core contact. Polydispersity implies hard core contacts at various $r$ and thus broadens the peak. One can recover a sharp peak by constructing $g(\hat{r})$ (where $\hat{r}$ is scaled by the real radii, not the optical ones). In Fig.~\ref{fig:sizing}c we successfully used the sizes measured by our method to rectify the first peak.
+We localise the particles using our method with a preblur of only $k=1.0$ to be able to detect the smaller particles ($R_{min}\approx \unit{2}{px}$) without expensive oversampling. We checked that choosing higher $k$ truncates the size distribution but has no other effect on its shape. After removing half-overlapping features, we applied a single iteration of finite dilution corrections for both intensities and radii to obtain the optical radius of each particle.
 
 \begin{figure}
 \centering
 \includegraphics{fig_sizing.pdf}
-	\caption{\textbf{\emph{In situ} sizing of colloids in a glass.} \textbf{a,} Position of the first peak of the partial $g_R(r)$ function of the optical radius $R$. Solid line corresponds to a real radius to optical radius ratio of $1.5$. \textbf{b,} Size distribution estimated by our algorithm (dashed line). Comparison with the size distribution estimated from \textsc{sem} of only $140$ dry particles (steps) is possible once $25\%$ of swelling is taken into account (full line). \textbf{c,} First peak of the radial distribution function with (full line) and without (dashed) the individual sizes data. Taking into account the measured sizes rectifies the effect of the polydispersity: the peak is thinner and higher.}
+	\caption{\textbf{\emph{In situ} sizing of colloids in a glass.} \textbf{a,} Position of the first peak of the partial $g_R(r)$ function of the optical radius $R$. Solid line corresponds to a real-to-optical size ratio of $1.5$. \textbf{b,} Size distribution estimated by our algorithm (dashed line). Comparison with the estimation from \textsc{sem} of only $140$ dry particles (steps) is possible once $25\%$ of swelling is taken into account (full line). \textbf{c,} First peak of the radial distribution function with (full line) and without (dashed) the individual sizes data.}
 	\label{fig:sizing}
 \end{figure}
+
+We then estimate the hard-core diameter function of the optical radius $R$ by locating the first peak of the partial radial distribution function $g_R(r)$ of the particles having $R_i$ close to $R$. As shown in Fig.~\ref{fig:sizing}a, the real to optical size ratio is around $1.5$ and is rather constant respective to $R$, thus a single overall scaling factor is enough. It can be determined by a single partial $g_R(r)$ with $R$ near the peak of the size distribution, or by locating the peak of $g(\hat{r})$, with $\hat{r}_{ij} = r_{ij}/(R_i+R_j)$. We found that the real-to-optical size ratio was increasing with time due to photobleaching. We fit this increase by a linear relation and applied the resulting time-dependent ratio to obtain the real size of each particles.
+
+The consistency of our method can be checked by constructing the radial distribution function $g(r)$. In monodisperse hard spheres, the $g(r)$ has a sharp first peak at $r=2R$ corresponding to hard core contact. Polydispersity implies hard core contacts at various $r$ and thus broadens the peak. One can recover a sharp peak by constructing $g(\hat{r})$ (where $\hat{r}$ is scaled by the real radii, not the optical ones). In Fig.~\ref{fig:sizing}c we successfully used the sizes measured by our method to rectify the first peak.
 
 Figure~\ref{fig:sizing}b shows the size distribution only $140$ dry colloids measured on high resolution scanning electron microscopy (\textsc{sem}) images. We also show the size distribution obtained by our \emph{in situ} measurements ($\sim 1.7\times 10^6$ instantaneous sizing). The main peak of the later compares well with the former once a solvent swelling of $25\%$ in radius is taken into account. However the small sampling of the SEM measurements completely misses the tail toward small sizes featuring two low peaks that probably correspond to secondary and ternary nucleation during the synthesis of the colloids~\cite{bosma2002,Poon2012}.
 
@@ -420,7 +420,7 @@ One can show that the factor $3$ in the radical is the dimensionality of the spa
 
 
 \footnotesize{
-\bibliography{ico_dyn}
+\bibliography{sift}
 \bibliographystyle{rsc} %the RSC's .bst file
 }
 
