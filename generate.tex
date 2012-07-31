@@ -438,7 +438,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\label{fig:applications}
 \end{figure}
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{small_expelled}
 \begin{figure}
 	\centering
@@ -525,6 +525,19 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\end{tikzpicture}
 	\caption{\textbf{Instantaneous density profiles} at $t=0$ (left) and $t=\unit{40}{\hour}$ (right). Top: large particles ($R>\unit{1.5}{\micro\metre}$) without smoothing (black line) and with a Gaussian smoothing of width $2R_\text{peak}$ (gray area). Bottom: small particles ($R<\unit{1.5}{\micro\metre}$) with the same color code. The red curve is the smoothed density of ordered particles ($Q_6>0.25$) irrespective of their size.}
 	\label{fig:profiles}
+\end{figure}
+
+\tikzset{external/force remake}
+\tikzsetnextfilename{mrco_ico_small}
+\begin{figure}
+	\centering
+	\begin{tikzpicture}
+		\node[anchor=south east] {\includegraphics[width=0.45\columnwidth]{mrco_ico_small_t000.png}};
+		\node[anchor=south west] {\includegraphics[width=0.45\columnwidth]{mrco_ico_small_t299.png}};
+		\draw[->] (0,0.1\columnwidth) -- (0,0.5\columnwidth) node[above]{$z$};
+	\end{tikzpicture}
+	\caption{\textbf{Structure visualisation} at $t=0$ (left) and $t=\unit{40}{\hour}$ (right). Small particles ($R<\unit{1.5}{\micro\metre}$) are shown in green, crystal-like ordered particles ($Q_6>0.25$) in red and icosahedral particles and their neighbours in purple. Other particles are not shown.}
+	\label{fig:mrco_ico_small}
 \end{figure}
 
 \end{document}
