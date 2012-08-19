@@ -255,7 +255,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 \end{figure*}
 
 
-\tikzset{external/force remake=false}
+\tikzset{external/force remake}
 \tikzsetnextfilename{perfect}
 \begin{figure}
 	\centering
@@ -268,8 +268,9 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 		width=0.5\columnwidth,%
 		height=0.5\columnwidth,%
 		xlabel={Input radius}, ylabel={Output radius},%
+		xmin=0, xmax=15, ymin=0, ymax=15,%
 		extra x ticks={3.47}, extra x tick labels={}, extra tick style={grid=major},%
-		ytick={2,4,...,14},
+		%ytick={2,4,...,14},
 		axis background/.style={fill=white},%
 		]
 		\addplot+[only marks, mark size=0.5, mark=o] table [x index=0, y expr ={\thisrowno{1}}] {multiscale_relative_sizes.out};
@@ -527,7 +528,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\label{fig:profiles}
 \end{figure}
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{mrco_ico_small}
 \begin{figure}
 	\centering
