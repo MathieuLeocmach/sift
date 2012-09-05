@@ -189,18 +189,18 @@ Here we assume perfect noiseless, distortion-free, images. The objects to locali
 
 The $DoG$ constructed above is defined on a $d+1$ dimensional grid, with $d$ the spatial dimensionality. One can interpolate it as a continuous function of the position $\vec{r}$ and the scale $s$ and thus localise the minima with a precision below the grid size, which corresponds to sub-pixel resolution on the position and sub-scale sizing~\citep{Lowe2004}. We found that second order estimate of the spatial derivatives and first order estimates of the scale derivatives gave the best precision.
 
-The object-by-object optimal scale determination allows us to perform the spatial sub-pixel resolution step for each object on an image that is blurred just enough to have neither a flat intensity profile nor an influence of the overlap with a nearby object's blob (an effect that plagues the \citet{Crocker1996} algorithm~\cite{Jenkins2008}). We found that if for a given object the $DoG$ is minimum at $\sigma_s$, the best image to use is $G_{s-1}$. This leads to a spatial resolution below $0.1$~pixels when two $8$-pixels wide particles are at hard-core contact, and less than $0.02$~pixels error ($0.3\%$ of the diameter) when any other particle's surface is further than $1$~pixel from the surface of the particle of interest (see Fig.~\ref{fig:perfect}c).
+The object-by-object optimal scale determination allows us to perform the spatial sub-pixel resolution step for each object on an image that is blurred just enough to have neither a flat intensity profile nor an influence of the overlap with a nearby object's blob (an effect that plagues the \citet{Crocker1996} algorithm~\cite{Jenkins2008}). We found that if for a given object the $DoG$ is minimum at $\sigma_s$, the best image to use is $G_{s-1}$. This leads to a spatial resolution below $0.1$~pixels in the worst case (when particles are at hard-core contact), which is the same as the average precision claimed by \citet{Crocker1996}. Moreover, when particle's surfaces are further than $1$~pixel, the error on the positions is less than $0.02$~pixels ($0.3\%$ of the diameter) (see Fig.~\ref{fig:perfect}c).
 
 \subsection{Sizing at infinite dilution}
 \label{sec:dilute}
-The analytical response of a binary ball to a Gaussian blur, at the centre of the ball is a function of dimensionless ratio $x=R/\sqrt{2}\sigma$: $G(x)$ (see Appendix~\ref{sec:gaussian_vs_ball} for an exact expression). The $DoG$ response function is the difference between the two such functions. However, the choice of the width of the two functions is not arbitrary: we make the difference between two consecutive blurred images, the image blurred by $\sigma_{j+1}$ and the image blurred by $\sigma_j$. Therefore, in each of our discrete $DoG$ images the value at the centre of the particle can be expressed as
+The analytical response of a binary ball to a Gaussian blur, at the centre of the ball is a function of dimensionless ratio $x=R/\sqrt{2}\sigma$: $G(x)$ (see Appendix~\ref{sec:gaussian_vs_ball} for an exact expression). The $DoG$ response function is the difference between the two such functions. However, the choice of the width of the two functions is not arbitrary: we make the difference between two consecutive blurred images, the image blurred by $\sigma_{s+1}$ and the image blurred by $\sigma_s$. Therefore, in each of our discrete $DoG$ images the value at the centre of the particle can be expressed as
 \begin{align}
-DoG(R,\sigma_j, \alpha) = DoG(x_j, \alpha) &= G(x_j/\alpha) - G(x_j),\\
+DoG(R,\sigma_s, \alpha) = DoG(x_s, \alpha) &= G(x_s/\alpha) - G(x_s),\\
 \intertext{with $\alpha=2^{1/n}$. Given sub-scale refinement, this can be written as a continuous function of $\sigma$:}
 DoG(R,\sigma, \alpha) = DoG(x, \alpha) &= G(x/\alpha) - G(x).
 \end{align}
 
-Here it is clear that minimizing $DoG(x, \alpha)$ with respect to $x$ yields a value $x^*$ that depends only on $\alpha$. Exact calculation yields (see Appendix~\ref{sec:gaussian_vs_ball}):
+Here it is clear that minimizing $DoG(x, \alpha)$ with respect to $x$ yields a value $x^*$ that depends only on $\alpha$. Exact calculation yields (see \hyperref[sec:gaussian_vs_ball]{Appendix}):
 \begin{equation}
 	x^* = R/\sqrt{2}\sigma^* = \sqrt{\frac{d\ln \alpha}{1-\alpha^{-2}}}, 
 	\label{eq:scale_dil}
@@ -287,32 +287,33 @@ We found that these issues can be better addressed by pre-processing the images 
 The image $y$ acquired by a microscope can be expressed as 
 \begin{equation}
 y = x \star h + \epsilon,
+\label{eq:psf}
 \end{equation}
-where $x$ is the perfect image, $h$ is the \textsc{psf} of the microscope and $\epsilon$ is the noise independent of both $x$ and $h$. The process of estimating $x$ from $y$ and some theoretical or measured expression of $h$ is called deconvolution. Deconvolution in the presence of noise is a difficult problem~\cite{Riad1986}. Hopefully here we do not need to reconstruct the original image, but only our first Gaussian blurred version of it, \emph{i.e.}, $G_0$. Indeed, after a reasonable amount of blur in three dimensions, the noise can be neglected and we thus obtain:
+where $x$ is the perfect image, $h$ is the \textsc{psf} of the microscope and $\epsilon$ is the noise independent of both $x$ and $h$. The process of estimating $x$ from $y$ and some theoretical or measured expression of $h$ is called deconvolution. Deconvolution in the presence of noise is a difficult problem~\cite{Riad1986}. Hopefully here we do not need to reconstruct the original image, but only our first Gaussian blurred version of it, \emph{i.e.}, $G_0 = x \star g_{\sigma_0}$ starting from $y_0 = y \star g_{\sigma_0}$. Indeed, after a reasonable amount of blur in three dimensions, the noise can be neglected and we thus obtain:
 \begin{equation}
-y_0 = (x \star h + \epsilon) \star g_{\sigma_0} \approx G_0 \star (h \star g_{\sigma_0}),
+y_0 \approx G_0 \star h,
 \end{equation}
 or in Fourier space
 \begin{equation}
-\mathcal{F}[y_0] = \mathcal{F}[G_0] \times \mathcal{F}[H]. 
+\mathcal{F}[y_0] = \mathcal{F}[G_0] \times \mathcal{F}[h]. 
 \label{eq:Fourier_conv}
 \end{equation}
 
-Once $\mathcal{F}[H]$ is known the deconvolution reduces to a simple division in Fourier space. Let us measure $H$ in an isotropic system where we can write
+Once $\mathcal{F}[h]$ is known the deconvolution reduces to a simple division in Fourier space. Let us measure $\mathcal{F}[h]$ in an isotropic system where we can write
 \begin{eqnarray}
-\left\langle \left|\mathcal{F}_X[G_0]\right|^2 \right\rangle  &= \left\langle \left|\mathcal{F}_Z[G_0]\right|^2 \right\rangle. 
+\left\langle \left|\mathcal{F}_X[x]\right|^2 \right\rangle  &= \left\langle \left|\mathcal{F}_Z[x]\right|^2 \right\rangle. 
 \end{eqnarray}
-Using Eq.~(\ref{eq:Fourier_conv}) we obtain 
+Using Eq.~(\ref{eq:psf}) we obtain 
 \begin{eqnarray}
-\frac{\left\langle\left|\mathcal{F}_X[y_0]\right|^2 \right\rangle}{\left|\mathcal{F}_X[H]\right|^2}  = \frac{\left\langle \left|\mathcal{F}_Z[y_0]\right|^2\right\rangle}{\left|\mathcal{F}_Z[H]\right|^2}. 
+\frac{\left\langle\left|\mathcal{F}_X[y]\right|^2 \right\rangle}{\left|\mathcal{F}_X[h]\right|^2}  = \frac{\left\langle \left|\mathcal{F}_Z[y]\right|^2\right\rangle}{\left|\mathcal{F}_Z[h]\right|^2}. 
 \end{eqnarray}
-In point scanning confocal imaging, the \textsc{psf} has negligible lobes along $X$ and $Y$ ($X$ only for line scanning), thus we have 
+Here $\mathcal{F}_X$ indicates the Fourier transform along axis $X$. In point scanning confocal imaging, the \textsc{psf} has negligible lobes along $X$ and $Y$ ($X$ only for line scanning), thus we have 
 \begin{eqnarray}
-\left|\mathcal{F}_Z[H]\right|^2 = \frac{\left\langle \left|\mathcal{F}_Z[y_0]\right|^2\right\rangle}{\left\langle\left|\mathcal{F}_X[y_0]\right|^2 \right\rangle}.
+\left|\mathcal{F}_Z[h]\right|^2 = \frac{\left\langle \left|\mathcal{F}_Z[y]\right|^2\right\rangle}{\left\langle\left|\mathcal{F}_X[y]\right|^2 \right\rangle}.
 \end{eqnarray}
 For example an Hermitian kernel (real valued spectrum) is 
 \begin{eqnarray}
-\mathcal{F}_Z[H] = \sqrt{\frac{\left\langle \left|\mathcal{F}_Z[y_0]\right|^2\right\rangle}{\left\langle\left|\mathcal{F}_X[y_0]\right|^2 \right\rangle}}.
+\mathcal{F}_Z[h] = \sqrt{\frac{\left\langle \left|\mathcal{F}_Z[y]\right|^2\right\rangle}{\left\langle\left|\mathcal{F}_X[y]\right|^2 \right\rangle}}.
 \end{eqnarray}
 
 Fig.~\ref{fig:deconv}b-c shows the particles localized from the original image and from the deconvolved image. Deconvolution mends both size overestimation and imprecision in $z$ coordinate. This also translates in the radial distribution function (Fig.~\ref{fig:deconv}d), where the spurious shoulder before the first peak disappears.
@@ -435,6 +436,7 @@ Aihara Project, the FIRST program from JSPS, initiated by CSTP.
 
 
 
+\appendix
 \section*{Appendix: Gaussian response of a binary ball}
 \label{sec:gaussian_vs_ball}
 
