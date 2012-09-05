@@ -247,15 +247,15 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 			no marks,%
 			]
 			\addplot file {cp0.34.rdf};
-			\addplot file {cp0.34_deconv.rdf};
+			\addplot+[dashed] file {cp0.34_deconv.rdf};
 		\end{axis}
 	\end{tikzpicture}
-	\caption{\textbf{Deconvolution.} Detail of the same $YZ$ slice of \textbf{a} original confocal image, \textbf{b} previous blurred by $\sigma_0=1.6$, \textbf{c} previous deconvolved by measured kernel (see text). Circles indicate the tracked particles position and size when using whether \textbf{b} or \textbf{c} as first Gaussian layer $G_0$. All three centres are in the slice $\pm \unit{0.5}{px}$. \textbf{d} Radial distribution function of sticky spheres (blue) without and (red) with deconvolution.}
+	\caption{\textbf{Deconvolution.} Detail of the same $YZ$ slice of \textbf{a} original confocal image, \textbf{b} previous blurred by $\sigma_0=1.6$, \textbf{c} previous deconvolved by measured kernel (see text). Circles indicate the tracked particles position and size when using whether \textbf{b} or \textbf{c} as first Gaussian layer $G_0$. All three centres are in the slice $\pm \unit{0.5}{px}$. \textbf{d} Radial distribution function of sticky spheres (blue) without and (red dash) with deconvolution.}
 	\label{fig:deconv}
 \end{figure*}
 
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{perfect}
 \begin{figure}
 	\centering
@@ -372,20 +372,21 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 		width=\columnwidth,%
 		height=0.5\columnwidth,%
 		no marks,%
+		area legend,
 		xlabel={$R$ [$\micro\metre$]}, xmin=0.8, xmax=2.5,%
 		ylabel={Size distribution}, ymin=0, ymax=12,%
 		legend style={legend pos=north west},
 		]
 		\nextgroupplot
-		\addplot table[x=r, y=all] {all_ico_icongb_mrco_X.rdist};
-		\addplot table[x=r, y=mrco] {all_ico_icongb_mrco_X.rdist};
-		\addplot table[x=r, y=X] {all_ico_icongb_mrco_X.rdist};
+		\addplot[gray!50,fill=gray!50] table[x=r, y=all] {all_ico_icongb_mrco_X.rdist} \closedcycle;
+		\addplot[dashed] table[x=r, y=mrco] {all_ico_icongb_mrco_X.rdist};
+		\addplot[black] table[x=r, y=X] {all_ico_icongb_mrco_X.rdist};
 		\legend{all, \textsc{mrco}, crystalline};
 		
 		\nextgroupplot
-		\addplot table[x=r, y=all] {all_ico_icongb_mrco_X.rdist};
-		\addplot table[x=r, y=ico] {all_ico_icongb_mrco_X.rdist};
-		\addplot table[x=r, y=icongb] {all_ico_icongb_mrco_X.rdist};
+		\addplot[gray!50,fill=gray!50] table[x=r, y=all] {all_ico_icongb_mrco_X.rdist} \closedcycle;
+		\addplot[dashed] table[x=r, y=ico] {all_ico_icongb_mrco_X.rdist};
+		\addplot[black] table[x=r, y=icongb] {all_ico_icongb_mrco_X.rdist};
 		\legend{all, ico. centre, ico. surf.};
 	\end{groupplot}
 	\node[lab, above right=0 of distrib c1r1.outer south west] {a};
@@ -477,7 +478,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\label{fig:small_expelled}
 \end{figure}
 
-\tikzset{external/force remake=false}
+\tikzset{external/force remake}
 \tikzsetnextfilename{profiles}
 \begin{figure}
 	\centering
@@ -504,24 +505,24 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 			]
 		\nextgroupplot[ylabel={$\rho$}]
 		\addplot+[gray!50, fill=gray!50] table[x index=0, y index=1]{large_small_mrco_t000.gauss.zhist} \closedcycle;
-		\addplot table[x index=0, y index=3]{large_small_mrco_t000.gauss.zhist};
+		\addplot+[dashed] table[x index=0, y index=3]{large_small_mrco_t000.gauss.zhist};
 		\addplot+[black] table[x index=0, y index=1]{large_small_mrco_t000.zhist};
 		\node at (rel axis cs:0.5, 0.8) {$t=0$};
 		
 		\nextgroupplot
 		\addplot+[gray!50, fill=gray!50] table[x index=0, y index=1]{large_small_mrco_t200.gauss.zhist} \closedcycle;
-		\addplot table[x index=0, y index=3]{large_small_mrco_t200.gauss.zhist};
+		\addplot+[dashed] table[x index=0, y index=3]{large_small_mrco_t200.gauss.zhist};
 		\addplot+[black] table[x index=0, y index=1]{large_small_mrco_t200.zhist};
 		\node at (rel axis cs:0.5, 0.8) {$t=\unit{40}{\hour}$};
 		
 		\nextgroupplot[ymax=0.15, ytick={0,0.1}, ylabel={$\rho$}]
 		\addplot+[gray!50, fill=gray!50] table[x index=0, y index=2]{large_small_mrco_t000.gauss.zhist} \closedcycle;
-		\addplot table[x index=0, y index=3]{large_small_mrco_t000.gauss.zhist} ;
+		\addplot+[dashed] table[x index=0, y index=3]{large_small_mrco_t000.gauss.zhist} ;
 		\addplot+[black] table[x index=0, y index=2]{large_small_mrco_t000.zhist};
 		
 		\nextgroupplot[ymax=0.15, ytick={0,0.1}]
 		\addplot+[gray!50, fill=gray!50] table[x index=0, y index=2]{large_small_mrco_t200.gauss.zhist} \closedcycle;
-		\addplot table[x index=0, y index=3]{large_small_mrco_t200.gauss.zhist};
+		\addplot+[dashed] table[x index=0, y index=3]{large_small_mrco_t200.gauss.zhist};
 		\addplot+[black] table[x index=0, y index=2]{large_small_mrco_t200.zhist};
 		\end{groupplot}
 	\end{tikzpicture}
