@@ -22,7 +22,7 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
-\usepackage{SIunits}
+\usepackage[binary]{SIunits}
 \DeclareMathOperator{\erf}{erf}
 
 \usepackage{algpseudocode}
@@ -154,7 +154,7 @@ The \textsc{sift} consists in convolving the original image $I$ by Gaussian kern
 \forall s>0,\quad \sigma_{s} = 2^{s/n} \sigma_0 ,
 \label{eq:sigma_s}
 \end{align}
-with $n$ a fixed integer. Following Ref. \cite{Lowe2004} we use $\sigma_0=1.6$ and $n=3$. Bright objects in the original image appear as bright blobs in the blurred images, and the blobs fuse together as the kernel width increases (see Fig.~\ref{fig:localise}c-h). This can be seen as a low-pass filter in the frequency domain. If we take the difference between consecutive blurred images we obtain a comb of band pass filtered versions of $I$: 
+with $n$ a fixed integer. Following Ref. \cite{Lowe2004} we use $\sigma_0=1.6$ and $n=3$. Bright objects in the original image appear as bright blobs in the blurred images, and the blobs fuse together as the kernel width increases (see Fig.~\ref{fig:localise}c-h). This can be seen as a series of low-pass filters in the frequency domain. If we take the difference between consecutive blurred images we obtain a comb of band pass filtered versions of $I$: 
 \begin{equation}
 \forall s>1,\quad DoG_s = G_s - G_{s-1} \label{eq:DoG_s}
 \end{equation}
@@ -208,7 +208,7 @@ Here it is clear that minimizing $DoG(x, \alpha)$ with respect to $x$ yields a v
 where $d$ is the spatial dimensionality. 
 Practically one obtains $\sigma^*$, the value of $\sigma$ that minimises $DoG(R,\sigma, \alpha)$, by a polynomial fit for discrete data $\sigma_j$. Eq.~(\ref{eq:scale_dil}) allows to translate the $n$-dependent $\sigma^*$ to the parameter-free real radius of the particle, $R$. The error on $R$ does depend on the number of subdivisions. We found that with $n=3$ the radius of an isolated pixelated ball can be indeed measured within $0.3\%$ relative error with this method (see Fig.~\ref{fig:perfect}b).
 
-The scale $s=0.5$ corresponds (via Eq.~(\ref{eq:sigma_s}) and Eq.~(\ref{eq:scale_dil})) to the smaller detectable radius $R_{min}\approx \unit{3.5}{px}$ ($\sigma_0=1.6$, $n=3$). In order to detect small objects, \citet{Lowe2004} recommends to double the size of the input image using linear interpolation prior to building the first level of the pyramid. This method fares relatively well in noiseless images (see Fig.~\ref{fig:perfect}b) despite larger errors, but we found that it has to be used with care in confocal microscopy images due to noise and deconvolution artefacts. In addition doubling an image size implies a 8-fold increase in memory consumption (reaching \unit{60} GB in the case of a $(\unit{512}{px})^3$ original image). Our implementation allows this on $\unit{64}{byte}$ computers by relying on memory mapped files, nevertheless it is mostly impractical. All following tests results are obtained without relying on doubled images.
+The scale $s=0.5$ corresponds (via Eq.~(\ref{eq:sigma_s}) and Eq.~(\ref{eq:scale_dil})) to the smaller detectable radius $R_{min}\approx \unit{3.5}{px}$ ($\sigma_0=1.6$, $n=3$). In order to detect small objects, \citet{Lowe2004} recommends to double the size of the input image using linear interpolation prior to building the first level of the pyramid. This method fares relatively well in noiseless images (see Fig.~\ref{fig:perfect}b) despite larger errors, but we found that it has to be used with care in confocal microscopy images due to noise and deconvolution artefacts. In addition doubling an image size implies a 8-fold increase in memory consumption (reaching \unit{60}{\giga\byte} in the case of a $(\unit{512}{px})^3$ original image). Our implementation allows this on $\unit{64}{\bit}$ computers by relying on memory mapped files, nevertheless it is mostly impractical. All following tests results are obtained without relying on doubled images.
 
 \subsection{Edge and overlap removal}
 
@@ -427,8 +427,7 @@ We showed that in the case of colloidal hard sphere, a size distribution with a 
 We hope that this novel particle tracking method with a capability of particle-size determination will be applied to a wide field in soft matter physics. 
 
 \section*{Acknowledgements}
-We are grateful to Anthony Genot and Yannick Rondelez for providing the image of Fig.~\ref{fig:applications}a; to Ken-ichiro Murata for providing the image of Fig.~\ref{fig:applications}b; to John Russo for providing us with simulation data of dense hard spheres, which are used in Fig.~\ref{fig:perfect}e; to Hideyo Tsurusawa for the synthesis of the colloid and the confocal data of Fig.~\ref{fig:deconv}; and to Rebecca Rice and C. Paddy Royall 
-for \textsc{sem} measurements of the size distribution of dried particles. 
+We are grateful to Koshi Hasatani, Anthony Genot and Yannick Rondelez for providing the image of Fig.~\ref{fig:applications}a; to Ken-ichiro Murata for providing the image of Fig.~\ref{fig:applications}b; to John Russo for providing us with simulation data of dense hard spheres, which are used in Fig.~\ref{fig:perfect}e; to Hideyo Tsurusawa for the synthesis of the colloid and the confocal data of Fig.~\ref{fig:deconv}; and to Rebecca Rice and C. Paddy Royall for \textsc{sem} measurements of the size distribution of dried particles. 
 This work was partially supported by a grant-in-aid from the 
 Ministry of Education, Culture, Sports, Science and Technology, Japan and also by 
 Aihara Project, the FIRST program from JSPS, initiated by CSTP. 
