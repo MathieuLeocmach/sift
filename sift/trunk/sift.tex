@@ -154,7 +154,7 @@ The \textsc{sift} consists in convolving the original image $I$ by Gaussian kern
 \forall s>0,\quad \sigma_{s} = 2^{s/n} \sigma_0 ,
 \label{eq:sigma_s}
 \end{align}
-with $n$ a fixed integer. Following Ref. \cite{Lowe2004} we use $\sigma_0=1.6$ and $n=3$. Bright objects in the original image appear as bright blobs in the blurred images, and the blobs fuse together as the kernel width increases (see Fig.~\ref{fig:localise}c-h). This can be seen as a lower and lower-pass filter in the frequency domain. If we take the difference between consecutive blurred images we obtain a comb of band pass filtered versions of $I$: 
+with $n$ a fixed integer. Following Ref. \cite{Lowe2004} we use $\sigma_0=1.6$ and $n=3$. Bright objects in the original image appear as bright blobs in the blurred images, and the blobs fuse together as the kernel width increases (see Fig.~\ref{fig:localise}c-h). This can be seen as a low-pass filter in the frequency domain. If we take the difference between consecutive blurred images we obtain a comb of band pass filtered versions of $I$: 
 \begin{equation}
 \forall s>1,\quad DoG_s = G_s - G_{s-1} \label{eq:DoG_s}
 \end{equation}
@@ -193,14 +193,14 @@ The object-by-object optimal scale determination allows us to perform the spatia
 
 \subsection{Sizing at infinite dilution}
 \label{sec:dilute}
-The analytical response of a binary ball to a Gaussian blur, at the centre of the ball is a function of dimensionless ratio $x=R/\sqrt{2}\sigma$: $G(x)$ (see Appendix~\ref{sec:gaussian_vs_ball} for an exact expression). The $DoG$ response function is the difference between the two such functions. However, the choice of the width of the two functions is not arbitrary: we make the difference between two consecutive blurred images, the image blurred by $\sigma_{s+1}$ and the image blurred by $\sigma_s$. Therefore, in each of our discrete $DoG$ images the value at the centre of the particle can be expressed as
+The analytical response of a binary ball to a Gaussian blur, at the centre of the ball is a function of dimensionless ratio $x=R/\sqrt{2}\sigma$: $G(x)$ (see Appendix for an exact expression). The $DoG$ response function is the difference between the two such functions. However, the choice of the width of the two functions is not arbitrary: we make the difference between two consecutive blurred images, the image blurred by $\sigma_{s+1}$ and the image blurred by $\sigma_s$. Therefore, in each of our discrete $DoG$ images the value at the centre of the particle can be expressed as
 \begin{align}
 DoG(R,\sigma_s, \alpha) = DoG(x_s, \alpha) &= G(x_s/\alpha) - G(x_s),\\
 \intertext{with $\alpha=2^{1/n}$. Given sub-scale refinement, this can be written as a continuous function of $\sigma$:}
 DoG(R,\sigma, \alpha) = DoG(x, \alpha) &= G(x/\alpha) - G(x).
 \end{align}
 
-Here it is clear that minimizing $DoG(x, \alpha)$ with respect to $x$ yields a value $x^*$ that depends only on $\alpha$. Exact calculation yields (see \hyperref[sec:gaussian_vs_ball]{Appendix}):
+Here it is clear that minimizing $DoG(x, \alpha)$ with respect to $x$ yields a value $x^*$ that depends only on $\alpha$. Exact calculation yields (see Appendix):
 \begin{equation}
 	x^* = R/\sqrt{2}\sigma^* = \sqrt{\frac{d\ln \alpha}{1-\alpha^{-2}}}, 
 	\label{eq:scale_dil}
@@ -208,7 +208,7 @@ Here it is clear that minimizing $DoG(x, \alpha)$ with respect to $x$ yields a v
 where $d$ is the spatial dimensionality. 
 Practically one obtains $\sigma^*$, the value of $\sigma$ that minimises $DoG(R,\sigma, \alpha)$, by a polynomial fit for discrete data $\sigma_j$. Eq.~(\ref{eq:scale_dil}) allows to translate the $n$-dependent $\sigma^*$ to the parameter-free real radius of the particle, $R$. The error on $R$ does depend on the number of subdivisions. We found that with $n=3$ the radius of an isolated pixelated ball can be indeed measured within $0.3\%$ relative error with this method (see Fig.~\ref{fig:perfect}b).
 
-The scale $s=0.5$ corresponds (via Eq.~(\ref{eq:sigma_s}) and Eq.~(\ref{eq:scale_dil})) to the smaller detectable radius $R_{min}\approx \unit{3.5}{px}$ ($\sigma_0=1.6$, $n=3$). In order to detect small objects, \citet{Lowe2004} recommends to double the size of the input image using linear interpolation prior to building the first level of the pyramid. This method fares relatively well in noiseless images (see Fig.~\ref{fig:perfect}b) despite larger errors, but we found that it has to be used with care in confocal microscopy images due to noise and deconvolution artefacts. In addition doubling an image size implies a 8-fold increase in memory consumption (reaching \unit{60}{\giga b} in the case of a $(\unit{512}{px})^3$ original image). Our implementation allows this on $\unit{64}{byte}$ computers by relying on memory mapped files, nevertheless it is mostly impractical. All following tests results are obtained without relying on doubled images.
+The scale $s=0.5$ corresponds (via Eq.~(\ref{eq:sigma_s}) and Eq.~(\ref{eq:scale_dil})) to the smaller detectable radius $R_{min}\approx \unit{3.5}{px}$ ($\sigma_0=1.6$, $n=3$). In order to detect small objects, \citet{Lowe2004} recommends to double the size of the input image using linear interpolation prior to building the first level of the pyramid. This method fares relatively well in noiseless images (see Fig.~\ref{fig:perfect}b) despite larger errors, but we found that it has to be used with care in confocal microscopy images due to noise and deconvolution artefacts. In addition doubling an image size implies a 8-fold increase in memory consumption (reaching \unit{60} GB in the case of a $(\unit{512}{px})^3$ original image). Our implementation allows this on $\unit{64}{byte}$ computers by relying on memory mapped files, nevertheless it is mostly impractical. All following tests results are obtained without relying on doubled images.
 
 \subsection{Edge and overlap removal}
 
@@ -277,7 +277,7 @@ In our tests, we found that for both cases with and without the brightness deter
 	\label{fig:deconv}
 \end{figure*}
 
-Real images suffer from optical limitations, \emph{e.g.}, the point-spread function (\textsc{psf}) of the microscope. In particular, spherical particles observed by confocal microscopy appear elongated along $Z$. The influence of such anisotropic distortion on the Gaussian and $DoG$ responses is not trivial and most of the equations given in Appendix~\ref{sec:gaussian_vs_ball} do not have analytical equivalents. In particular, the minimum of the $DoG$ response is found at larger values of $R/\sigma$, thus the naive use of the methods detailed in the previous section lead to overestimate particle sizes.
+Real images suffer from optical limitations, \emph{e.g.}, the point-spread function (\textsc{psf}) of the microscope. In particular, spherical particles observed by confocal microscopy appear elongated along $Z$. The influence of such anisotropic distortion on the Gaussian and $DoG$ responses is not trivial and most of the equations given in Appendix do not have analytical equivalents. In particular, the minimum of the $DoG$ response is found at larger values of $R/\sigma$, thus the naive use of the methods detailed in the previous section lead to overestimate particle sizes.
 
 In addition, the overlap of neighbouring particle images is no longer negligible when the particles are aligned along $Z$. This leads to large imprecision in particle positions, especially in the case of anisotropic environment (\emph{e.g.}, isolated pair of particles, interface, colloidal gel). In Fig.~\ref{fig:deconv}d the radial distribution function of almost monodisperse colloids with short range attraction displays a spurious shoulder before its first peak, indicating that particles centres are often found closer than the sum of their hard core radii, as illustrated in Fig.~\ref{fig:deconv}b.
 
