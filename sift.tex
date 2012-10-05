@@ -26,6 +26,7 @@
 \DeclareMathOperator{\erf}{erf}
 
 \usepackage{algpseudocode}
+\usepackage{xcolor}
 
 \begin{document}
 
@@ -106,7 +107,7 @@ E-mail: mathieu.leocmach@polytechnique.org}}
 
 \section{Introduction}
 
-Experimental physicists often need to recognize objects, count them, follow them and characterise them. \citet{perrin} had to count colloids by hand to establish the sedimentation-diffusion equilibrium. Nowadays computer vision algorithms are used routinely in the lab to track hundreds of thousands of objects as diverse as stars in a galaxy~\cite{Bertin1996}, tracers in a microfluidic device~\cite{Wereley2010}, pattern formation in polymer systems~\cite{tanaka1986application,tanaka1989digital}, dust in a plasma, bacteria~\cite{Zhang2010,Gibiansky2010} or viruses in a living cell~\cite{Brandenburg2007}. In all these cases, tracking is possible if the particles are either point-like and far apart, or several pixel wide and almost monodisperse in size (at least the smallest dimension for anisotropic objects~\cite{Zhang2010,Gibiansky2010}). To our knowledge, algorithm that allow tracking of polydisperse particles in crowded environments have not reached the soft matter community.
+Experimental physicists often need to recognize objects, count them, follow them and characterise them. \citet{perrin} had to count colloids by hand to establish the sedimentation-diffusion equilibrium. Nowadays computer vision algorithms are used routinely in the lab to track hundreds of thousands of objects as diverse as stars in a galaxy~\cite{Bertin1996}, tracers in a microfluidic device~\cite{Wereley2010}, pattern formation in polymer systems~\cite{tanaka1986application,tanaka1989digital}, dust in a plasma\textcolor{blue}{, bacteria~\cite{Zhang2010,Gibiansky2010}} or viruses in a living cell~\cite{Brandenburg2007}. In all these cases, tracking is possible if the particles are either point-like and far apart, or several pixel wide and almost monodisperse in size \textcolor{blue}{(at least the smallest dimension for anisotropic objects~\cite{Zhang2010,Gibiansky2010})}. To our knowledge, algorithm that allow tracking of polydisperse particles in crowded environments have not reached the soft matter community.
 
 Overall particle size distribution in colloidal suspensions and emulsions influences crystallisation~\cite{Pusey1987,Henderson1996,Fasolo2003,Schope2007,pusey2009hard}, glass forming ability~\cite{Pusey1987,Henderson1996,Senkov2001,Schope2007,pusey2009hard}, sedimentation~\cite{Binks1998,Leocmach2010} and emulsion stability~\cite{Biben1993,Binks1998} among other physical phenomena. It can be characterized by various methods that rely on measurements done in well-controlled environments~\cite{Lange1995,Provder1997,Finder2004}. However the local size distribution is not accessible experimentally \emph{in situ} and has thus not been studied so far.
 
@@ -166,7 +167,7 @@ However, to the extent of our knowledge, the \textsc{sift} has not been used in 
 
 We will mainly cope with the three-dimensional extension of the \textsc{sift}. As in the case of the \citet{Crocker1996} algorithm, the \textsc{sift} can be extended in three dimensions (\emph{e.g.}, confocal microscopy images) in two ways: either by extracting 2D blobs independently on each slice and then reconstructing 3D objects (Fig.~\ref{fig:localise}b) or by working directly in three dimensions~\cite{Urschler2006, Cheung2009} (Fig.~\ref{fig:localise}a). We found that the former method is prone to errors, missing about a tenth of the particles in our best implementation (Fig.~\ref{fig:localise}b). The 3D results presented in this paper are obtained solely by the later method.
 
-We stress that a volumetric implementation of \textsc{sift} implies a large amount of data (typically more than \unit{1}{\giga b} for a $(\unit{256}{px})^3$ picture) and thus requires careful memory management. Our best implementation (C++) on a 4 cores i7 computer takes less that \unit{10}{\second} to extract the positions and scales of $\sim 10^4$ particles in such a volumetric picture. A much slower implementation (Python+Scipy, single core) takes \unit{1}{\second} to deal with $(\unit{1600}{px})^2$ 2D images like Fig.~\ref{fig:applications}b. We would expect real-time processing for 2D images on GPU-enabled implementations.
+We stress that a volumetric implementation of \textsc{sift} implies a large amount of data (typically more than \unit{1}{\giga b} for a $(\unit{256}{px})^3$ picture) and thus requires careful memory management. \textcolor{blue}{Our best implementation (C++) on a 4 cores i7 computer takes less that \unit{10}{\second} to extract the positions and scales of $\sim 10^4$ particles in such a volumetric picture. A much slower implementation (Python+Scipy, single core) takes \unit{1}{\second} to deal with $(\unit{1600}{px})^2$ 2D images like Fig.~\ref{fig:applications}b. We would expect real-time processing for 2D images on GPU-enabled implementations.}
 
 \subsection{Sub-pixel and sub-scale resolution}
 
@@ -380,7 +381,7 @@ We note that the tail of small particles characteristic of our overall size dist
 polymorph). 
 We stress that this coupling of \textsc{mrco} and icosahedral ordering with the spatial distribution of particle sizes does not imply fractionation, but rather suggests
 that a rather homogeneous size distribution tends to help or stabilize \textsc{mrco} and a slightly smaller size of a particle also stabilizes the formation of icosahedral order 
-around it. We will see below that the fractionation appends later in the crystallisation process.  
+around it. \textcolor{blue}{We will see below that the fractionation appends later in the crystallisation process.}
 
 \subsection{Polydispersity and heterogeneous crystallisation in a supercooled colloidal liquid}
 
