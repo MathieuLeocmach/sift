@@ -49,7 +49,7 @@ Therefore we included these two references as an exemple of anisotropic object t
 2)      How fast is this algorithm? How long does it take to finish one data set?
 \end{quotationi}
 
-We added this precision at the end of the subsection ``Scale invariant feature transform''. We had two implementations, one prototype in Python+Scipy which was able to deal with any input (the 2D pictures of Fig.2) and an optimized multi-threaded C++ implementation which was able to read 3D images form native confocal format. The former is rather slow (a $(\unit{1600}{px})^2$ image per second) but the later is able to deal with $(\unit{256}{px})^3$ every \unit{5-10}{\second} on a i7 4 cores computer.
+We added this precision at the end of the subsection ``Scale invariant feature transform''. We have two implementations, one prototype in Python+Scipy which is able to deal with any input (the 2D pictures of Fig.2) and an optimized multi-threaded C++ implementation which is only able to read 3D images form native confocal format. The former is rather slow (a $(\unit{1600}{px})^2$ image per second) but the later is able to treat with $(\unit{256}{px})^3$ every \unit{5-10}{\second} on a i7, 4 cores computer.
 
 \begin{quotationi}
 3)      Since the real-to-optical size ratio changes with time, it will be better to show what the change is.
@@ -59,6 +59,10 @@ We added the time dependence of the real-to-optical size ratio as a panel of Fig
 
 \begin{quotationi}4) The authors state that ``We stress that this coupling of MRCO and icosahedral ordering with the spatial distribution of particle sizes does not imply fractionation, but rather \ldots'' However, we know that experimentally crystallization is suppressed when the polydispersity of colloidal hard spheres is above 12\% (Pusey, P. in Liquids, Freezing and Glass Transition (eds Hansen, J. P., Levesque, D. \& Zinn-Justin, J.) 763-931 (North-Holland, Amsterdam, 1991).). Since the polydispersity in this work is beyond 12\%, it seems to me that the system has to fractionize the particles by their sizes so that small nucleation clusters can start and grow in a local less polydispersed enviroment. This large polydispersity also slow down the dynamics of crystallization as more defects can be trapped between crystalline clusters.
 \end{quotationi}
+
+Indeed Fasolo and Sollich (PRL 2003, our Ref. 11) have shown that over 6-7\% polydispersity the ground state of hard spheres is a set of fractionated crystals. We agree with you that very small particles totally inhibit the formation of \textsc{mrco}, as revealed by Fig. 7. However the particles inside the main peak (which can be fitted to 6.9\% polydispersity) are definitively able to form \textsc{mrco} even if small particles are present in their neighbourhood. That is why we state that there is little or no fractionation.
+
+As the Referee wrote, the crystallisation process, from \textsc{mrco} to nuclei to growth, do require some fractionation and is inhibited or slowed down by the presence of small particles. Our sentence refers to the first step, from liquid to \textsc{mrco}, or to the transition from liquid structure to icosahedron. We added a sentence to make this point clear.
 
 We hope that the Reviewer would think that the revised manuscript is now suitable for publication in Soft Matter. 
 
