@@ -124,13 +124,47 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\label{fig:localise}
 \end{figure*}
 
-\tikzset{external/force remake=false}
+\tikzset{external/force remake}
 \tikzsetnextfilename{sizing}
 \begin{figure}
 	\centering
 	\begin{tikzpicture}[lab/.style={anchor=south west, text height=0.8em, text depth=0.2em, font=\Large\bfseries}]
+	\begin{groupplot}[%
+		group style={
+				group name=ro,
+				group size=1 by 2,%
+				%horizontal sep=0.0075\textwidth,
+				%vertical sep=0.0075\textwidth,
+				},%
+		width=0.925\columnwidth,%
+		height=0.5\columnwidth,%
+		y label style={align=center, text width=0.5\columnwidth},%
+		]
+	\nextgroupplot[%
+		xmin=2, xmax=6, xlabel={Detected radius [px]},%
+		ymin=0, ymax=20,%
+		ylabel={Position of the first peak of $g_R(r)$ [px]},
+		]
+		\addplot+[black,forget plot, no marks, domain=2:6] {3*x};
+		\addplot+[black,only marks, mark=o] file {rdf_peak_pos_radius};
+	
+	\nextgroupplot[%
+		xmin=0, xmax=60, 
+		xlabel={Time [h]},%
+		%ymin=0, ymax=20,%
+		ylabel={Real-to-optical\\ size ratio},
+		]
+		\addplot+[red,only marks, mark=+] table[x expr=12*\coordindex/60, y index=0] {ro_ratio};
+		\addplot+[black,very thick, no marks, domain=0:60] {0.00125333*x+1.48757};
+		
+	\end{groupplot}
+	\node[lab] at (ro c1r1.outer south west) {a};
+	\node[lab] at (ro c1r2.outer south west) {b};
+	
 	\begin{axis}[%
 		name=hist,
+		anchor=outer north west,
+		at={(ro c1r2.outer south west)},
 		width=0.6\columnwidth, height=0.5\columnwidth,%
 		%scale only axis,
 		xlabel={Diameters [$\micro\metre$]},%
@@ -144,6 +178,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\end{axis}
 	\begin{axis}[%
 		name=hist2,
+		at={(hist.south west)},
 		width=0.6\columnwidth, height=0.5\columnwidth,%
 		xmin=1, xmax=5,
 		axis y line*=right,
@@ -154,11 +189,12 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 		\addplot table [x expr ={2*\thisrow{r}/1.25}, y index=1] {all_ico_icongb_mrco_X.rdist};
 		\draw[->, ultra thick] (axis cs:3.15,3) -- (axis cs: 3.9, 3);% node[right)] {swelling};
 	\end{axis}
-	\node[lab] at (hist.outer south west) {b};
+	\node[lab] at (hist.outer south west) {c};
 	
 	\begin{axis}[%
 		name=srdf,
-		at={(0.55\columnwidth,0)},
+		anchor=north east,
+		at={(ro c1r2.below south east)},
 		width=0.5\columnwidth, height=0.5\columnwidth,%
 		xmin=0, xmax=1.5,%
 		xlabel ={$r/\sigma_\text{peak}$, $\hat{r}$},%
@@ -171,25 +207,13 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 		\addplot file {yon6.srdf};
 		\legend{$g(r)$, $g(\hat{r})$};
 	\end{axis}
-	\node[lab] at (srdf.outer south west) {c};
+	\node[lab] at (srdf.outer south west) {d};
 	
-	\begin{axis}[%
-		name=peak_pos,%
-		at={(srdf.above north east)},%
-		anchor=below south east,%
-		width=0.925\columnwidth,%
-		height=0.5\columnwidth,%
-		xmin=2, xmax=6, xlabel={detected radius [px]},%
-		ymin=0, ymax=20,%
-		ylabel={Position of the first peak of $g_R(r)$ [px]},
-		y label style={align=center, text width=0.5\columnwidth},%
-		]
-		\addplot+[black,forget plot, no marks, domain=2:6] {3*x};
-		\addplot+[black,only marks, mark=o] file {rdf_peak_pos_radius};
-	\end{axis}
-	\node[lab] at (peak_pos.outer south west) {a};
+	
+	
+	
 	\end{tikzpicture}
-	\caption{\textbf{\emph{In situ} sizing of colloids in a glass.} \textbf{a,} Position of the first peak of the partial $g_R(r)$ function of the optical radius $R$. Solid line corresponds to a real radius to optical radius ratio of $1.5$. \textbf{b,} Size distribution estimated by our algorithm (dashed line). Comparison with the size distribution estimated from \textsc{sem} of only $140$ dry particles (steps) is possible once $25\%$ of swelling is taken into account (full line). \textbf{c,} First peak of the radial distribution function with (full line) and without (dashed) the individual sizes data. Taking into account the measured sizes rectifies the effect of the polydispersity: the peak is thinner and higher.}
+	\caption{\emph{In situ} sizing of colloids in a glass. (a) Position of the first peak of the partial $g_R(r)$ function of the optical radius $R$. Solid line corresponds to a real-to-optical size ratio of $1.5$. (b) Time dependence of the real-to-optical size ratio. Solid line is a linear fit. (c) Size distribution estimated by our algorithm (dashed line). Comparison with the estimation from \textsc{sem} of only $140$ dry particles (steps) is possible once $25\%$ of swelling is taken into account (full line). (d) First peak of the radial distribution function with (full line) and without (dashed) the individual sizes data.}
 	\label{fig:sizing}
 \end{figure}
 
@@ -478,7 +502,7 @@ First published on the web Xth XXXXXXXXXX 200X}}}
 	\label{fig:small_expelled}
 \end{figure}
 
-\tikzset{external/force remake}
+\tikzset{external/force remake=false}
 \tikzsetnextfilename{profiles}
 \begin{figure}
 	\centering
