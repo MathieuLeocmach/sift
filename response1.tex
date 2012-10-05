@@ -1,9 +1,10 @@
 \documentclass[a4paper, rebuttal, parskip=true, firsthead=false, fromemail=true, foldmarks=false]{scrlttr2}
 \usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
+%\usepackage{amsfonts}
+%\usepackage{amssymb}
 \usepackage[british]{babel}
 \usepackage{hyperref}
+\usepackage[binary]{SIunits}
 %\address{Mathieu Leocmach and Hajime Tanaka,\\ Institute of Industrial Science,\\ University of Tokyo}
 %\signature{Mathieu Leocmach and Hajime Tanaka} 
 \begin{document} 
@@ -48,9 +49,13 @@ Therefore we included these two references as an exemple of anisotropic object t
 2)      How fast is this algorithm? How long does it take to finish one data set?
 \end{quotationi}
 
+We added this precision at the end of the subsection ``Scale invariant feature transform''. We had two implementations, one prototype in Python+Scipy which was able to deal with any input (the 2D pictures of Fig.2) and an optimized multi-threaded C++ implementation which was able to read 3D images form native confocal format. The former is rather slow (a $(\unit{1600}{px})^2$ image per second) but the later is able to deal with $(\unit{256}{px})^3$ every \unit{5-10}{\second} on a i7 4 cores computer.
+
 \begin{quotationi}
 3)      Since the real-to-optical size ratio changes with time, it will be better to show what the change is.
 \end{quotationi}
+
+We added the time dependence of the real-to-optical size ratio as a panel of Fig.5.
 
 \begin{quotationi}4) The authors state that ``We stress that this coupling of MRCO and icosahedral ordering with the spatial distribution of particle sizes does not imply fractionation, but rather \ldots'' However, we know that experimentally crystallization is suppressed when the polydispersity of colloidal hard spheres is above 12\% (Pusey, P. in Liquids, Freezing and Glass Transition (eds Hansen, J. P., Levesque, D. \& Zinn-Justin, J.) 763-931 (North-Holland, Amsterdam, 1991).). Since the polydispersity in this work is beyond 12\%, it seems to me that the system has to fractionize the particles by their sizes so that small nucleation clusters can start and grow in a local less polydispersed enviroment. This large polydispersity also slow down the dynamics of crystallization as more defects can be trapped between crystalline clusters.
 \end{quotationi}
