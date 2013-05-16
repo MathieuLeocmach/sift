@@ -48,7 +48,7 @@
 
 % The textpos package is necessary to position textblocks at arbitary 
 % places on the page.
-\usepackage[absolute,overlay,showboxes
+\usepackage[absolute,overlay,%showboxes
 ]{textpos}
 % Set up the grid
 %
@@ -127,11 +127,11 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 }
 \end{textblock}
 
-\begin{textblock}{2.5}(12.5,0.65)
+\begin{textblock}{2.75}(12.20,0.50)
 \begin{center}
-\includegraphics[width=0.5\columnwidth]{QRcode}
-\end{center}
+\includegraphics[width=0.5\columnwidth]{QRcode}\\
 \textit{Soft Matter}, 9, 1447--1457 (2013)
+\end{center}
 \end{textblock}
 
 
@@ -162,7 +162,7 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 	\begin{tikzpicture}
 	\begin{axis}[%
 		name=hist,
-		width=\columnwidth, height=0.7\columnwidth,%
+		width=0.98\columnwidth, height=0.7\columnwidth,%
 		%scale only axis,
 		xlabel={Diameters [$\si{\micro\metre}$]},%
 		xmin=1, xmax=5,
@@ -177,7 +177,7 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 	\end{axis}
 	\begin{axis}[%
 		name=hist2,
-		width=\columnwidth, height=0.7\columnwidth,%
+		width=0.98\columnwidth, height=0.7\columnwidth,%
 		xmin=1, xmax=5,
 		axis y line*=right,
 		ymin=0, ytick=\empty,%
@@ -192,7 +192,7 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 \end{textblock}
 
 \begin{textblock}{7}(0,8)
-	\Head{Monodisperse tracking\ldots of polydisperse particles}
+	\Head{Single-scale tracking\ldots of polydisperse particles}
 	\begin{tikzpicture}
 	\begin{groupplot}[%
 		group style={
@@ -324,16 +324,25 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 \end{textblock}
 
 \begin{textblock}{3}(12,8)
-	\Head{Polydisperse tracking}
+	\Head{Multiscale tracking}
 	\includegraphics[width=0.5\textwidth]{comp2D3D_crop}\includegraphics[width=0.5\textwidth]{comp2D3D_slices}
 	
 	Can track arbitrary size distribution.
 \end{textblock}
 
-\begin{textblock}{15}(0,12)
+\begin{textblock}{15}(0,12.10)
 	\Head{Layering, Structure visualisation \& Exclusion of small particles}
+	\begin{tikzpicture}
+		\node[anchor=south east, inner sep=0] at (-0.5\TPHorizModule,0) (t000) {\includegraphics[width=3\TPHorizModule]{mrco_ico_small_t000.png}};
+		\node[anchor=south west, inner sep=0] at (0.5\TPHorizModule,0) (t299) {\includegraphics[width=3\TPHorizModule]{mrco_ico_small_t299.png}};
+		\node[below right=0 of t000.south west, font=\Large] (a) {$t=0$};
+		\draw (a.south east) -- (a.south east -| -7.5\TPHorizModule,0);
+		\node[below left=0 of t299.south east, font=\Large] (b) {$t=\SI{40}{\hour}$};
+		\draw (b.south west) -- (b.south west -| 7.5\TPHorizModule,0);
+		\draw[->, very thick] (0,\TPVertModule) -- (0,3\TPVertModule) node[above]{$z$};
+	\end{tikzpicture}
 \end{textblock}
-\begin{textblock}{4}(0,12.5)
+\begin{textblock}{4}(0,12.6)
 	\begin{tikzpicture}
 	\begin{groupplot}[%
 			group style={
@@ -382,17 +391,8 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 	\end{tikzpicture}
 \end{textblock}
 
-\begin{textblock}{7}(4,12.5)
-	\begin{tikzpicture}
-		\node[anchor=south east, inner sep=0] at (-0.5\TPHorizModule,0) (t000) {\includegraphics[width=3\TPHorizModule]{mrco_ico_small_t000.png}};
-		\node[anchor=south west, inner sep=0] at (0.5\TPHorizModule,0) (t299) {\includegraphics[width=3\TPHorizModule]{mrco_ico_small_t299.png}};
-		\node[below right=0 of t000.south west, font=\Large] {$t=0$};
-		\node[below left=0 of t299.south east, font=\Large] {$t=\SI{40}{\hour}$};
-		\draw[->, very thick] (0,\TPVertModule) -- (0,3\TPVertModule) node[above]{$z$};
-	\end{tikzpicture}
-\end{textblock}
 
-\begin{textblock}{3.75}(11.25,12.5)
+\begin{textblock}{3.75}(11.25,12.6)
 	\begin{tikzpicture}
 	\begin{groupplot}[%
 			group style={
@@ -442,7 +442,7 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 	\end{tikzpicture}
 \end{textblock}
 
-\begin{textblock}{3}(0,18)
+\begin{textblock}{3}(0,18.25)
 	\Head{Buoyancy control}
 	\Subhead{by temperature control}
 	\begin{itemize}
@@ -457,14 +457,15 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 	$\Rightarrow$ observe at the top crystallisation from the beginning.
 \end{textblock}
 
-\begin{textblock}{7}(4,18)
+\begin{textblock}{7}(4,18.25)
 	\Head{Size distributions within local structures}
+	\begin{center}
 	\begin{tikzpicture}
 	\begin{groupplot}[%
 		group style={
 			group name=distrib,
 			group size=2 by 1,
-			horizontal sep=0.9\TPVertModule,
+			horizontal sep=\TPHorizModule,
 			},%
 		width=3\TPHorizModule,%
 		height=2\TPHorizModule,%
@@ -486,9 +487,10 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 		\legend{all, ico. centre, ico. surf.};
 	\end{groupplot}
 	\end{tikzpicture}
+	\end{center}
 \end{textblock}
 
-\begin{textblock}{3}(12,18)
+\begin{textblock}{3}(12,18.25)
 	\Head{Local structures}
 	Identified using bond orientational order\\
 	\begin{footnotesize}
@@ -515,7 +517,7 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 \end{textblock}
 
 
-\begin{textblock}{15}(0,22)
+\begin{textblock}{15}(0,21.5)
 	\Head{Heterogeneous nucleation, Exclusion of small particles \& Formation of grain boundaries}
 	\begin{tikzpicture}
 	\node[%
