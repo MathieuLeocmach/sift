@@ -15,7 +15,11 @@
 \usepackage[oldstylenums, largesmallcaps]{kpfonts}
 \renewcommand*\sfdefault{ugq}
 
-
+\usepackage{hyperref}
+\hypersetup{%
+	pdftitle={Effects of a real world size distribution on the heterogeneous crystallisation of hard sphere colloids},%the title
+	pdfauthor={Mathieu Leocmach},%your name
+}
 
 %proper math and math symbols
 %\usepackage{amsmath}
@@ -330,7 +334,7 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 	Can track arbitrary size distribution.
 \end{textblock}
 
-\begin{textblock}{15}(0,12.10)
+\begin{textblock}{15}(0,15.35)
 	\Head{Layering, Structure visualisation \& Exclusion of small particles}
 	\begin{tikzpicture}
 		\node[anchor=south east, inner sep=0] at (-0.5\TPHorizModule,0) (t000) {\includegraphics[width=3\TPHorizModule]{mrco_ico_small_t000.png}};
@@ -342,7 +346,7 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 		\draw[->, very thick] (0,\TPVertModule) -- (0,3\TPVertModule) node[above]{$z$};
 	\end{tikzpicture}
 \end{textblock}
-\begin{textblock}{4}(0,12.6)
+\begin{textblock}{4}(0,15.85)
 	\begin{tikzpicture}
 	\begin{groupplot}[%
 			group style={
@@ -392,7 +396,7 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 \end{textblock}
 
 
-\begin{textblock}{3.75}(11.25,12.6)
+\begin{textblock}{3.75}(11.25,15.85)
 	\begin{tikzpicture}
 	\begin{groupplot}[%
 			group style={
@@ -442,7 +446,7 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 	\end{tikzpicture}
 \end{textblock}
 
-\begin{textblock}{3}(0,18.25)
+\begin{textblock}{3}(0,12.1)
 	\Head{Buoyancy control}
 	\Subhead{by temperature control}
 	\begin{itemize}
@@ -457,7 +461,7 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 	$\Rightarrow$ observe at the top crystallisation from the beginning.
 \end{textblock}
 
-\begin{textblock}{7}(4,18.25)
+\begin{textblock}{7}(4,12.1)
 	\Head{Size distributions within local structures}
 	\begin{center}
 	\begin{tikzpicture}
@@ -490,7 +494,7 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 	\end{center}
 \end{textblock}
 
-\begin{textblock}{3}(12,18.25)
+\begin{textblock}{3}(12,12.1)
 	\Head{Local structures}
 	Identified using bond orientational order\\
 	\begin{footnotesize}
@@ -561,8 +565,8 @@ Hajime Tanaka && \textothersc{Institute of Industrial science, The University of
 \textblockcolour{lightgray!50!white}
 \TPMargin*{ 0.125\TPHorizModule }
 \begin{textblock}{2.875}(12,3.125)%real width of 3
-	\Head{Conclusion}
-	\Subhead{A relyable method to}
+	\Head{Take away}
+	\Subhead{A reliable method to}
 	\begin{itemize}
 		\item track particles even when
 		\begin{itemize}
