@@ -1,0 +1,8 @@
+	\begin{tikzpicture}
+		\node[inner sep=0, anchor=south west]{\includegraphics[width=\textwidth]{dillute_filtered}};
+		\fill[red!50!white] (9/64.0*\textwidth, 17/64.0*\textwidth) rectangle (10/64.0*\textwidth, 18/64.0*\textwidth);
+		\fill[red!50!white] (19/64.0*\textwidth, 44/64.0*\textwidth) rectangle (20/64.0*\textwidth, 45/64.0*\textwidth);
+		\fill[red!50!white] (28/64.0*\textwidth, 27/64.0*\textwidth) rectangle (29/64.0*\textwidth, 28/64.0*\textwidth);
+		\fill[red!50!white] (34/64.0*\textwidth, 42/64.0*\textwidth) rectangle (35/64.0*\textwidth, 43/64.0*\textwidth);
+		\fill[red!50!white] (51/64.0*\textwidth, 11/64.0*\textwidth) rectangle (52/64.0*\textwidth, 12/64.0*\textwidth);
+	\end{tikzpicture}

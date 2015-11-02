@@ -1,0 +1,28 @@
+\begin{tikzpicture}
+	\begin{groupplot}[%
+		group style={group size=2 by 1, horizontal sep=5em},%
+		width=0.45\textwidth,%
+		]
+	\nextgroupplot[%
+		xmin=2, xmax=6, xlabel={Optical radius [px]},%
+		ymin=0, ymax=20,%
+		ylabel={Position of the first peak of $g_R(r)$ [px]},
+		y label style={align=center, text width=0.5\textheight},%
+		]
+		\addplot+[black,forget plot, no marks, domain=2:6] {3*x};
+		\addplot+[black,only marks, mark=o] file {rdf_peak_pos_radius.out};
+		
+	\nextgroupplot[%
+		%width=0.5\columnwidth, height=0.5\columnwidth,%
+		xmin=0, xmax=1.5,%
+		xlabel ={$r/\sigma_\text{peak}$, $\hat{r}$},%
+		ymin=0,%
+		ylabel=$g(r)$, ylabel near ticks,%
+		no marks,%
+		legend style={legend pos=north west}, 
+		]
+		\addplot+[dashed] file {yon6.rdf};
+		\addplot file {yon6.srdf};
+		\legend{$g(r)$, $g(\hat{r})$};
+	\end{groupplot}
+	\end{tikzpicture}

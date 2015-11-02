@@ -1,0 +1,44 @@
+\begin{tikzpicture}
+		\begin{groupplot}[%
+			group style={
+				group name=profiles,
+				group size=2 by 2,
+				y descriptions at=edge left,%
+				x descriptions at=edge bottom,%
+				horizontal sep=0,
+				vertical sep=0,
+			},%
+			width=0.4\textwidth,
+			height=0.45\textheight,%
+			ymin=0, ymax=1,%
+			ytick={0,0.2,...,1},%
+			no marks,%
+			ylabel near ticks,%
+			xlabel=$z/(2R_\text{peak})$,%
+			xmin=1, xmax=26,%
+			axis on top,
+			]
+		\nextgroupplot[ylabel={$\rho$ large}]
+		\addplot+[gray!50, fill=gray!50] table[x index=0, y index=1]{large_small_mrco_t000.gauss.zhist} \closedcycle;
+		\addplot+[thick] table[x index=0, y index=3]{large_small_mrco_t000.gauss.zhist};
+		\addplot+[black] table[x index=0, y index=1]{large_small_mrco_t000.zhist};
+		\node at (rel axis cs:0.5, 0.8) {$t=0$};
+		
+		\nextgroupplot
+		\addplot+[gray!50, fill=gray!50] table[x index=0, y index=1]{large_small_mrco_t200.gauss.zhist} \closedcycle;
+		\addplot+[thick] table[x index=0, y index=3]{large_small_mrco_t200.gauss.zhist};
+		\addplot+[black] table[x index=0, y index=1]{large_small_mrco_t200.zhist};
+		\node at (rel axis cs:0.5, 0.8) {$t=\SI{40}{\hour}$};
+		
+		\nextgroupplot[ymax=0.15, ytick={0,0.1}, ylabel={$\rho$ small}]
+		\addplot+[green!50!gray, fill=green!50!gray] table[x index=0, y index=2]{large_small_mrco_t000.gauss.zhist} \closedcycle;
+		\addplot+[thick] table[x index=0, y index=3]{large_small_mrco_t000.gauss.zhist} ;
+		\addplot+[green!30!black] table[x index=0, y index=2]{large_small_mrco_t000.zhist};
+		
+		\nextgroupplot[ymax=0.15, ytick={0,0.1}]
+		\addplot+[green!50!gray, fill=green!50!gray] table[x index=0, y index=2]{large_small_mrco_t200.gauss.zhist} \closedcycle;
+		\addplot+[thick] table[x index=0, y index=3]{large_small_mrco_t200.gauss.zhist};
+		\addplot+[green!30!black] table[x index=0, y index=2]{large_small_mrco_t200.zhist};
+		\end{groupplot}
+		\node[below right=0 of profiles c2r1.outer north east] (t299) {\includegraphics[height=0.6\textheight]{mrco_ico_small_t299.png}};
+	\end{tikzpicture}

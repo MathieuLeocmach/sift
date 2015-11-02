@@ -1,0 +1,77 @@
+\let\unitlength\relax
+\newlength\unitlength
+\setlength{\unitlength}{13\baselineskip}
+	\begin{tikzpicture}[
+		font=\footnotesize, 
+		decoration={markings, mark=between positions 0.1 and 1 step 0.2\unitlength with {\arrow{stealth}}},
+	]
+	\draw[thick] (-0.12\unitlength,0) -- (-0.012\unitlength,0) (0.012\unitlength,0) -- (0.12\unitlength,0);
+	\node[left] at (-0.12\unitlength,0) {aperture};
+	\fill[name path=dichro, cyan, rotate around={-45:(0,-0.35\unitlength)}]  (-0.2\unitlength,-0.34\unitlength) rectangle (0.2\unitlength,-0.36\unitlength) (0, -0.34\unitlength) node[above, black, rotate=-45] {beam splitter};
+	\draw[thick] (-0.35\unitlength,-0.23\unitlength) -- (-0.35\unitlength,-0.348\unitlength) (-0.35\unitlength,-0.362\unitlength) -- (-0.35\unitlength,-0.47\unitlength);
+	\node[above] at (-0.35\unitlength,-0.23\unitlength) {pinhole};
+	\fill[cyan] (0, -\unitlength) arc (-90:-70:0.6\unitlength) node (lensright) {} 
+		arc (70:110:0.6\unitlength) node (lensleft) {}
+		arc (-110:-90:0.6\unitlength);
+	\path[name path=lensbottom] (lensleft) arc (-110:-70:0.6\unitlength);
+	\path[name path=lenstop] (lensright) arc (70:110:0.6\unitlength);
+	\fill[orange] (-0.15\unitlength, -1.05\unitlength) rectangle (0.15\unitlength, -1.15\unitlength);
+	\draw[dashed] (-0.2\unitlength, -1.08\unitlength) -- (0.2\unitlength, -1.08\unitlength);
+	\node[left] at (-0.2\unitlength, -1.08\unitlength) {focal plane};
+	\node[above] at (0,0.1\unitlength) {light source};
+	\path[name path=iray1] (0.012\unitlength, 0.1\unitlength) -- (-0.12\unitlength, -\unitlength);
+	\path[name path=iray2] (0, -1.08\unitlength) -- (-0.15\unitlength, -0.95\unitlength);
+	\path[name path=iray3] (-0.012\unitlength, 0.1\unitlength) -- (0.12\unitlength, -\unitlength);
+	\path[name path=iray4] (0, -1.08\unitlength) -- (0.15\unitlength, -0.95\unitlength);
+	\draw[
+		postaction={decorate}, green!80!black,
+		name intersections={of=iray1 and dichro, by=x},
+		name intersections={of=iray3 and dichro, by=y},
+		]
+		(0.012\unitlength, 0.1\unitlength) -- (x)
+		(-0.012\unitlength, 0.1\unitlength) -- (y);
+		
+	\draw[
+		postaction={decorate}, green!80!black, dashed, dash pattern=on 5pt off 5pt, dash phase=0pt,
+		name intersections={of=iray1 and dichro, by=x}, 
+		name intersections={of=iray1 and lenstop, by=a}, 
+		name intersections={of=iray2 and lensbottom, by=b},
+		name intersections={of=iray4 and lensbottom, by=c},
+		name intersections={of=iray3 and lenstop, by=d},
+		name intersections={of=iray3 and dichro, by=y},
+		] 
+		(x) -- (a) -- (b) -- (0, -1.08\unitlength)
+		(y) -- (d) -- (c) -- (0, -1.08\unitlength);
+	\draw[postaction={decorate}, red!80!black, 
+		name intersections={of=iray1 and dichro, by=x}, 
+		name intersections={of=iray3 and dichro, by=y},
+		] 
+		(x) -- (-0.41\unitlength, -0.362\unitlength) 
+		(y) -- (-0.41\unitlength, -0.348\unitlength);
+	\draw[postaction={decorate}, red!80!black, dashed, dash pattern=on 5pt off 5pt, dash phase=10pt,
+		name intersections={of=iray1 and dichro, by=x}, 
+		name intersections={of=iray1 and lenstop, by=a}, 
+		name intersections={of=iray2 and lensbottom, by=b},
+		name intersections={of=iray4 and lensbottom, by=c},
+		name intersections={of=iray3 and lenstop, by=d},
+		name intersections={of=iray3 and dichro, by=y},
+		] 
+		(0, -1.08\unitlength) -- (b) -- (a) -- (x) 
+		(0, -1.08\unitlength) -- (c) -- (d) -- (y);
+	\draw[thick, blue] (-0.39\unitlength, -0.33\unitlength) arc (90:270:0.025\unitlength);
+	\node[above left, rotate=90] at (-0.39\unitlength, -0.33\unitlength) {light detector};
+	\path[name path=badray1] (0,0) -- (-0.18\unitlength, -1.1\unitlength);
+	\path[name path=badray2] (0, -1.12\unitlength) -- (-0.3\unitlength, -0.85\unitlength);
+	\path[name path=badray3] (0,0) -- (0.18\unitlength, -1.1\unitlength);	
+	\path[name path=badray4] (0, -1.12\unitlength) -- (0.3\unitlength, -0.85\unitlength);
+	\draw[dotted,
+		name intersections={of=badray1 and dichro, by=x}, 
+		name intersections={of=badray1 and lenstop, by=a}, 
+		name intersections={of=badray2 and lensbottom, by=b},
+		name intersections={of=badray4 and lensbottom, by=c},
+		name intersections={of=badray3 and lenstop, by=d},
+		name intersections={of=badray3 and dichro, by=y},
+		] 
+		(0, -1.12\unitlength) -- (b) -- (a) -- (x) --  (-0.35\unitlength, -0.38\unitlength)
+		(0, -1.12\unitlength) -- (c) -- (d) -- (y) --  (-0.35\unitlength, -0.33\unitlength);
+	\end{tikzpicture}

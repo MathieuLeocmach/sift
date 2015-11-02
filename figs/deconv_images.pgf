@@ -1,0 +1,32 @@
+\begin{tikzpicture}
+		\begin{groupplot}[%
+		group style={
+				group name=pics,
+				group size=3 by 1,%
+				horizontal sep=0.0075\textwidth,
+				vertical sep=0.0075\textwidth,
+				},%
+		width=0.3\textwidth,%
+		height=0.33\textwidth,%
+		xmin=0,xmax=50,ymin=0,ymax=55,%
+		axis lines=none,%
+		scale only axis=true,%
+		point meta=explicit symbolic,%
+		scatter/@pre marker code/.code={%
+        	\pgfmathparse{10*\pgfplotspointmetatransformed*\pgfplotsunitxlength}%
+        	%\pgfplotstransformcoordinatex{\pgfplotspointmetatransformed}
+            \def\markopts{mark=o,black,mark size=\pgfmathresult}%
+            \expandafter\scope\expandafter[\markopts]
+            },%
+        scatter/@post marker code/.code={\endscope} 
+		]
+		\nextgroupplot[title={Original}]
+			\addplot graphics [xmin=0,xmax=50,ymin=0,ymax=55]{Zelong_original};
+		\nextgroupplot[title={Blurred}]
+			\addplot graphics [xmin=0,xmax=50,ymin=0,ymax=55]{Zelong_blurred};
+			\addplot+[only marks, scatter] table [x index=1, y expr={55-\thisrowno{2}}, meta index=3] {Z_elong.xyz};
+		\nextgroupplot[title={Deconvolved}]
+			\addplot graphics [xmin=0,xmax=50,ymin=0,ymax=55]{Zelong_deconvolved};
+			\addplot+[only marks, scatter] table [x index=1, y expr={55-\thisrowno{2}}, meta index=3] {Z_elong_deconv.xyz};
+		\end{groupplot}
+	\end{tikzpicture}

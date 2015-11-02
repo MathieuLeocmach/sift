@@ -1,0 +1,25 @@
+\begin{tikzpicture}
+		\matrix[matrix of nodes, inner sep=1pt, ampersand replacement=\&] (a)%
+		{%
+			\includegraphics[width=0.25\columnwidth]{small_boo000.png} \& %
+			\includegraphics[width=0.25\columnwidth]{small_boo060.png} \& %
+			\includegraphics[width=0.25\columnwidth]{small_boo120.png}\\
+			\includegraphics[width=0.25\columnwidth]{small_boo180.png} \& %
+			\includegraphics[width=0.25\columnwidth]{small_boo240.png} \& %
+			\includegraphics[width=0.25\columnwidth]{small_boo299.png}\\%
+		};
+		\begin{axis}[%
+		name=b,
+		at={(a.south east)},%
+		anchor=below south west,%
+		xmin=0,xmax=10, ymin=0, ymax=0.55,%
+		width=5em,%
+		height=0.55\columnwidth,%
+		axis x line=none,%
+		axis y line*=right,%
+		axis on top,
+		]
+		\addplot graphics[xmin=0,xmax=10, ymin=0, ymax=0.55] {color_bar.png};
+		\end{axis}
+		\node[above= 0 of b.outer north] {$Q_6$};
+	\end{tikzpicture}

@@ -1,0 +1,73 @@
+	\begin{tikzpicture}[%
+		minus/.style={
+			shape=circle, draw, inner sep=0, %
+			text height=1.5ex,text depth=.25ex,%
+			node distance=0.5%
+			},%
+		]
+		\begin{groupplot}[%
+			group style={
+				group size=2 by 1,%
+				},%
+			anchor=north,%
+			width=0.5\textwidth,%
+			xtick=\empty, ytick=\empty,%
+			xlabel={position}, xlabel near ticks, ylabel near ticks, %
+			no markers,
+			title style={text height=1.5ex,text depth=.25ex, anchor=center},%
+			]
+			\nextgroupplot[%
+				ylabel={intensity},%
+				title={Increasing Gaussian blur},%
+			]
+				\addplot[black] table[x expr=\coordindex, y expr=\thisrowno{0}]{gaussians.txt};
+				\addplot[blue] table[x expr=\coordindex, y expr=\thisrowno{1}-2]{gaussians.txt};
+				\node at (current plot end) (g1) {};
+				\addplot[blue!67!red] table[x expr=\coordindex, y expr=\thisrowno{2}-4]{gaussians.txt};
+				\node at (current plot end) (g2) {};
+				\addplot[blue!33!red] table[x expr=\coordindex, y expr=\thisrowno{3}-6]{gaussians.txt};
+				\node at (current plot end) (g3) {};
+				\addplot[red] table[x expr=\coordindex, y expr=\thisrowno{4}-8]{gaussians.txt};
+				\node at (current plot end) (g4) {};
+				
+			\only<1>{
+			\nextgroupplot[%
+				title={Difference of Gaussians},%
+				ymax=0.45,%
+			]
+				\addplot+[smooth, blue] table[x expr=\coordindex, y expr=\thisrowno{2}-\thisrowno{1}]{gaussians.txt};
+				\node at (current plot begin) (DoG1) {};
+				\addplot+[smooth, blue!67!red] table[x expr=\coordindex, y expr=\thisrowno{3}-\thisrowno{2}-0.2]{gaussians.txt};
+				\node at (current plot begin) (DoG2) {};
+				\addplot+[smooth, blue!33!red] table[x expr=\coordindex, y expr=\thisrowno{4}-\thisrowno{3}-0.4]{gaussians.txt};
+				\node at (current plot begin) (DoG3) {};
+			}
+			\only<2>{
+			\nextgroupplot[%
+				title={Difference of Gaussians},%
+			]
+				\addplot+[smooth, blue] table[x expr=\coordindex, y expr=\thisrowno{2}-\thisrowno{1}]{gaussians.txt};
+				\addplot+[smooth, blue!67!red] table[x expr=\coordindex, y expr=\thisrowno{3}-\thisrowno{2}]{gaussians.txt};
+				\node at (current plot begin) (DoG2) {};
+				\addplot+[smooth, blue!33!red] table[x expr=\coordindex, y expr=\thisrowno{4}-\thisrowno{3}]{gaussians.txt};
+				\draw[->, thick] (rel axis cs:0.5,0.0015) -- (rel axis cs:0.5,0.075);
+			}
+				
+		\end{groupplot}
+		\only<1>{
+		\node[minus, blue] (diff1) [left=of DoG1] {-};
+		\draw [->, blue] (g1) -- (diff1);
+		\draw [->, blue!67!red] (g2) -- (diff1);
+		\draw [->, blue] (diff1) -- (DoG1);
+		}
+		\node[minus, blue!67!red] (diff2) [left=of DoG2] {-};
+		\draw [->, blue!67!red] (g2) -- (diff2);
+		\draw [->, blue!33!red] (g3) -- (diff2);
+		\draw [->, blue!67!red] (diff2) -- (DoG2);
+		\only<1>{
+		\node[minus, blue!33!red] (diff3) [left=of DoG3] {-};
+		\draw [->, blue!33!red] (g3) -- (diff3);
+		\draw [->, red] (g4) -- (diff3);
+		\draw [->, blue!33!red] (diff3) -- (DoG3);
+		}
+	\end{tikzpicture}
