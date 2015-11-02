@@ -1,0 +1,18 @@
+\begin{tikzpicture}
+	\definecolor{BlueViolet}{rgb}{0.62352, 0.372549, 0.623529};
+		\node[anchor=south east] (t000) {\includegraphics[height=0.7\textheight]{mrco_ico_small_t000.png}};
+		\node[anchor=south west] (t299) {\includegraphics[height=0.7\textheight]{mrco_ico_small_t299.png}};
+		\node[below=0 of t000.south] {$t=0$};
+		\node[below=0 of t299.south] {$t=\SI{40}{\hour}$};
+		\draw[->] (0,0.1\textheight) -- (0,0.5\textheight) node[above]{$z$};
+		\matrix[%
+		matrix of nodes, right=-0.5em of t299.east, ampersand replacement=\&,
+		column 1/.style={right, text height=0.8em, text depth=0.2em},%
+		column 2/.style={left, circle, shade, inner sep=0.008\textwidth},%
+		] (l)
+	{
+		Crystal-like \& |[ball color=red]|{}\\
+		Icosahedra \& |[ball color=BlueViolet]|{}\\
+		Small \& |[ball color=green]|{}\\
+	};
+	\end{tikzpicture}

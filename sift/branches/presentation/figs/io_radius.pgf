@@ -1,0 +1,23 @@
+\begin{tikzpicture}
+	\pgfplotsset{cycle list name=black white, clip marker paths=true,}
+	\begin{groupplot}[%
+		group style={
+				group name=g, group size=2 by 1,
+				horizontal sep=5em,
+				},
+		width=0.5\columnwidth,%
+		height=0.5\columnwidth,%
+		xlabel={Input radius (px)}, 
+		extra x ticks={3.47}, extra x tick labels={}, extra tick style={grid=major},%
+		]
+		\nextgroupplot[ylabel={Output radius}, ytick={2,4,...,14},]
+		\addplot+[only marks, mark size=0.5, mark=o] table [x index=0, y expr ={\thisrowno{1}}] {multiscale_relative_sizes.out};
+		\addplot+[no marks, domain=1.5:14] {x};
+	
+	\nextgroupplot[%
+        ylabel={$R$ relative error (\%)},%
+		extra y ticks={0}, extra y tick labels={},%
+		]
+		\addplot table [x index=0, y expr ={100*(\thisrowno{1}/\thisrowno{0}-1)}] {multiscale_relative_sizes.out};
+	\end{groupplot}
+	\end{tikzpicture}

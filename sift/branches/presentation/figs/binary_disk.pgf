@@ -1,0 +1,17 @@
+\begin{tikzpicture}
+		\begin{axis}[
+			name=a,
+			width=0.55\columnwidth,%
+			xmin=0, ymax=0, xmax=5, %
+			xlabel=$R/\sigma^*$, ytick={0},%
+			ylabel={DoG response}, ylabel near ticks, %
+			no marks,%
+			]
+			\addplot+[smooth] {exp(-x^2/2) - exp(-x^2/2/2^(2/3))};
+		\end{axis}
+
+\node[fill=black, anchor=north west, minimum width=0.4\columnwidth, minimum height=0.4\columnwidth] (r) at ($(a.right of north east) + (-\columnwidth,0)$) {};
+\node[fill=white, circle, minimum width=0.2\columnwidth] at (r) (c) {};
+\draw[->, Accent1, thick] (c.center) -- (c.east) node[midway, below] {$R$};
+
+\end{tikzpicture}

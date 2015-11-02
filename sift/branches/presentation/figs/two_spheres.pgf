@@ -1,0 +1,34 @@
+	\begin{tikzpicture}
+	\begin{groupplot}[%
+		group style={
+				group size=1 by 2,%
+				x descriptions at=edge bottom,
+				vertical sep=0.5em,
+				},%
+		height=0.5\textheight,%
+		width=\columnwidth,%
+		xlabel={$r_{ij}$ (px)}, 
+		xmin=8, xmax=18, xtick={8,...,17},%
+		extra tick style={grid=major},%
+		]
+		\nextgroupplot[%
+			ylabel={$r_{ij}$ error (\SI{0.01}{px})},%
+			extra y ticks={0}, extra y tick labels={},%
+			]
+		\addplot table [x index=0, y expr ={(\thisrowno{2}-\thisrowno{1}-\thisrowno{0})*100}] {close_neighbours3D.out};
+		\draw (axis cs:12,-6) circle[radius=0.05\textwidth] (axis cs:16,-6) circle[radius=0.05\textwidth];
+		\draw[dashed] (axis cs:12,-6) -- (axis cs:12,-9) (axis cs:16,-9) -- (axis cs:16,-6);
+		\draw[<->] (axis cs:12,-9) -- (axis cs:16,-9) node[midway, above] {$r_{ij}$};
+		\draw[->] (axis cs:11.05,-6) -- +(0,0.05\textwidth,0) node[midway, left] {\SI{4}{px}};
+		\draw[->, very thick] (axis cs:16,-6) -- (axis cs:14,-6);
+	
+	\nextgroupplot[
+		ylabel={$R$ (px)},%
+		extra y ticks={4}, extra y tick labels={},%
+		legend style={legend pos=south east}
+		]
+		\addplot table [x index=0, y index=4] {close_neighbours3D.out};
+		\addplot+[mark=square] table [x index=0,y index=6] {close_neighbours3D.out};
+		\legend{No correction, One iteration};
+	\end{groupplot}
+	\end{tikzpicture}

@@ -1,0 +1,26 @@
+\begin{tikzpicture}
+	\begin{groupplot}[%
+		group style={
+			group name=distrib,
+			group size=1 by 2,
+			},%
+		width=\columnwidth,%
+		height=0.5\textheight,%
+		no marks,%
+		xlabel={$R$ [\si{\micro\metre}]}, xmin=0.8, xmax=2.5,%
+		ylabel={Size distribution}, ymin=0, ymax=12,%
+		legend style={legend pos=north west},
+		]
+		\nextgroupplot
+		\addplot table[x=r, y=all] {all_ico_icongb_mrco_X.rdist};
+		\addplot table[x=r, y=mrco] {all_ico_icongb_mrco_X.rdist};
+		\addplot table[x=r, y=X] {all_ico_icongb_mrco_X.rdist};
+		\legend{all, \textsc{mrco}, crystalline};
+		
+		\nextgroupplot
+		\addplot table[x=r, y=all] {all_ico_icongb_mrco_X.rdist};
+		\addplot table[x=r, y=ico] {all_ico_icongb_mrco_X.rdist};
+		\addplot table[x=r, y=icongb] {all_ico_icongb_mrco_X.rdist};
+		\legend{all, ico. centre, ico. surf.};
+	\end{groupplot}
+	\end{tikzpicture}

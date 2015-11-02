@@ -1,0 +1,30 @@
+\begin{tikzpicture}
+	\begin{axis}[%
+		name=hist,
+		width=\columnwidth, height=0.5\textheight,%
+		%scale only axis,
+		xlabel={Diameters [$\si{\micro\metre}$]},%
+		xmin=1, xmax=5,
+		axis y line*=left,
+		ymin=0, ytick=\empty,%
+		ylabel={Size distribution},%
+		ylabel near ticks,
+		legend style={legend pos=north west}, area legend,
+		]
+		\addplot[ybar, ybar interval, gray!50, fill=gray!50] file {SEM_size_distrib.txt} \closedcycle;
+		\legend{\textsc{sem}}
+	\end{axis}
+	\only<2->{\begin{axis}[%
+		name=hist2,
+		width=\columnwidth, height=0.5\textheight,%
+		xmin=1, xmax=5,
+		axis y line*=right,
+		ymin=0, ytick=\empty,%
+		no marks,%
+		]
+		\addplot+[dashed] table[x expr ={2*\thisrow{r}}, y=all] {all_ico_icongb_mrco_X.rdist};
+		\addlegendentry{In situ};
+		\only<3>{\addplot table [x expr ={2*\thisrow{r}/1.25}, y index=1] {all_ico_icongb_mrco_X.rdist};}%
+		\draw<3>[->, ultra thick] (axis cs:3.15,3) -- (axis cs: 3.9, 3) node[midway, above] {swelling};%
+	\end{axis}}
+	\end{tikzpicture}

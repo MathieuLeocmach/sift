@@ -1,0 +1,455 @@
+\documentclass[xcolor=table]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[british]{babel}
+\usepackage[super]{nth}
+%\usetheme{Boadilla}
+%\usecolortheme{rose}
+%\usecolortheme{crane}
+\usefonttheme{structuresmallcapsserif}
+\setbeamertemplate{navigation symbols}{}
+
+\definecolor{Main}{rgb}{0.74, 0.13, 0.19}
+\definecolor{Accent1}{rgb}{0.76,0.36,0.13}
+\definecolor{Accent2}{rgb}{0.54,0.1,0.4}
+
+\usecolortheme{rose}
+%\useinnertheme[shadow]{circles}
+\usecolortheme{whale}
+%\useoutertheme{infolines}
+
+\usecolortheme[named=Accent1]{structure}
+
+\setbeamercolor{alerted text}{fg=Accent2}
+%\setbeamercolor{palette primary}{fg=white}
+%\setbeamercolor{palette secondary}{bg=Accent1}
+%\setbeamercolor{palette tertiary}{bg=Accent2,fg=white}
+
+
+\setbeamerfont{page number in head/foot}{size=\large}
+\setbeamercolor{page number in head/foot}{fg=Main}
+% page/total
+%\setbeamertemplate{footline}[frame number]
+% pas de total
+\setbeamertemplate{footline}{%
+    	\hfill%
+	\usebeamercolor[fg]{page number in head/foot}%
+	\usebeamerfont{page number in head/foot}%
+	\insertframenumber\kern1em\vskip2pt%
+}
+
+\setbeamersize{text margin left=1em}
+\setbeamersize{text margin right=1em}
+
+%font
+\usepackage[T1]{fontenc}
+\usepackage[oldstylenums]{kpfonts}
+
+
+%proper math and math symbols
+%\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{datenumber,fp}
+
+\usepackage{siunitx}
+
+\usepackage{tabu}
+\usepackage{multirow}
+\usepackage{booktabs}
+
+% Allow the usage of graphics (.jpg, .png, etc.) in the document
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes,backgrounds, positioning, intersections, decorations.markings, decorations.shapes, mindmap, shapes.geometric, matrix, patterns}
+
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.9}
+\usepgfplotslibrary{groupplots}
+\usepgfplotslibrary{external}
+\makeatletter
+\newcommand*{\overlaynumber}{\number\beamer@slideinframe}
+\tikzset{
+  beamer externalizing/.style={%
+    execute at end picture={%
+      \tikzifexternalizing{%
+        \ifbeamer@anotherslide
+        \pgfexternalstorecommand{\string\global\string\beamer@anotherslidetrue}%
+        \fi
+      }{}%
+    }%
+  },
+  external/optimize=false
+}
+\let\orig@tikzsetnextfilename=\tikzsetnextfilename
+\renewcommand\tikzsetnextfilename[1]{\orig@tikzsetnextfilename{#1-\overlaynumber}}
+\makeatother
+
+\tikzset{every picture/.style={beamer externalizing}}
+\tikzexternalize
+\tikzsetexternalprefix{figs/}
+%\tikzset{external/optimize=false}
+%\tikzset{external/force remake}
+
+
+%link or play movies
+\usepackage{multimedia}
+
+
+
+%beamer related package
+
+\usepackage{todonotes}
+\presetkeys{todonotes}{inline}{}
+
+
+%bibliography
+\usepackage[style=authoryear-comp, language=british,eprint=false, url=false, doi=false, sortcites=true, sorting=none, isbn=false, firstinits=true,maxcitenames=6]{biblatex}
+%minimal citations
+\AtEveryCitekey{%
+	\clearfield{title}
+	\clearfield{pages}
+	\clearfield{volume}
+	\clearfield{number}
+	\clearfield{month}}
+\newcommand{\myfullcite}[1]{{\scriptsize\fullcite{#1}}}
+\renewbibmacro{in:}{%
+  \ifentrytype{article}{}{%
+  \printtext{\bibstring{in}\intitlepunct}}}
+%\bibliography{biblio}
+
+\institute{Liquides aux intefaces}
+\title{Méthode de localisation et de mesure de particules colloïdales}
+\author[M. Leocmach]{Mathieu Leocmach}
+\date{12 Novembre 2015}
+\titlegraphic{\footnotesize{\it Leocmach \& Tanaka, Soft Matter 2013}}
+
+\begin{document}
+\tikzset{every mark/.append style={scale=0.8}}
+\pgfplotsset{every axis/.append style={small}}
+
+\AtBeginSection[]{
+	\addtocounter{framenumber}{-1}
+	\begin{frame}[plain]
+		\tableofcontents[currentsection, hideothersubsections]
+	\end{frame}
+}
+
+\begin{frame}[plain]
+	\titlepage
+\end{frame}
+
+\begin{frame}[plain]
+	\tableofcontents[hidesubsections]
+\end{frame}
+\setcounter{framenumber}{0}
+
+\section{Multiscale tracking}
+
+\begin{frame}{Colloids as model atoms}
+	\begin{columns}
+	\column{0.5\textwidth}
+	\begin{block}{Colloids are used as "experimental simulations" of statistical physics}
+	\begin{itemize}
+	\item Hard spheres
+	\item Sticky spheres (short range attraction)
+	\item Repulsive sphere (long range repulsion)
+	\item Mixtures
+	\item External fields
+	\end{itemize}
+	\end{block}
+	
+	\column{0.5\textwidth}
+	Rich phase diagram mimicking atomic systems.
+%	\begin{itemize}
+%	\item Colloidal gas
+%	\item Colloidal liquid
+%	\item Colloidal crystal(s)
+%	\item Colloidal glass
+%	\item Colloidal gel
+%	\end{itemize}
+	\includegraphics[width=\columnwidth]{Pusey_vanMegen}\\
+	\footnotesize{\it Pusey \& van Megen, Nature (1986)}
+	
+	But also technologically useful in themselves.
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Confocal microscopy}
+	\begin{center}\begin{columns}[c]
+	\column{0.4\textwidth}
+	\tikzsetnextfilename{confocal}
+	\input{figs/confocal.pgf}
+	\column{0.5\textwidth}
+	\begin{tabular}{lm{0.5\columnwidth}}
+		$XY$ slice & \includegraphics[width=0.5\columnwidth]{sliceXY} \\
+		$XZ$ slice & \includegraphics[width=0.5\columnwidth]{sliceXZ} \\
+	\end{tabular}
+	\end{columns}\end{center}
+\end{frame}
+
+\begin{frame}{Monodisperse particle tracking}
+	\begin{columns}[T]
+	\column{0.3\textwidth}
+	Original image\\
+	\includegraphics[width=\textwidth]{dillute_raw}
+	
+	\bigskip
+	\includegraphics[width=\textwidth]{dillute_raw_gp_raster}
+	\column{0.3\textwidth}
+	Blurred\\
+	\includegraphics[width=\textwidth]{dillute_filtered}
+	
+	\bigskip
+	\includegraphics[width=\textwidth]{dillute_filtered_gp_raster}
+	\column{0.3\textwidth}
+	Local maxima\\
+	\includegraphics[width=\textwidth]{dillute_centers}
+	
+	\bigskip
+	\includegraphics[width=\textwidth]{dillute_centers_gp_raster}
+	\end{columns}
+	
+	
+	Resolution up to $\SI{1/10}{px}$ via subpixel resolution methods.
+	
+	\bigskip
+	
+	\footnotesize{\it Crocker \& Grier J. Coll. Interf. Sci. (1996)}
+\end{frame}
+
+\begin{frame}{Monodisperse particle tracking}
+	\begin{columns}[T]
+	\column{0.3\textwidth}
+	\centering
+	Not enough blur\\
+	\includegraphics[width=\textwidth]{dillute_notblured}
+	\column{0.3\textwidth}
+	\centering
+	Good blur\\
+	\tikzsetnextfilename{good_blur_mono}
+	\input{figs/good_blur_mono.pgf}
+	\column{0.3\textwidth}
+	\centering
+	Too much blur\\
+	\includegraphics[width=\textwidth]{dillute_tooblured}
+	\end{columns}
+	\begin{itemize}
+	\item We must choose \alert{the right} blurring radius.
+	\item Ok for monodisperse particles
+	\item Problematic for polydisperse
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Same method with polydisperse particles}
+	\begin{columns}[T]
+	\column{0.3\textwidth}
+	\centering
+	{\strut{}Multiple centres}\\
+	\includegraphics[width=\textwidth]{dillute_smaller_blur0_5}
+	\column{0.3\textwidth}
+	\centering
+	{\strut{}Misplaced centres}\\
+	\includegraphics[width=\textwidth]{dillute_smaller_blur1}
+	\column{0.3\textwidth}
+	\centering
+	{\strut{}Overlook small}\\
+	\includegraphics[width=\textwidth]{dillute_smaller_blur1_5}
+	\end{columns}
+	\begin{itemize}
+	\item There is no \alert{right} blurring radius $\Rightarrow$ We always have errors.
+	\item We cannot extract the sizes of the particles, important for the physics of the system.
+	\begin{itemize}
+		\item Volume fraction
+		\item Neighbours
+	\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Not better in 3D}
+	\begin{center}
+	\begin{tabular}{ccc}
+	\includegraphics[width=0.18\textwidth]{comp3D_monoscale_r20_crop} & %
+	\includegraphics[width=0.18\textwidth]{comp3D_monoscale_r25_crop} & %
+	\includegraphics[width=0.18\textwidth]{comp3D_monoscale_r30_crop} \\ 
+	\includegraphics[width=0.18\textwidth]{comp3D_monoscale_r35_crop} & %
+	\includegraphics[width=0.18\textwidth]{comp3D_monoscale_r40_crop} & %
+	\includegraphics[width=0.18\textwidth]{comp3D_monoscale_r45_crop} \\ 
+	\end{tabular} 
+	\end{center}
+\end{frame}
+
+\begin{frame}{Scale space}
+	\footnotesize{Scale space, \footnotesize{\it Lindeberg, Int. J. Comput. Vis. (1993)}\\ Scale-invariant feature transform, \footnotesize{\it Lowe, Int. J. Comput. Vis. (2004)}}
+	
+	\tikzsetnextfilename{scale_space_1D}
+	\input{figs/scale_space_1D.pgf}
+	
+	\begin{itemize}
+		\item The magnitude of the DoG should be maximized at the center of the blob.
+		\item<2> The optimal scale, which depends on the size of the blob, should be detected.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Locating particles in both scale and space}
+	\begin{columns}[T]
+	\column{0.7\textwidth}
+	\def\svgwidth{\columnwidth}
+	\input{sift_octave1.pdf_tex}
+	\def\svgwidth{\columnwidth}
+	\input{sift_octave0.pdf_tex}
+	\column{0.3\textwidth}
+	\def\svgwidth{\columnwidth}
+	\input{sift_localmin.pdf_tex}
+	Minima of the DoG images are detected by neighbourhood search.
+	\end{columns}
+	
+	%\footnotesize{\citet{Lindeberg1993, Lowe2004}}
+\end{frame}
+
+
+
+\begin{frame}{Optimal scale}
+	For a binary disk of radius $R$, the DoG response is minimum for a scale $\sigma^{*} \propto R$. The proportionality constant is known analytically.
+	
+	\tikzsetnextfilename{binary_disk}
+	\input{figs/binary_disk.pgf}
+\end{frame}
+
+\begin{frame}{Isolated sphere}
+	\tikzsetnextfilename{io_radius}
+	\input{figs/io_radius.pgf}
+\end{frame}
+
+\begin{frame}{Two spheres}
+	%\tikzset{external/force remake=false}
+	\begin{columns}[c]
+	\column{0.55\textwidth}
+	\tikzsetnextfilename{two_spheres}
+	\input{figs/two_spheres.pgf}
+	\column{0.45\textwidth}
+	Error at contact $\approx \SI{0.1}{px}$, like monodisperse tracking.
+	
+	\bigskip
+	
+	The DoG response at the center of particle $i$ is a superposition of the contribution of each (neighbouring) particle.
+	\[
+	%\forall i,\quad 
+	DoG_i = \sum_j DoG(r_{ij}, R_j)
+	\label{eq:superpos}
+	\]
+	\structure{Sparse system} solved iteratively
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Many particles}
+	Simulation data of 5000 HS to generate image
+	
+	\tikzsetnextfilename{size_correction}
+	\input{figs/size_correction.pgf}
+\end{frame}
+
+
+
+\begin{frame}{Deconvolution}
+	\begin{columns}[c]
+	\column{0.66\textwidth}
+	$y = x \star h + \epsilon$ with $h$ the point spread function.
+	\tikzsetnextfilename{deconv_images}
+	\input{figs/deconv_images.pgf}
+	\begin{itemize}
+	\item If the system is isotropic, the spectrum along $z$ must be the same as the spectrum along $x$ ou $y$.\\ $\Rightarrow$ Possible to measure the \textsc{psf}.
+	\item No need to deconvolve the noisy original image, we can use the first Gaussian blurred version.
+	\end{itemize}
+	
+	
+	\column{0.33\textwidth}
+	\tikzsetnextfilename{deconv_rdf}
+	\input{figs/deconv_rdf.pgf}
+	\end{columns}
+\end{frame}
+
+\section{Heterogeneous crystallisation}
+
+\begin{frame}{Our colloids}
+	\begin{columns}
+	\column{0.5\textwidth}
+	\begin{center}
+	\rotatebox{90}{\qquad \small{SEM image}}\includegraphics[width=0.8\columnwidth, height=0.6\columnwidth]{SEM}
+	\end{center}
+	\structure{Solvent}
+	\begin{itemize}
+		\item Cis-decalin
+		\item Cyclohexylbromide
+	\end{itemize}
+	Matching
+	\begin{itemize}
+		\item Optical index
+		\item Density (with $T$ control)
+	\end{itemize}
+	\column{0.5\textwidth}
+	\begin{block}{PMMA particles}
+		\begin{itemize}
+			\item $\sigma \simeq \SI{3.3}{\micro\metre}$
+			\item $\Delta \simeq 6\%$ not Gaussian
+		\end{itemize}
+		Hard spheres
+		\begin{itemize}
+			\item Sterically stabilized
+			\item Salt to screen charges\\ (Debye length $<\SI{100}{\nano\metre}$)
+		\end{itemize}
+	\end{block}
+	\end{columns}
+\end{frame}
+
+\begin{frame}<1-3>{Size distribution}
+	\tikzsetnextfilename{size_distrib}
+	\input{figs/size_distrib.pgf}
+\end{frame}
+
+\begin{frame}{Are the sizes correct ?}
+	\tikzsetnextfilename{size_check}
+	\input{figs/size_check.pgf}
+
+	
+	Sizes $\Rightarrow\phi=0.60\Rightarrow$ Glass
+\end{frame}
+
+\begin{frame}{Structures in the glass}
+	\tikzsetnextfilename{glass_structure}
+	\input{figs/glass_structure.pgf}
+\end{frame}
+
+\begin{frame}{Size distribution of the structures}
+	\tikzsetnextfilename{size_distrib_struct}
+	\input{figs/size_distrib_struct.pgf}
+	
+\end{frame}
+
+
+\begin{frame}[plain]
+\end{frame}
+
+
+
+\appendix
+\newcounter{finalframe}
+\setcounter{finalframe}{\value{framenumber}}
+
+\begin{frame}{Density profiles}
+	\tikzsetnextfilename{profiles}
+	\input{figs/profiles.pgf}
+	
+\end{frame}
+
+\begin{frame}{Small particles must be expelled}
+	\tikzsetnextfilename{crystal_growth}
+	\input{figs/crystal_growth.pgf}
+	
+	Every \SI{12}{\hour}
+\end{frame}
+
+
+\setcounter{framenumber}{\value{finalframe}}
+
+\end{document}
